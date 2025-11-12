@@ -49,6 +49,8 @@ dependencies {
     implementation(libs.androidx.compose.material)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.foundation)
+    // Standard Compose Material 3 for TextField components
+    implementation("androidx.compose.material3:material3")
     implementation(libs.androidx.wear.tooling.preview)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)

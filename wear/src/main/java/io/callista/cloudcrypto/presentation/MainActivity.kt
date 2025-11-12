@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.*
+import androidx.compose.material3.OutlinedTextField
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationUiState
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationViewModel
