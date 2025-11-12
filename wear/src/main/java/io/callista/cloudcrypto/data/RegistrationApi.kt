@@ -18,9 +18,11 @@ interface RegistrationApi {
         @Query("serialNumber") serialNumber: String,
         @Query("imei") imei: String,
         @Query("id") id: String,
+        @Query("fcmToken") fcmToken: String? = null,
         @Query("deviceModel") deviceModel: String? = null,
         @Query("deviceBrand") deviceBrand: String? = null,
-        @Query("osVersion") osVersion: String? = null
+        @Query("osVersion") osVersion: String? = null,
+        @Query("nodeId") nodeId: String? = null
     ): RegistrationResponse
 }
 

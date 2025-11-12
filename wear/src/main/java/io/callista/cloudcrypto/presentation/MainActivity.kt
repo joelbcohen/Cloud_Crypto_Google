@@ -43,12 +43,15 @@ class MainActivity : ComponentActivity() {
 fun RegistrationScreen(viewModel: RegistrationViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val serialNumber by viewModel.serialNumber.collectAsStateWithLifecycle()
+    val imei by viewModel.imei.collectAsStateWithLifecycle()
 
     when (val state = uiState) {
         is RegistrationUiState.Initial -> {
             RegistrationInputScreen(
                 serialNumber = serialNumber,
+                imei = imei,
                 onSerialNumberChanged = viewModel::onSerialNumberChanged,
+                onImeiChanged = viewModel::onImeiChanged,
                 onSaveClicked = viewModel::registerDevice
             )
         }
@@ -58,6 +61,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
         is RegistrationUiState.Registered -> {
             RegisteredScreen(
                 serialNumber = state.serialNumber,
+                imei = state.imei,
                 onResetClicked = viewModel::resetRegistration
             )
         }
@@ -73,7 +77,9 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
 @Composable
 fun RegistrationInputScreen(
     serialNumber: String,
+    imei: String,
     onSerialNumberChanged: (String) -> Unit,
+    onImeiChanged: (String) -> Unit,
     onSaveClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
@@ -82,48 +88,73 @@ fun RegistrationInputScreen(
         modifier = Modifier.fillMaxSize(),
         state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         item {
             Text(
                 text = "Device Registration",
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 4.dp)
             )
         }
 
+        // Serial Number Section
         item {
             Text(
-                text = "Enter Serial Number",
-                style = MaterialTheme.typography.bodySmall,
+                text = "Serial Number",
+                style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 4.dp)
+                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
             )
         }
 
         item {
             OutlinedButton(
-                onClick = {
-                    // On Wear OS, text input is typically handled via voice or companion app
-                    // For this demo, we'll use a simple increment mechanism
-                    // In production, you'd use rememberLauncherForActivityResult with RemoteInput
-                },
-                modifier = Modifier.fillMaxWidth(0.9f)
+                onClick = {},
+                modifier = Modifier.fillMaxWidth(0.95f)
             ) {
                 Text(
-                    text = if (serialNumber.isEmpty()) "Tap to Enter" else serialNumber,
-                    style = MaterialTheme.typography.bodyMedium
+                    text = if (serialNumber.isEmpty()) "Enter Serial" else serialNumber,
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }
 
         item {
-            TextInputField(
+            NumericKeyboard(
                 value = serialNumber,
-                onValueChange = onSerialNumberChanged,
-                label = "Serial #"
+                onValueChange = onSerialNumberChanged
+            )
+        }
+
+        // IMEI Section
+        item {
+            Text(
+                text = "IMEI",
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 12.dp, bottom = 4.dp)
+            )
+        }
+
+        item {
+            OutlinedButton(
+                onClick = {},
+                modifier = Modifier.fillMaxWidth(0.95f)
+            ) {
+                Text(
+                    text = if (imei.isEmpty()) "Enter IMEI" else imei,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+
+        item {
+            AlphanumericKeyboard(
+                value = imei,
+                onValueChange = onImeiChanged
             )
         }
 
@@ -134,8 +165,8 @@ fun RegistrationInputScreen(
         item {
             FilledTonalButton(
                 onClick = onSaveClicked,
-                modifier = Modifier.fillMaxWidth(0.9f),
-                enabled = serialNumber.isNotBlank()
+                modifier = Modifier.fillMaxWidth(0.95f),
+                enabled = serialNumber.isNotBlank() && imei.isNotBlank()
             ) {
                 Text("SAVE")
             }
@@ -144,24 +175,61 @@ fun RegistrationInputScreen(
 }
 
 @Composable
-fun TextInputField(
+fun NumericKeyboard(
     value: String,
-    onValueChange: (String) -> Unit,
-    label: String
+    onValueChange: (String) -> Unit
 ) {
-    // Simple text input for Wear OS
-    // Note: In production, you'd want to use proper Wear OS text input methods
     Column(
-        modifier = Modifier.fillMaxWidth(0.9f),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxWidth(0.95f),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
+        // Row 1: 1 2 3
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            for (num in 1..3) {
+                OutlinedButton(
+                    onClick = { onValueChange(value + num.toString()) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(num.toString(), style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
 
-        // Input buttons for demonstration
+        // Row 2: 4 5 6
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            for (num in 4..6) {
+                OutlinedButton(
+                    onClick = { onValueChange(value + num.toString()) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(num.toString(), style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
+
+        // Row 3: 7 8 9
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            for (num in 7..9) {
+                OutlinedButton(
+                    onClick = { onValueChange(value + num.toString()) },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(num.toString(), style = MaterialTheme.typography.labelMedium)
+                }
+            }
+        }
+
+        // Row 4: ← 0 CLR
         Row(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.fillMaxWidth()
@@ -174,18 +242,127 @@ fun TextInputField(
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("←", style = MaterialTheme.typography.bodySmall)
+                Text("←", style = MaterialTheme.typography.labelMedium)
             }
+            OutlinedButton(
+                onClick = { onValueChange(value + "0") },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("0", style = MaterialTheme.typography.labelMedium)
+            }
+            OutlinedButton(
+                onClick = { onValueChange("") },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("CLR", style = MaterialTheme.typography.labelSmall)
+            }
+        }
+    }
+}
 
-            (0..9).chunked(5).forEach { rowNumbers ->
-                rowNumbers.forEach { num ->
-                    OutlinedButton(
-                        onClick = { onValueChange(value + num.toString()) },
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Text(num.toString(), style = MaterialTheme.typography.bodySmall)
-                    }
+@Composable
+fun AlphanumericKeyboard(
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(0.95f),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(3.dp)
+    ) {
+        // Row 1: 1-5
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            for (num in 1..5) {
+                OutlinedButton(
+                    onClick = { onValueChange(value + num.toString()) },
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(2.dp)
+                ) {
+                    Text(num.toString(), style = MaterialTheme.typography.labelSmall)
                 }
+            }
+        }
+
+        // Row 2: 6-9, 0
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            for (num in 6..9) {
+                OutlinedButton(
+                    onClick = { onValueChange(value + num.toString()) },
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(2.dp)
+                ) {
+                    Text(num.toString(), style = MaterialTheme.typography.labelSmall)
+                }
+            }
+            OutlinedButton(
+                onClick = { onValueChange(value + "0") },
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(2.dp)
+            ) {
+                Text("0", style = MaterialTheme.typography.labelSmall)
+            }
+        }
+
+        // Row 3: A-E
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            for (char in 'A'..'E') {
+                OutlinedButton(
+                    onClick = { onValueChange(value + char.toString()) },
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(2.dp)
+                ) {
+                    Text(char.toString(), style = MaterialTheme.typography.labelSmall)
+                }
+            }
+        }
+
+        // Row 4: F-J
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            for (char in 'F'..'J') {
+                OutlinedButton(
+                    onClick = { onValueChange(value + char.toString()) },
+                    modifier = Modifier.weight(1f),
+                    contentPadding = PaddingValues(2.dp)
+                ) {
+                    Text(char.toString(), style = MaterialTheme.typography.labelSmall)
+                }
+            }
+        }
+
+        // Row 5: ← CLR
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(3.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            OutlinedButton(
+                onClick = {
+                    if (value.isNotEmpty()) {
+                        onValueChange(value.dropLast(1))
+                    }
+                },
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(2.dp)
+            ) {
+                Text("←", style = MaterialTheme.typography.labelSmall)
+            }
+            OutlinedButton(
+                onClick = { onValueChange("") },
+                modifier = Modifier.weight(1f),
+                contentPadding = PaddingValues(2.dp)
+            ) {
+                Text("CLR", style = MaterialTheme.typography.labelSmall)
             }
         }
     }
@@ -213,6 +390,7 @@ fun LoadingScreen() {
 @Composable
 fun RegisteredScreen(
     serialNumber: String,
+    imei: String,
     onResetClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
@@ -222,7 +400,7 @@ fun RegisteredScreen(
         state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         item {
             Text(
@@ -241,12 +419,22 @@ fun RegisteredScreen(
         }
 
         item {
-            Text(
-                text = "Serial: $serialNumber",
-                style = MaterialTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(vertical = 8.dp)
-            )
+            ) {
+                Text(
+                    text = "Serial: $serialNumber",
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = "IMEI: $imei",
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
         }
 
         item {

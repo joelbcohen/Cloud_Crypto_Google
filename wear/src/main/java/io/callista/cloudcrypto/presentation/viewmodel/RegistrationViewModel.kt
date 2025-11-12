@@ -22,6 +22,9 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     private val _serialNumber = MutableStateFlow("")
     val serialNumber: StateFlow<String> = _serialNumber.asStateFlow()
 
+    private val _imei = MutableStateFlow("")
+    val imei: StateFlow<String> = _imei.asStateFlow()
+
     init {
         checkRegistrationStatus()
     }
@@ -31,9 +34,10 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
      */
     private fun checkRegistrationStatus() {
         val status = repository.getRegistrationStatus()
-        if (status.isRegistered && status.serialNumber != null) {
+        if (status.isRegistered && status.serialNumber != null && status.imei != null) {
             _serialNumber.value = status.serialNumber
-            _uiState.value = RegistrationUiState.Registered(status.serialNumber)
+            _imei.value = status.imei
+            _uiState.value = RegistrationUiState.Registered(status.serialNumber, status.imei)
         }
     }
 
@@ -45,13 +49,26 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     }
 
     /**
-     * Registers the device with the current serial number.
+     * Updates the IMEI input.
+     */
+    fun onImeiChanged(newValue: String) {
+        _imei.value = newValue
+    }
+
+    /**
+     * Registers the device with the current serial number and IMEI.
      */
     fun registerDevice() {
         val currentSerialNumber = _serialNumber.value
+        val currentImei = _imei.value
 
         if (currentSerialNumber.isBlank()) {
             _uiState.value = RegistrationUiState.Error("Serial number cannot be empty")
+            return
+        }
+
+        if (currentImei.isBlank()) {
+            _uiState.value = RegistrationUiState.Error("IMEI cannot be empty")
             return
         }
 
@@ -59,12 +76,12 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
         viewModelScope.launch {
             try {
-                val result = repository.registerDevice(currentSerialNumber)
+                val result = repository.registerDevice(currentSerialNumber, currentImei)
 
                 result.fold(
                     onSuccess = { response ->
-                        repository.saveRegistrationStatus(currentSerialNumber, true)
-                        _uiState.value = RegistrationUiState.Registered(currentSerialNumber)
+                        repository.saveRegistrationStatus(currentSerialNumber, currentImei, true)
+                        _uiState.value = RegistrationUiState.Registered(currentSerialNumber, currentImei)
                     },
                     onFailure = { error ->
                         _uiState.value = RegistrationUiState.Error(
@@ -85,9 +102,10 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
      */
     fun resetRegistration() {
         _serialNumber.value = ""
+        _imei.value = ""
         _uiState.value = RegistrationUiState.Initial
         viewModelScope.launch {
-            repository.saveRegistrationStatus("", false)
+            repository.saveRegistrationStatus("", "", false)
         }
     }
 }
@@ -98,6 +116,6 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 sealed interface RegistrationUiState {
     data object Initial : RegistrationUiState
     data object Loading : RegistrationUiState
-    data class Registered(val serialNumber: String) : RegistrationUiState
+    data class Registered(val serialNumber: String, val imei: String) : RegistrationUiState
     data class Error(val message: String) : RegistrationUiState
 }
