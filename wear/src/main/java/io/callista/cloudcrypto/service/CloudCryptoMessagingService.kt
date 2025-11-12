@@ -1,12 +1,22 @@
 package io.callista.cloudcrypto.service
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.os.PowerManager
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import io.callista.cloudcrypto.R
 import io.callista.cloudcrypto.complication.MainComplicationService
 import io.callista.cloudcrypto.data.FcmTokenManager
 import io.callista.cloudcrypto.data.RegistrationRepository
+import io.callista.cloudcrypto.presentation.MainActivity
 
 /**
  * Firebase Cloud Messaging service for receiving push notifications.
@@ -15,11 +25,14 @@ import io.callista.cloudcrypto.data.RegistrationRepository
  * - New FCM token registration
  * - Incoming FCM messages with device-specific payloads
  * - Updating local storage and complications based on received data
+ * - Waking up the watch and showing notifications
  */
 class CloudCryptoMessagingService : FirebaseMessagingService() {
 
     companion object {
         private const val TAG = "CloudCryptoFCM"
+        private const val CHANNEL_ID = "cloud_crypto_fcm"
+        private const val NOTIFICATION_ID = 1001
     }
 
     private val fcmTokenManager by lazy { FcmTokenManager(applicationContext) }
@@ -60,7 +73,15 @@ class CloudCryptoMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "FCM message received from: ${remoteMessage.from}")
         Log.d(TAG, "Message data: ${remoteMessage.data}")
 
+        // Wake up the watch screen
+        wakeUpScreen()
+
         val data = remoteMessage.data
+        val message = data["message"] ?: "Cloud Crypto Notification"
+        val type = data["type"] ?: "unknown"
+
+        // Show notification to user
+        showNotification(type, message, data)
 
         when (data["type"]) {
             "registration_update" -> handleRegistrationUpdate(data)
@@ -72,11 +93,15 @@ class CloudCryptoMessagingService : FirebaseMessagingService() {
             }
         }
 
-        // Show notification if present
+        // Show notification if present in FCM notification payload
         remoteMessage.notification?.let { notification ->
             Log.d(TAG, "Notification title: ${notification.title}")
             Log.d(TAG, "Notification body: ${notification.body}")
-            // You can show a notification here if needed
+            showNotification(
+                notification.title ?: "Cloud Crypto",
+                notification.body ?: "",
+                data
+            )
         }
     }
 
@@ -159,6 +184,88 @@ class CloudCryptoMessagingService : FirebaseMessagingService() {
             Log.d(TAG, "Complication update requested")
         } catch (e: Exception) {
             Log.e(TAG, "Failed to update complication", e)
+        }
+    }
+
+    /**
+     * Wakes up the watch screen when FCM message is received.
+     */
+    private fun wakeUpScreen() {
+        try {
+            val powerManager = getSystemService(Context.POWER_SERVICE) as PowerManager
+            val wakeLock = powerManager.newWakeLock(
+                PowerManager.FULL_WAKE_LOCK or
+                PowerManager.ACQUIRE_CAUSES_WAKEUP or
+                PowerManager.ON_AFTER_RELEASE,
+                "CloudCrypto::FCMWakeLock"
+            )
+            wakeLock.acquire(3000L) // 3 seconds
+            Log.d(TAG, "Watch screen woken up")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to wake up screen", e)
+        }
+    }
+
+    /**
+     * Shows a notification on the watch when FCM message is received.
+     */
+    private fun showNotification(title: String, message: String, data: Map<String, String>) {
+        try {
+            createNotificationChannel()
+
+            // Intent to open the app when notification is tapped
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                // Add message data to intent extras
+                data.forEach { (key, value) ->
+                    putExtra(key, value)
+                }
+            }
+
+            val pendingIntent = PendingIntent.getActivity(
+                this,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+            // Build notification
+            val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setAutoCancel(true)
+                .setVibrate(longArrayOf(0, 250, 250, 250))
+                .setContentIntent(pendingIntent)
+                .build()
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.notify(NOTIFICATION_ID, notification)
+
+            Log.d(TAG, "Notification shown: $title - $message")
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to show notification", e)
+        }
+    }
+
+    /**
+     * Creates notification channel for Android O and above.
+     */
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Cloud Crypto Messages"
+            val descriptionText = "Notifications for device registration and updates"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+                enableVibration(true)
+                vibrationPattern = longArrayOf(0, 250, 250, 250)
+            }
+
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }
