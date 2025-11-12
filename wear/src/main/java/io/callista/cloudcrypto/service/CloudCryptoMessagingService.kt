@@ -70,8 +70,15 @@ class CloudCryptoMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
 
-        Log.d(TAG, "FCM message received from: ${remoteMessage.from}")
-        Log.d(TAG, "Message data: ${remoteMessage.data}")
+        Log.d(TAG, "========================================")
+        Log.d(TAG, "FCM MESSAGE RECEIVED!")
+        Log.d(TAG, "========================================")
+        Log.d(TAG, "From: ${remoteMessage.from}")
+        Log.d(TAG, "Message ID: ${remoteMessage.messageId}")
+        Log.d(TAG, "Message type: ${remoteMessage.messageType}")
+        Log.d(TAG, "Data payload: ${remoteMessage.data}")
+        Log.d(TAG, "Notification: ${remoteMessage.notification}")
+        Log.d(TAG, "========================================")
 
         // Wake up the watch screen
         wakeUpScreen()
