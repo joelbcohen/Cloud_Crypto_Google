@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "io.callista.cloudcrypto"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "io.callista.cloudcrypto"
@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation(libs.play.services.wearable)
+    implementation(libs.kotlinx.coroutines.play.services)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
