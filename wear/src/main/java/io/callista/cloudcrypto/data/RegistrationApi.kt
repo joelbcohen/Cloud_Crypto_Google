@@ -1,5 +1,6 @@
 package io.callista.cloudcrypto.data
 
+import android.util.Log
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -40,13 +41,33 @@ data class RegistrationResponse(
 object RegistrationApiFactory {
 
     private const val BASE_URL = "https://fusio.callista.io/"
+    private const val TAG = "RegistrationApi"
 
     fun create(): RegistrationApi {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
+        val loggingInterceptor = HttpLoggingInterceptor { message ->
+            Log.d(TAG, message)
+        }.apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
+        // Add custom interceptor to log full URL with query parameters
+        val urlLoggingInterceptor = okhttp3.Interceptor { chain ->
+            val request = chain.request()
+            val url = request.url.toString()
+            Log.d(TAG, "🌐 Full Request URL: $url")
+
+            // Check if fcmToken is in the URL
+            if (!url.contains("fcmToken=") || url.contains("fcmToken=&") || url.contains("fcmToken=null")) {
+                Log.w(TAG, "⚠️ WARNING: fcmToken is missing or null in the request URL!")
+            } else {
+                Log.d(TAG, "✅ fcmToken is present in the request")
+            }
+
+            chain.proceed(request)
+        }
+
         val client = OkHttpClient.Builder()
+            .addInterceptor(urlLoggingInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)

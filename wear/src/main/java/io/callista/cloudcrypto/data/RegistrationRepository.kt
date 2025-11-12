@@ -1,6 +1,7 @@
 package io.callista.cloudcrypto.data
 
 import android.content.Context
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -8,6 +9,10 @@ import kotlinx.coroutines.withContext
  * Repository for handling device registration.
  */
 class RegistrationRepository(private val context: Context) {
+
+    companion object {
+        private const val TAG = "RegistrationRepository"
+    }
 
     private val api = RegistrationApiFactory.create()
     private val deviceInfoManager = DeviceInfoManager(context)
@@ -27,6 +32,25 @@ class RegistrationRepository(private val context: Context) {
                 // Get FCM token for push notification targeting
                 val fcmToken = fcmTokenManager.getFcmToken()
 
+                // Log all registration parameters
+                Log.d(TAG, "=== Registration Parameters ===")
+                Log.d(TAG, "Serial Number: $serialNumber")
+                Log.d(TAG, "IMEI: $imei")
+                Log.d(TAG, "Android ID: ${deviceInfo.androidId}")
+                Log.d(TAG, "FCM Token: ${fcmToken?.take(20)}...${fcmToken?.takeLast(10) ?: "NULL"}")
+                Log.d(TAG, "FCM Token Length: ${fcmToken?.length ?: 0}")
+                Log.d(TAG, "Device Model: ${deviceInfo.deviceModel}")
+                Log.d(TAG, "Device Brand: ${deviceInfo.deviceBrand}")
+                Log.d(TAG, "OS Version: ${deviceInfo.osVersion}")
+                Log.d(TAG, "Node ID: ${deviceInfo.nodeId}")
+                Log.d(TAG, "===============================")
+
+                // Warn if FCM token is missing
+                if (fcmToken.isNullOrBlank()) {
+                    Log.w(TAG, "⚠️ WARNING: FCM Token is null or empty! Push notifications will not work.")
+                    Log.w(TAG, "Make sure google-services.json is properly configured.")
+                }
+
                 val response = api.registerDevice(
                     serialNumber = serialNumber,
                     imei = imei,
@@ -38,8 +62,10 @@ class RegistrationRepository(private val context: Context) {
                     nodeId = deviceInfo.nodeId
                 )
 
+                Log.d(TAG, "Registration successful: ${response.status}")
                 Result.success(response)
             } catch (e: Exception) {
+                Log.e(TAG, "Registration failed", e)
                 Result.failure(e)
             }
         }
