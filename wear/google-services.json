@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "123456789000",
-    "project_id": "cloud-crypto-placeholder",
-    "storage_bucket": "cloud-crypto-placeholder.appspot.com"
+    "project_number": "209700557311",
+    "project_id": "cloud-crypto-853c2",
+    "storage_bucket": "cloud-crypto-853c2.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:123456789000:android:abcdef123456",
+        "mobilesdk_app_id": "1:209700557311:android:d943e78ac37454bff417ca",
         "android_client_info": {
           "package_name": "io.callista.cloudcrypto"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDummyKeyPlaceholder-Replace-With-Real-Key"
+          "current_key": "AIzaSyDLakB0XAkH1PjKqklSfwgjLENji3qN618"
         }
       ],
       "services": {
