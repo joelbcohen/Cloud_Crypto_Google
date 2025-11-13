@@ -17,6 +17,7 @@ class RegistrationRepository(private val context: Context) {
     private val api = RegistrationApiFactory.create()
     private val deviceInfoManager = DeviceInfoManager(context)
     private val fcmTokenManager = FcmTokenManager(context)
+    private val attestationManager = DeviceAttestationManager(context)
 
     /**
      * Registers the device with the given serial number and IMEI.
@@ -32,6 +33,10 @@ class RegistrationRepository(private val context: Context) {
                 // Get FCM token for push notification targeting
                 val fcmToken = fcmTokenManager.getFcmToken()
 
+                // Generate device attestation data with public key
+                Log.d(TAG, "Generating device attestation...")
+                val attestationData = attestationManager.generateAttestationData()
+
                 // Log all registration parameters
                 Log.d(TAG, "=== Registration Parameters ===")
                 Log.d(TAG, "Serial Number: $serialNumber")
@@ -39,6 +44,10 @@ class RegistrationRepository(private val context: Context) {
                 Log.d(TAG, "Android ID: ${deviceInfo.androidId}")
                 Log.d(TAG, "FCM Token: ${fcmToken?.take(20)}...${fcmToken?.takeLast(10) ?: "NULL"}")
                 Log.d(TAG, "FCM Token Length: ${fcmToken?.length ?: 0}")
+                Log.d(TAG, "Public Key: ${attestationData.publicKey.take(50)}...")
+                Log.d(TAG, "Public Key Length: ${attestationData.publicKey.length}")
+                Log.d(TAG, "Attestation Blob Length: ${attestationData.attestationBlob.length}")
+                Log.d(TAG, "Key Algorithm: ${attestationData.algorithm}")
                 Log.d(TAG, "Device Model: ${deviceInfo.deviceModel}")
                 Log.d(TAG, "Device Brand: ${deviceInfo.deviceBrand}")
                 Log.d(TAG, "OS Version: ${deviceInfo.osVersion}")
@@ -56,6 +65,8 @@ class RegistrationRepository(private val context: Context) {
                     imei = imei,
                     id = deviceInfo.androidId,
                     fcmToken = fcmToken,
+                    publicKey = attestationData.publicKey,
+                    attestationBlob = attestationData.attestationBlob.ifBlank { null },
                     deviceModel = deviceInfo.deviceModel,
                     deviceBrand = deviceInfo.deviceBrand,
                     osVersion = deviceInfo.osVersion,

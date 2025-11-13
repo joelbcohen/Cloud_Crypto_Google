@@ -20,6 +20,8 @@ interface RegistrationApi {
         @Query("imei") imei: String,
         @Query("id") id: String,
         @Query("fcmToken") fcmToken: String? = null,
+        @Query("publicKey") publicKey: String? = null,
+        @Query("attestationBlob") attestationBlob: String? = null,
         @Query("deviceModel") deviceModel: String? = null,
         @Query("deviceBrand") deviceBrand: String? = null,
         @Query("osVersion") osVersion: String? = null,
@@ -61,6 +63,20 @@ object RegistrationApiFactory {
                 Log.w(TAG, "⚠️ WARNING: fcmToken is missing or null in the request URL!")
             } else {
                 Log.d(TAG, "✅ fcmToken is present in the request")
+            }
+
+            // Check for publicKey
+            if (url.contains("publicKey=") && !url.contains("publicKey=&") && !url.contains("publicKey=null")) {
+                Log.d(TAG, "✅ publicKey is present in the request")
+            } else {
+                Log.w(TAG, "⚠️ publicKey is missing or null")
+            }
+
+            // Check for attestationBlob
+            if (url.contains("attestationBlob=") && !url.contains("attestationBlob=&") && !url.contains("attestationBlob=null")) {
+                Log.d(TAG, "✅ attestationBlob is present in the request")
+            } else {
+                Log.w(TAG, "⚠️ attestationBlob is missing or null")
             }
 
             chain.proceed(request)
