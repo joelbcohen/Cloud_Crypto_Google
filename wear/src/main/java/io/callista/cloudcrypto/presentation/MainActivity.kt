@@ -80,15 +80,12 @@ class MainActivity : ComponentActivity() {
 fun RegistrationScreen(viewModel: RegistrationViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val serialNumber by viewModel.serialNumber.collectAsStateWithLifecycle()
-    val imei by viewModel.imei.collectAsStateWithLifecycle()
 
     when (val state = uiState) {
         is RegistrationUiState.Initial -> {
             RegistrationInputScreen(
                 serialNumber = serialNumber,
-                imei = imei,
                 onSerialNumberChanged = viewModel::onSerialNumberChanged,
-                onImeiChanged = viewModel::onImeiChanged,
                 onSaveClicked = viewModel::registerDevice
             )
         }
@@ -98,7 +95,6 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
         is RegistrationUiState.Registered -> {
             RegisteredScreen(
                 serialNumber = state.serialNumber,
-                imei = state.imei,
                 onResetClicked = viewModel::resetRegistration
             )
         }
@@ -114,9 +110,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
 @Composable
 fun RegistrationInputScreen(
     serialNumber: String,
-    imei: String,
     onSerialNumberChanged: (String) -> Unit,
-    onImeiChanged: (String) -> Unit,
     onSaveClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
@@ -157,33 +151,9 @@ fun RegistrationInputScreen(
                     placeholder = {
                         Text("Enter Serial #", style = MaterialTheme.typography.bodySmall)
                     },
-                    textStyle = MaterialTheme.typography.bodyMedium,
-                    singleLine = true
-                )
-            }
-        }
-
-        // IMEI Section
-        item {
-            Column(
-                modifier = Modifier.fillMaxWidth(0.9f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "IMEI",
-                    style = MaterialTheme.typography.labelMedium,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-
-                OutlinedTextField(
-                    value = imei,
-                    onValueChange = onImeiChanged,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = {
-                        Text("Enter IMEI", style = MaterialTheme.typography.bodySmall)
-                    },
-                    textStyle = MaterialTheme.typography.bodyMedium,
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        color = androidx.compose.ui.graphics.Color.White
+                    ),
                     singleLine = true
                 )
             }
@@ -197,7 +167,7 @@ fun RegistrationInputScreen(
             FilledTonalButton(
                 onClick = onSaveClicked,
                 modifier = Modifier.fillMaxWidth(0.9f),
-                enabled = serialNumber.isNotBlank() && imei.isNotBlank()
+                enabled = serialNumber.isNotBlank()
             ) {
                 Text("SAVE")
             }
@@ -227,7 +197,6 @@ fun LoadingScreen() {
 @Composable
 fun RegisteredScreen(
     serialNumber: String,
-    imei: String,
     onResetClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
@@ -256,22 +225,12 @@ fun RegisteredScreen(
         }
 
         item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Text(
+                text = "Serial: $serialNumber",
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.padding(vertical = 8.dp)
-            ) {
-                Text(
-                    text = "Serial: $serialNumber",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = "IMEI: $imei",
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
+            )
         }
 
         item {

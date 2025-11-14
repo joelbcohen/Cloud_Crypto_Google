@@ -20,12 +20,11 @@ class RegistrationRepository(private val context: Context) {
     private val attestationManager = DeviceAttestationManager(context)
 
     /**
-     * Registers the device with the given serial number and IMEI.
+     * Registers the device with the given serial number.
      * @param serialNumber User-entered serial number
-     * @param imei User-entered IMEI number
      * @return Result containing the registration response or an error.
      */
-    suspend fun registerDevice(serialNumber: String, imei: String): Result<RegistrationResponse> {
+    suspend fun registerDevice(serialNumber: String): Result<RegistrationResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val deviceInfo = deviceInfoManager.getDeviceInfo()
@@ -40,7 +39,6 @@ class RegistrationRepository(private val context: Context) {
                 // Log all registration parameters
                 Log.d(TAG, "=== Registration Parameters ===")
                 Log.d(TAG, "Serial Number: $serialNumber")
-                Log.d(TAG, "IMEI: $imei")
                 Log.d(TAG, "Android ID: ${deviceInfo.androidId}")
                 Log.d(TAG, "FCM Token: ${fcmToken?.take(20)}...${fcmToken?.takeLast(10) ?: "NULL"}")
                 Log.d(TAG, "FCM Token Length: ${fcmToken?.length ?: 0}")
@@ -62,7 +60,6 @@ class RegistrationRepository(private val context: Context) {
 
                 val response = api.registerDevice(
                     serialNumber = serialNumber,
-                    imei = imei,
                     id = deviceInfo.androidId,
                     fcmToken = fcmToken,
                     publicKey = attestationData.publicKey,
@@ -85,13 +82,12 @@ class RegistrationRepository(private val context: Context) {
     /**
      * Saves the registration status to SharedPreferences.
      */
-    suspend fun saveRegistrationStatus(serialNumber: String, imei: String, isRegistered: Boolean) {
+    suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean) {
         withContext(Dispatchers.IO) {
             val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
             prefs.edit().apply {
                 putBoolean("is_registered", isRegistered)
                 putString("serial_number", serialNumber)
-                putString("imei", imei)
                 putLong("registration_timestamp", System.currentTimeMillis())
                 apply()
             }
@@ -105,13 +101,11 @@ class RegistrationRepository(private val context: Context) {
         val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
         val isRegistered = prefs.getBoolean("is_registered", false)
         val serialNumber = prefs.getString("serial_number", null)
-        val imei = prefs.getString("imei", null)
         val timestamp = prefs.getLong("registration_timestamp", 0L)
 
         return RegistrationStatus(
             isRegistered = isRegistered,
             serialNumber = serialNumber,
-            imei = imei,
             timestamp = timestamp
         )
     }
@@ -123,6 +117,5 @@ class RegistrationRepository(private val context: Context) {
 data class RegistrationStatus(
     val isRegistered: Boolean,
     val serialNumber: String?,
-    val imei: String?,
     val timestamp: Long
 )

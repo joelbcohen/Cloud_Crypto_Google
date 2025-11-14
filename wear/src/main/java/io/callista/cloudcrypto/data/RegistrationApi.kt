@@ -17,7 +17,6 @@ interface RegistrationApi {
     @GET("public/bgc/static-response")
     suspend fun registerDevice(
         @Query("serialNumber") serialNumber: String,
-        @Query("imei") imei: String,
         @Query("id") id: String,
         @Query("fcmToken") fcmToken: String? = null,
         @Query("publicKey") publicKey: String? = null,
