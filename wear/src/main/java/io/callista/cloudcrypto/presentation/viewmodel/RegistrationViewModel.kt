@@ -16,25 +16,42 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
     private val repository = RegistrationRepository(application)
 
-    private val _uiState = MutableStateFlow<RegistrationUiState>(RegistrationUiState.Initial)
+    private val _uiState = MutableStateFlow<RegistrationUiState>(RegistrationUiState.MainScreen(null, 0L))
     val uiState: StateFlow<RegistrationUiState> = _uiState.asStateFlow()
 
     private val _serialNumber = MutableStateFlow("")
     val serialNumber: StateFlow<String> = _serialNumber.asStateFlow()
 
     init {
-        checkRegistrationStatus()
+        loadMainScreen()
     }
 
     /**
-     * Checks if the device is already registered.
+     * Loads the main screen with current registration status.
      */
-    private fun checkRegistrationStatus() {
+    private fun loadMainScreen() {
         val status = repository.getRegistrationStatus()
-        if (status.isRegistered && status.serialNumber != null) {
-            _serialNumber.value = status.serialNumber
-            _uiState.value = RegistrationUiState.Registered(status.serialNumber)
-        }
+        _serialNumber.value = status.serialNumber ?: ""
+        _uiState.value = RegistrationUiState.MainScreen(
+            serialNumber = status.serialNumber,
+            timestamp = status.timestamp
+        )
+    }
+
+    /**
+     * Navigates to the registration form.
+     */
+    fun showRegistrationForm() {
+        _serialNumber.value = ""
+        _uiState.value = RegistrationUiState.RegistrationForm
+    }
+
+    /**
+     * Cancels registration and returns to main screen.
+     */
+    fun cancelRegistration() {
+        _serialNumber.value = ""
+        loadMainScreen()
     }
 
     /**
@@ -64,7 +81,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         repository.saveRegistrationStatus(currentSerialNumber, true)
-                        _uiState.value = RegistrationUiState.Registered(currentSerialNumber)
+                        // Return to main screen after successful registration
+                        loadMainScreen()
                     },
                     onFailure = { error ->
                         _uiState.value = RegistrationUiState.Error(
@@ -81,14 +99,17 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     }
 
     /**
-     * Resets the registration state to allow re-registration.
+     * Shows the account screen (placeholder for future implementation).
      */
-    fun resetRegistration() {
-        _serialNumber.value = ""
-        _uiState.value = RegistrationUiState.Initial
-        viewModelScope.launch {
-            repository.saveRegistrationStatus("", false)
-        }
+    fun showAccountScreen() {
+        // TODO: Navigate to account screen
+    }
+
+    /**
+     * Shows the settings screen (placeholder for future implementation).
+     */
+    fun showSettingsScreen() {
+        // TODO: Navigate to settings screen
     }
 }
 
@@ -96,8 +117,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
  * Sealed interface representing different UI states.
  */
 sealed interface RegistrationUiState {
-    data object Initial : RegistrationUiState
+    data class MainScreen(val serialNumber: String?, val timestamp: Long) : RegistrationUiState
+    data object RegistrationForm : RegistrationUiState
     data object Loading : RegistrationUiState
-    data class Registered(val serialNumber: String) : RegistrationUiState
     data class Error(val message: String) : RegistrationUiState
 }
