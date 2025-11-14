@@ -26,6 +26,11 @@ interface RegistrationApi {
         @Query("osVersion") osVersion: String? = null,
         @Query("nodeId") nodeId: String? = null
     ): RegistrationResponse
+
+    @GET("public/bgc/static-response")
+    suspend fun deregisterDevice(
+        @Query("action") action: String = "deregister"
+    ): RegistrationResponse
 }
 
 /**

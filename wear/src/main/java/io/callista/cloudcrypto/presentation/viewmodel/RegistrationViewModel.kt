@@ -22,8 +22,18 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     private val _serialNumber = MutableStateFlow("")
     val serialNumber: StateFlow<String> = _serialNumber.asStateFlow()
 
+    private val _toastMessage = MutableStateFlow<String?>(null)
+    val toastMessage: StateFlow<String?> = _toastMessage.asStateFlow()
+
     init {
         loadMainScreen()
+    }
+
+    /**
+     * Clears the toast message after it's been shown.
+     */
+    fun clearToast() {
+        _toastMessage.value = null
     }
 
     /**
@@ -87,6 +97,39 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                     onFailure = { error ->
                         _uiState.value = RegistrationUiState.Error(
                             error.message ?: "Registration failed"
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                _uiState.value = RegistrationUiState.Error(
+                    e.message ?: "An unexpected error occurred"
+                )
+            }
+        }
+    }
+
+    /**
+     * Deregisters the device and clears registration data.
+     */
+    fun deregisterDevice() {
+        _uiState.value = RegistrationUiState.Loading
+
+        viewModelScope.launch {
+            try {
+                val result = repository.deregisterDevice()
+
+                result.fold(
+                    onSuccess = { response ->
+                        // Clear registration status
+                        repository.saveRegistrationStatus("", false)
+                        // Show toast message
+                        _toastMessage.value = "Device deregistered successfully"
+                        // Return to main screen
+                        loadMainScreen()
+                    },
+                    onFailure = { error ->
+                        _uiState.value = RegistrationUiState.Error(
+                            error.message ?: "Deregistration failed"
                         )
                     }
                 )

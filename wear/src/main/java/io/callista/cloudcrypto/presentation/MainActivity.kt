@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -83,6 +85,17 @@ class MainActivity : ComponentActivity() {
 fun RegistrationScreen(viewModel: RegistrationViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val serialNumber by viewModel.serialNumber.collectAsStateWithLifecycle()
+    val toastMessage by viewModel.toastMessage.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+
+    // Show toast message when available
+    LaunchedEffect(toastMessage) {
+        toastMessage?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            viewModel.clearToast()
+        }
+    }
 
     when (val state = uiState) {
         is RegistrationUiState.MainScreen -> {
@@ -90,6 +103,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
                 serialNumber = state.serialNumber,
                 timestamp = state.timestamp,
                 onRegisterClicked = viewModel::showRegistrationForm,
+                onDeregisterClicked = viewModel::deregisterDevice,
                 onAccountClicked = viewModel::showAccountScreen,
                 onSettingsClicked = viewModel::showSettingsScreen
             )
@@ -120,10 +134,13 @@ fun MainScreen(
     serialNumber: String?,
     timestamp: Long,
     onRegisterClicked: () -> Unit,
+    onDeregisterClicked: () -> Unit,
     onAccountClicked: () -> Unit,
     onSettingsClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
+
+    val isRegistered = serialNumber != null && serialNumber.isNotEmpty()
 
     val dateFormatted = remember(timestamp) {
         if (timestamp > 0) {
@@ -196,13 +213,22 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // REGISTER Button
+        // REGISTER or DE-REGISTER Button
         item {
-            FilledTonalButton(
-                onClick = onRegisterClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("REGISTER")
+            if (isRegistered) {
+                FilledTonalButton(
+                    onClick = onDeregisterClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("DE-REGISTER")
+                }
+            } else {
+                FilledTonalButton(
+                    onClick = onRegisterClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("REGISTER")
+                }
             }
         }
 

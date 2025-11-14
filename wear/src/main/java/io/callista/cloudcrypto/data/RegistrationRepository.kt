@@ -80,6 +80,24 @@ class RegistrationRepository(private val context: Context) {
     }
 
     /**
+     * Deregisters the device.
+     * @return Result containing the deregistration response or an error.
+     */
+    suspend fun deregisterDevice(): Result<RegistrationResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d(TAG, "Deregistering device...")
+                val response = api.deregisterDevice()
+                Log.d(TAG, "Deregistration successful: ${response.status}")
+                Result.success(response)
+            } catch (e: Exception) {
+                Log.e(TAG, "Deregistration failed", e)
+                Result.failure(e)
+            }
+        }
+    }
+
+    /**
      * Saves the registration status to SharedPreferences.
      */
     suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean) {
