@@ -68,6 +68,11 @@ Or in one command:
 cat 01_schema.sql 02_initial_data.sql 03_procedures.sql 04_views.sql | mysql -u root -p
 ```
 
+### Optional Files
+
+- **05_example_usage.sql** - Complete examples demonstrating all features
+- **06_reset_database.sql** - Reset database to initial state (purges all data)
+
 ## Usage
 
 ### Register a New Account
@@ -360,13 +365,35 @@ SELECT * FROM ledger_config WHERE config_key IN ('total_supply', 'max_supply');
 
 ### Backup Database
 ```bash
-mysqldump -u root -p crypto_ledger > backup_$(date +%Y%m%d).sql
+mysqldump -u root -p jcohen_ccrypto > backup_$(date +%Y%m%d).sql
 ```
 
 ### Restore Database
 ```bash
-mysql -u root -p crypto_ledger < backup_20250115.sql
+mysql -u root -p jcohen_ccrypto < backup_20250115.sql
 ```
+
+### Reset Database to Initial State
+
+**WARNING: This will delete ALL accounts and transactions!**
+
+To reset the database and purge all data while keeping the schema:
+
+```bash
+mysql -u root -p < 06_reset_database.sql
+```
+
+This will:
+- Delete all accounts (except SYSTEM)
+- Delete all transactions and transaction logs
+- Reset auto-increment counters to 1
+- Reset total supply to 0
+- Recreate the SYSTEM account
+
+Use this for:
+- Development and testing
+- Clearing test data
+- Starting fresh after data corruption
 
 ### Clean Old Logs (Optional)
 ```sql
