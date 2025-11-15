@@ -2,18 +2,27 @@
 -- Stored Procedures for Ledger Operations
 -- ============================================================================
 
-USE crypto_ledger;
+USE jcohen_ccrypto;
 
 DELIMITER $$
 
 -- ============================================================================
 -- Procedure: register_account
--- Creates a new account with optional initial balance (mint)
+-- Creates a new account with device information and optional initial balance (mint)
 -- ============================================================================
 DROP PROCEDURE IF EXISTS register_account$$
 CREATE PROCEDURE register_account(
     IN p_address VARCHAR(255),
     IN p_initial_balance DECIMAL(65, 18),
+    IN p_serial_number VARCHAR(255),
+    IN p_attestation_blob TEXT,
+    IN p_public_key TEXT,
+    IN p_model VARCHAR(255),
+    IN p_brand VARCHAR(255),
+    IN p_os_version VARCHAR(100),
+    IN p_gps_latitude DECIMAL(10, 8),
+    IN p_gps_longitude DECIMAL(11, 8),
+    IN p_fcm_token VARCHAR(500),
     OUT p_account_id BIGINT,
     OUT p_success BOOLEAN,
     OUT p_message VARCHAR(500)
@@ -62,8 +71,14 @@ BEGIN
                 SET p_account_id = NULL;
                 ROLLBACK;
             ELSE
-                -- Create account
-                INSERT INTO accounts (address, balance) VALUES (p_address, p_initial_balance);
+                -- Create account with device information
+                INSERT INTO accounts (
+                    address, balance, serial_number, attestation_blob, public_key,
+                    model, brand, os_version, gps_latitude, gps_longitude, fcm_token
+                ) VALUES (
+                    p_address, p_initial_balance, p_serial_number, p_attestation_blob, p_public_key,
+                    p_model, p_brand, p_os_version, p_gps_latitude, p_gps_longitude, p_fcm_token
+                );
                 SET p_account_id = LAST_INSERT_ID();
 
                 -- Record mint transaction if initial balance > 0
@@ -88,8 +103,14 @@ BEGIN
                 COMMIT;
             END IF;
         ELSE
-            -- Create account with zero balance
-            INSERT INTO accounts (address, balance) VALUES (p_address, 0);
+            -- Create account with zero balance and device information
+            INSERT INTO accounts (
+                address, balance, serial_number, attestation_blob, public_key,
+                model, brand, os_version, gps_latitude, gps_longitude, fcm_token
+            ) VALUES (
+                p_address, 0, p_serial_number, p_attestation_blob, p_public_key,
+                p_model, p_brand, p_os_version, p_gps_latitude, p_gps_longitude, p_fcm_token
+            );
             SET p_account_id = LAST_INSERT_ID();
             SET p_success = TRUE;
             SET p_message = 'Account created successfully';
@@ -382,6 +403,43 @@ BEGIN
     ELSE
         SET p_success = TRUE;
         SET p_message = 'Balance retrieved successfully';
+    END IF;
+END$$
+
+-- ============================================================================
+-- Procedure: update_device_info
+-- Updates device information for an existing account
+-- ============================================================================
+DROP PROCEDURE IF EXISTS update_device_info$$
+CREATE PROCEDURE update_device_info(
+    IN p_address VARCHAR(255),
+    IN p_fcm_token VARCHAR(500),
+    IN p_gps_latitude DECIMAL(10, 8),
+    IN p_gps_longitude DECIMAL(11, 8),
+    IN p_os_version VARCHAR(100),
+    OUT p_success BOOLEAN,
+    OUT p_message VARCHAR(500)
+)
+BEGIN
+    DECLARE v_account_id BIGINT;
+
+    -- Check if account exists
+    SELECT id INTO v_account_id FROM accounts WHERE address = p_address;
+
+    IF v_account_id IS NULL THEN
+        SET p_success = FALSE;
+        SET p_message = 'Error: Account not found';
+    ELSE
+        -- Update device information
+        UPDATE accounts SET
+            fcm_token = COALESCE(p_fcm_token, fcm_token),
+            gps_latitude = COALESCE(p_gps_latitude, gps_latitude),
+            gps_longitude = COALESCE(p_gps_longitude, gps_longitude),
+            os_version = COALESCE(p_os_version, os_version)
+        WHERE id = v_account_id;
+
+        SET p_success = TRUE;
+        SET p_message = 'Device information updated successfully';
     END IF;
 END$$
 

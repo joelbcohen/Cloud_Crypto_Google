@@ -5,34 +5,77 @@
 -- Run this after setting up the schema to test functionality
 -- ============================================================================
 
-USE crypto_ledger;
+USE jcohen_ccrypto;
 
 -- ============================================================================
--- EXAMPLE 1: Register Accounts
+-- EXAMPLE 1: Register Accounts with Device Information
 -- ============================================================================
 
--- Register Alice with initial balance of 10,000 tokens
-CALL register_account('alice', 10000.0, @alice_id, @success, @message);
+-- Register Alice with initial balance of 10,000 tokens and device info
+CALL register_account(
+    'alice',                              -- address
+    10000.0,                              -- initial_balance
+    'SN-ALICE-12345',                     -- serial_number
+    'attestation_blob_data_alice',        -- attestation_blob
+    'public_key_alice_xyz',               -- public_key
+    'Pixel 8 Pro',                        -- model
+    'Google',                             -- brand
+    'Android 14',                         -- os_version
+    37.7749,                              -- gps_latitude (San Francisco)
+    -122.4194,                            -- gps_longitude
+    'fcm_token_alice_abc123',             -- fcm_token
+    @alice_id, @success, @message
+);
 SELECT 'Register Alice:' as Operation, @alice_id as AccountID, @success as Success, @message as Message;
 
--- Register Bob with initial balance of 5,000 tokens
-CALL register_account('bob', 5000.0, @bob_id, @success, @message);
+-- Register Bob with initial balance of 5,000 tokens and device info
+CALL register_account(
+    'bob',                                -- address
+    5000.0,                               -- initial_balance
+    'SN-BOB-67890',                       -- serial_number
+    'attestation_blob_data_bob',          -- attestation_blob
+    'public_key_bob_xyz',                 -- public_key
+    'iPhone 15 Pro',                      -- model
+    'Apple',                              -- brand
+    'iOS 17.2',                           -- os_version
+    40.7128,                              -- gps_latitude (New York)
+    -74.0060,                             -- gps_longitude
+    'fcm_token_bob_def456',               -- fcm_token
+    @bob_id, @success, @message
+);
 SELECT 'Register Bob:' as Operation, @bob_id as AccountID, @success as Success, @message as Message;
 
--- Register Charlie with zero initial balance
-CALL register_account('charlie', 0, @charlie_id, @success, @message);
+-- Register Charlie with zero initial balance and device info
+CALL register_account(
+    'charlie',                            -- address
+    0,                                    -- initial_balance
+    'SN-CHARLIE-11111',                   -- serial_number
+    'attestation_blob_data_charlie',      -- attestation_blob
+    'public_key_charlie_xyz',             -- public_key
+    'Galaxy S24 Ultra',                   -- model
+    'Samsung',                            -- brand
+    'Android 14',                         -- os_version
+    51.5074,                              -- gps_latitude (London)
+    -0.1278,                              -- gps_longitude
+    'fcm_token_charlie_ghi789',           -- fcm_token
+    @charlie_id, @success, @message
+);
 SELECT 'Register Charlie:' as Operation, @charlie_id as AccountID, @success as Success, @message as Message;
 
--- Try to register Alice again (should fail - duplicate)
-CALL register_account('alice', 1000.0, @alice_id2, @success, @message);
+-- Try to register Alice again (should fail - duplicate address)
+CALL register_account(
+    'alice', 1000.0, 'SN-ALICE-99999', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    @alice_id2, @success, @message
+);
 SELECT 'Register Alice Again:' as Operation, @alice_id2 as AccountID, @success as Success, @message as Message;
 
 -- ============================================================================
--- EXAMPLE 2: Check Initial Balances
+-- EXAMPLE 2: Check Initial Balances and Device Info
 -- ============================================================================
 
-SELECT 'Initial Balances:' as Report;
-SELECT address, balance FROM accounts WHERE address IN ('alice', 'bob', 'charlie');
+SELECT 'Initial Balances and Device Info:' as Report;
+SELECT address, balance, serial_number, model, brand, os_version, gps_latitude, gps_longitude
+FROM accounts WHERE address IN ('alice', 'bob', 'charlie');
 
 -- ============================================================================
 -- EXAMPLE 3: Transfer Tokens
@@ -82,7 +125,34 @@ CALL burn_tokens('bob', 200.0, 'Buyback and burn', @tx6, @success, @message);
 SELECT 'Burn from Bob:' as Operation, @tx6 as TransactionID, @success as Success, @message as Message;
 
 -- ============================================================================
--- EXAMPLE 7: Final Balances
+-- EXAMPLE 7: Update Device Information
+-- ============================================================================
+
+-- Alice moves to a new location and updates FCM token
+CALL update_device_info(
+    'alice',                              -- address
+    'fcm_token_alice_new_xyz999',         -- fcm_token (updated)
+    34.0522,                              -- gps_latitude (Los Angeles)
+    -118.2437,                            -- gps_longitude
+    'Android 14.1',                       -- os_version (updated)
+    @success, @message
+);
+SELECT 'Update Alice Device:' as Operation, @success as Success, @message as Message;
+
+-- View Alice's updated info
+SELECT 'Alice Updated Info:' as Report;
+SELECT address, model, brand, os_version, gps_latitude, gps_longitude, fcm_token
+FROM accounts WHERE address = 'alice';
+
+-- ============================================================================
+-- EXAMPLE 8: View Device Statistics
+-- ============================================================================
+
+SELECT 'Device Statistics:' as Report;
+SELECT * FROM device_stats;
+
+-- ============================================================================
+-- EXAMPLE 9: Final Balances
 -- ============================================================================
 
 SELECT 'Final Balances:' as Report;
@@ -92,7 +162,7 @@ WHERE address IN ('alice', 'bob', 'charlie')
 ORDER BY balance DESC;
 
 -- ============================================================================
--- EXAMPLE 8: View Transaction History
+-- EXAMPLE 10: View Transaction History
 -- ============================================================================
 
 SELECT 'Transaction History:' as Report;
@@ -109,13 +179,15 @@ FROM transaction_history
 ORDER BY created_at ASC;
 
 -- ============================================================================
--- EXAMPLE 9: View Account Summaries
+-- EXAMPLE 11: View Account Summaries
 -- ============================================================================
 
 SELECT 'Account Summaries:' as Report;
 SELECT
     address,
     balance,
+    model,
+    brand,
     total_sent_transactions,
     total_received_transactions,
     total_sent_amount,
@@ -125,14 +197,14 @@ WHERE address IN ('alice', 'bob', 'charlie')
 ORDER BY balance DESC;
 
 -- ============================================================================
--- EXAMPLE 10: View Ledger Statistics
+-- EXAMPLE 12: View Ledger Statistics
 -- ============================================================================
 
 SELECT 'Ledger Statistics:' as Report;
 SELECT * FROM ledger_stats;
 
 -- ============================================================================
--- EXAMPLE 11: View Audit Log for Alice
+-- EXAMPLE 13: View Audit Log for Alice
 -- ============================================================================
 
 SELECT 'Audit Log for Alice:' as Report;
@@ -152,7 +224,7 @@ WHERE a.address = 'alice'
 ORDER BY tl.created_at ASC;
 
 -- ============================================================================
--- EXAMPLE 12: Find All Transfers Between Alice and Bob
+-- EXAMPLE 14: Find All Transfers Between Alice and Bob
 -- ============================================================================
 
 SELECT 'Transfers Between Alice and Bob:' as Report;
@@ -170,7 +242,7 @@ WHERE
 ORDER BY created_at ASC;
 
 -- ============================================================================
--- EXAMPLE 13: Calculate Net Flow for Each Account
+-- EXAMPLE 15: Calculate Net Flow for Each Account
 -- ============================================================================
 
 SELECT 'Net Flow by Account:' as Report;

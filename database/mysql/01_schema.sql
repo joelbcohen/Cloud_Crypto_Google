@@ -9,27 +9,48 @@
 -- ============================================================================
 
 -- Drop existing database if it exists (use with caution in production)
-DROP DATABASE IF EXISTS crypto_ledger;
-CREATE DATABASE crypto_ledger CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE crypto_ledger;
+DROP DATABASE IF EXISTS jcohen_ccrypto;
+CREATE DATABASE jcohen_ccrypto CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE jcohen_ccrypto;
 
 -- ============================================================================
 -- Table: accounts
--- Stores registered accounts/addresses
+-- Stores registered accounts/addresses with device information
 -- ============================================================================
 CREATE TABLE accounts (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     address VARCHAR(255) NOT NULL,
     balance DECIMAL(65, 18) NOT NULL DEFAULT 0.000000000000000000,
+
+    -- Device identification and security
+    serial_number VARCHAR(255) NULL,
+    attestation_blob TEXT NULL,
+    public_key TEXT NULL,
+
+    -- Device information
+    model VARCHAR(255) NULL,
+    brand VARCHAR(255) NULL,
+    os_version VARCHAR(100) NULL,
+
+    -- Location
+    gps_latitude DECIMAL(10, 8) NULL,
+    gps_longitude DECIMAL(11, 8) NULL,
+
+    -- Push notification
+    fcm_token VARCHAR(500) NULL,
+
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
     UNIQUE KEY unique_address (address),
+    UNIQUE KEY unique_serial_number (serial_number),
     INDEX idx_balance (balance),
-    INDEX idx_created_at (created_at)
+    INDEX idx_created_at (created_at),
+    INDEX idx_serial_number (serial_number),
+    INDEX idx_model_brand (model, brand)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-COMMENT='Stores account addresses and their token balances';
+COMMENT='Stores account addresses, balances, and device information';
 
 -- ============================================================================
 -- Table: transactions

@@ -2,7 +2,7 @@
 -- Initial Configuration Data
 -- ============================================================================
 
-USE crypto_ledger;
+USE jcohen_ccrypto;
 
 -- Insert initial ledger configuration
 INSERT INTO ledger_config (config_key, config_value, description) VALUES

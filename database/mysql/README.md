@@ -1,32 +1,47 @@
 # Ultralight Centralized Crypto Ledger - MySQL
 
-A simple, centralized cryptocurrency ledger system with ERC20-like features built on MySQL. This ledger supports account registration, token transfers, and token burning in a single-node environment.
+A simple, centralized cryptocurrency ledger system with ERC20-like features built on MySQL. This ledger supports account registration with device attestation, token transfers, and token burning in a single-node environment.
+
+## Database Name
+
+**jcohen_ccrypto**
 
 ## Features
 
-- **Account Registration**: Create new accounts with optional initial token balance
+- **Account Registration**: Create new accounts with device information and optional initial token balance
+- **Device Attestation**: Store device serial numbers, attestation blobs, and public keys
+- **Device Tracking**: Track device model, brand, OS version, GPS location, and FCM tokens
 - **Token Transfers**: Transfer tokens between accounts with atomicity guarantees
 - **Token Burning**: Permanently destroy tokens from circulation
 - **Token Minting**: Create new tokens (with max supply limits)
 - **Balance Tracking**: Accurate balance tracking with audit logs
 - **Transaction History**: Complete transaction history with status tracking
+- **Device Analytics**: View statistics grouped by device model and brand
 
 ## Database Schema
 
 ### Tables
 
-1. **accounts** - Stores account addresses and balances
+1. **accounts** - Stores account addresses, balances, and device information including:
+   - Serial number
+   - Attestation blob
+   - Public key
+   - Device model, brand, OS version
+   - GPS latitude/longitude
+   - FCM token for push notifications
+
 2. **transactions** - Records all token transactions (mints, transfers, burns)
 3. **ledger_config** - Global ledger configuration (token symbol, supply, etc.)
 4. **transaction_log** - Audit log for all balance changes
 
 ### Views
 
-- **account_summary** - Summary of accounts with transaction statistics
+- **account_summary** - Summary of accounts with transaction statistics and device info
 - **transaction_history** - Readable transaction history
 - **ledger_stats** - Overall ledger statistics
 - **recent_transactions** - 100 most recent transactions
 - **top_balances** - Accounts with highest balances
+- **device_stats** - Device statistics grouped by model and brand
 
 ## Installation
 
@@ -57,13 +72,45 @@ cat 01_schema.sql 02_initial_data.sql 03_procedures.sql 04_views.sql | mysql -u 
 ### Register a New Account
 
 ```sql
--- Register account with zero balance
-CALL register_account('user123', 0, @account_id, @success, @message);
+-- Register account with device information and zero balance
+CALL register_account(
+    'user123',                    -- address
+    0,                            -- initial_balance
+    'SN-USER123-001',             -- serial_number
+    'attestation_blob_hex',       -- attestation_blob
+    'public_key_pem',             -- public_key
+    'Pixel 8',                    -- model
+    'Google',                     -- brand
+    'Android 14',                 -- os_version
+    37.7749,                      -- gps_latitude
+    -122.4194,                    -- gps_longitude
+    'fcm_token_xyz',              -- fcm_token
+    @account_id, @success, @message
+);
 SELECT @account_id, @success, @message;
 
 -- Register account with initial balance (mints tokens)
-CALL register_account('admin001', 1000000.0, @account_id, @success, @message);
+CALL register_account(
+    'admin001',                   -- address
+    1000000.0,                    -- initial_balance
+    'SN-ADMIN-001',               -- serial_number
+    'attestation_blob_admin',     -- attestation_blob
+    'public_key_admin',           -- public_key
+    'iPhone 15 Pro',              -- model
+    'Apple',                      -- brand
+    'iOS 17.2',                   -- os_version
+    40.7128,                      -- gps_latitude
+    -74.0060,                     -- gps_longitude
+    'fcm_token_admin',            -- fcm_token
+    @account_id, @success, @message
+);
 SELECT @account_id, @success, @message;
+
+-- Register with NULL device fields (optional)
+CALL register_account(
+    'user456', 100.0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+    @account_id, @success, @message
+);
 ```
 
 ### Transfer Tokens
@@ -119,6 +166,39 @@ SELECT @balance, @success, @message;
 SELECT address, balance FROM accounts WHERE address = 'user123';
 ```
 
+### Update Device Information
+
+```sql
+-- Update FCM token, location, and OS version
+CALL update_device_info(
+    'user123',                    -- address
+    'new_fcm_token_xyz',          -- fcm_token
+    34.0522,                      -- gps_latitude (new location)
+    -118.2437,                    -- gps_longitude
+    'Android 14.1',               -- os_version (updated)
+    @success, @message
+);
+SELECT @success, @message;
+
+-- Update only specific fields (pass NULL for others)
+CALL update_device_info('user123', 'new_fcm_token', NULL, NULL, NULL, @success, @message);
+```
+
+### View Account and Device Information
+
+```sql
+-- View specific account with all device info
+SELECT address, balance, serial_number, model, brand, os_version,
+       gps_latitude, gps_longitude, fcm_token, created_at
+FROM accounts WHERE address = 'user123';
+
+-- View device statistics
+SELECT * FROM device_stats;
+
+-- View account summary with device info
+SELECT * FROM account_summary WHERE address = 'user123';
+```
+
 ### View Transaction History
 
 ```sql
@@ -169,17 +249,24 @@ SELECT * FROM ledger_config;
 
 ## Security Features
 
+- **Device Attestation**: Store attestation blobs and public keys for device verification
+- **Serial Number Tracking**: Unique device serial numbers prevent duplicate registrations
 - **Row-level locking** on balance updates to prevent race conditions
 - **Transaction isolation** ensures atomic operations
 - **Foreign key constraints** maintain referential integrity
 - **Check constraints** validate transaction types and amounts
 - **Audit logging** tracks all balance changes
+- **GPS Tracking**: Location data for compliance and fraud detection
 
 ## Data Types
 
 - **Balances**: DECIMAL(65, 18) - supports up to 18 decimal places (like ETH)
 - **Addresses**: VARCHAR(255) - can store various address formats
 - **Transaction Hash**: VARCHAR(66) - supports 0x-prefixed hex strings
+- **GPS Coordinates**: DECIMAL(10, 8) for latitude, DECIMAL(11, 8) for longitude
+- **Attestation/Public Key**: TEXT - supports large cryptographic data
+- **Serial Number**: VARCHAR(255) - unique device identifier
+- **FCM Token**: VARCHAR(500) - Firebase Cloud Messaging token
 
 ## Limitations
 
@@ -201,23 +288,34 @@ This is a centralized, single-node ledger system:
 ## Example Workflow
 
 ```sql
--- 1. Register accounts
-CALL register_account('alice', 1000.0, @id1, @s1, @m1);
-CALL register_account('bob', 500.0, @id2, @s2, @m2);
+-- 1. Register accounts with device information
+CALL register_account('alice', 1000.0, 'SN-001', 'attestation_alice', 'pk_alice',
+    'Pixel 8', 'Google', 'Android 14', 37.7749, -122.4194, 'fcm_alice',
+    @id1, @s1, @m1);
+CALL register_account('bob', 500.0, 'SN-002', 'attestation_bob', 'pk_bob',
+    'iPhone 15', 'Apple', 'iOS 17', 40.7128, -74.0060, 'fcm_bob',
+    @id2, @s2, @m2);
 
 -- 2. Transfer tokens
 CALL transfer_tokens('alice', 'bob', 100.0, 'Payment', @tx1, @s3, @m3);
 
--- 3. Check balances
-SELECT address, balance FROM accounts WHERE address IN ('alice', 'bob');
+-- 3. Check balances and device info
+SELECT address, balance, model, brand, gps_latitude, gps_longitude
+FROM accounts WHERE address IN ('alice', 'bob');
 
--- 4. Burn tokens
+-- 4. Update device location
+CALL update_device_info('alice', NULL, 34.0522, -118.2437, NULL, @s, @m);
+
+-- 5. Burn tokens
 CALL burn_tokens('bob', 50.0, 'Burn event', @tx2, @s4, @m4);
 
--- 5. View statistics
+-- 6. View device statistics
+SELECT * FROM device_stats;
+
+-- 7. View ledger statistics
 SELECT * FROM ledger_stats;
 
--- 6. View transaction history
+-- 8. View transaction history
 SELECT * FROM transaction_history WHERE from_address = 'alice' OR to_address = 'alice';
 ```
 

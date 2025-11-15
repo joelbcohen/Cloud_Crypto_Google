@@ -2,17 +2,23 @@
 -- Views and Helper Queries
 -- ============================================================================
 
-USE crypto_ledger;
+USE jcohen_ccrypto;
 
 -- ============================================================================
 -- View: account_summary
--- Provides a summary of all accounts with their balances
+-- Provides a summary of all accounts with their balances and device info
 -- ============================================================================
 CREATE OR REPLACE VIEW account_summary AS
 SELECT
     a.id,
     a.address,
     a.balance,
+    a.serial_number,
+    a.model,
+    a.brand,
+    a.os_version,
+    a.gps_latitude,
+    a.gps_longitude,
     COUNT(DISTINCT t1.id) as total_sent_transactions,
     COUNT(DISTINCT t2.id) as total_received_transactions,
     COALESCE(SUM(DISTINCT t1.amount), 0) as total_sent_amount,
@@ -22,7 +28,8 @@ SELECT
 FROM accounts a
 LEFT JOIN transactions t1 ON a.id = t1.from_account_id AND t1.status = 'completed'
 LEFT JOIN transactions t2 ON a.id = t2.to_account_id AND t2.status = 'completed'
-GROUP BY a.id, a.address, a.balance, a.created_at, a.updated_at;
+GROUP BY a.id, a.address, a.balance, a.serial_number, a.model, a.brand, a.os_version,
+         a.gps_latitude, a.gps_longitude, a.created_at, a.updated_at;
 
 -- ============================================================================
 -- View: transaction_history
@@ -89,8 +96,27 @@ CREATE OR REPLACE VIEW top_balances AS
 SELECT
     address,
     balance,
+    model,
+    brand,
     created_at
 FROM accounts
 WHERE address != 'SYSTEM'
 ORDER BY balance DESC
 LIMIT 100;
+
+-- ============================================================================
+-- View: device_stats
+-- Shows device statistics grouped by model and brand
+-- ============================================================================
+CREATE OR REPLACE VIEW device_stats AS
+SELECT
+    brand,
+    model,
+    os_version,
+    COUNT(*) as device_count,
+    SUM(balance) as total_balance,
+    AVG(balance) as avg_balance
+FROM accounts
+WHERE brand IS NOT NULL AND model IS NOT NULL
+GROUP BY brand, model, os_version
+ORDER BY device_count DESC;
