@@ -73,10 +73,12 @@ BEGIN
             ELSE
                 -- Create account with device information
                 INSERT INTO accounts (
-                    address, balance, serial_number, attestation_blob, public_key,
+                    address, balance, serial_number, serial_hash, attestation_blob, public_key,
                     model, brand, os_version, gps_latitude, gps_longitude, fcm_token
                 ) VALUES (
-                    p_address, p_initial_balance, p_serial_number, p_attestation_blob, p_public_key,
+                    p_address, p_initial_balance, p_serial_number,
+                    IF(p_serial_number IS NOT NULL, SHA2(p_serial_number, 256), NULL),
+                    p_attestation_blob, p_public_key,
                     p_model, p_brand, p_os_version, p_gps_latitude, p_gps_longitude, p_fcm_token
                 );
                 SET p_account_id = LAST_INSERT_ID();
@@ -105,10 +107,12 @@ BEGIN
         ELSE
             -- Create account with zero balance and device information
             INSERT INTO accounts (
-                address, balance, serial_number, attestation_blob, public_key,
+                address, balance, serial_number, serial_hash, attestation_blob, public_key,
                 model, brand, os_version, gps_latitude, gps_longitude, fcm_token
             ) VALUES (
-                p_address, 0, p_serial_number, p_attestation_blob, p_public_key,
+                p_address, 0, p_serial_number,
+                IF(p_serial_number IS NOT NULL, SHA2(p_serial_number, 256), NULL),
+                p_attestation_blob, p_public_key,
                 p_model, p_brand, p_os_version, p_gps_latitude, p_gps_longitude, p_fcm_token
             );
             SET p_account_id = LAST_INSERT_ID();

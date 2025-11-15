@@ -24,6 +24,7 @@ CREATE TABLE accounts (
 
     -- Device identification and security
     serial_number VARCHAR(255) NULL,
+    serial_hash CHAR(64) NULL COMMENT 'SHA256 hash of serial_number',
     attestation_blob TEXT NULL,
     public_key TEXT NULL,
 
@@ -48,6 +49,7 @@ CREATE TABLE accounts (
     INDEX idx_balance (balance),
     INDEX idx_created_at (created_at),
     INDEX idx_serial_number (serial_number),
+    INDEX idx_serial_hash (serial_hash),
     INDEX idx_model_brand (model, brand)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 COMMENT='Stores account addresses, balances, and device information';

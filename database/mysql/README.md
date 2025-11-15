@@ -24,6 +24,7 @@ A simple, centralized cryptocurrency ledger system with ERC20-like features buil
 
 1. **accounts** - Stores account addresses, balances, and device information including:
    - Serial number
+   - Serial hash (SHA256 hash of serial number, automatically computed)
    - Attestation blob
    - Public key
    - Device model, brand, OS version
@@ -188,8 +189,12 @@ CALL update_device_info('user123', 'new_fcm_token', NULL, NULL, NULL, @success, 
 
 ```sql
 -- View specific account with all device info
-SELECT address, balance, serial_number, model, brand, os_version,
+SELECT address, balance, serial_number, serial_hash, model, brand, os_version,
        gps_latitude, gps_longitude, fcm_token, created_at
+FROM accounts WHERE address = 'user123';
+
+-- Verify serial number hash
+SELECT serial_number, serial_hash, SHA2(serial_number, 256) as computed_hash
 FROM accounts WHERE address = 'user123';
 
 -- View device statistics
@@ -251,6 +256,7 @@ SELECT * FROM ledger_config;
 
 - **Device Attestation**: Store attestation blobs and public keys for device verification
 - **Serial Number Tracking**: Unique device serial numbers prevent duplicate registrations
+- **SHA256 Hashing**: Automatic SHA256 hash computation of serial numbers for privacy and verification
 - **Row-level locking** on balance updates to prevent race conditions
 - **Transaction isolation** ensures atomic operations
 - **Foreign key constraints** maintain referential integrity
@@ -266,6 +272,7 @@ SELECT * FROM ledger_config;
 - **GPS Coordinates**: DECIMAL(10, 8) for latitude, DECIMAL(11, 8) for longitude
 - **Attestation/Public Key**: TEXT - supports large cryptographic data
 - **Serial Number**: VARCHAR(255) - unique device identifier
+- **Serial Hash**: CHAR(64) - SHA256 hash of serial number (automatically computed)
 - **FCM Token**: VARCHAR(500) - Firebase Cloud Messaging token
 
 ## Limitations

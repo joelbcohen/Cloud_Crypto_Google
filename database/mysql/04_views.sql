@@ -14,6 +14,7 @@ SELECT
     a.address,
     a.balance,
     a.serial_number,
+    a.serial_hash,
     a.model,
     a.brand,
     a.os_version,
@@ -28,7 +29,7 @@ SELECT
 FROM accounts a
 LEFT JOIN transactions t1 ON a.id = t1.from_account_id AND t1.status = 'completed'
 LEFT JOIN transactions t2 ON a.id = t2.to_account_id AND t2.status = 'completed'
-GROUP BY a.id, a.address, a.balance, a.serial_number, a.model, a.brand, a.os_version,
+GROUP BY a.id, a.address, a.balance, a.serial_number, a.serial_hash, a.model, a.brand, a.os_version,
          a.gps_latitude, a.gps_longitude, a.created_at, a.updated_at;
 
 -- ============================================================================

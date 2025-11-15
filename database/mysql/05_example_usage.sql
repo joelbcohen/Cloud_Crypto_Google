@@ -74,8 +74,19 @@ SELECT 'Register Alice Again:' as Operation, @alice_id2 as AccountID, @success a
 -- ============================================================================
 
 SELECT 'Initial Balances and Device Info:' as Report;
-SELECT address, balance, serial_number, model, brand, os_version, gps_latitude, gps_longitude
+SELECT address, balance, serial_number, serial_hash, model, brand, os_version, gps_latitude, gps_longitude
 FROM accounts WHERE address IN ('alice', 'bob', 'charlie');
+
+-- Verify SHA256 hash is correctly computed
+SELECT 'Verify Serial Hash:' as Report;
+SELECT
+    address,
+    serial_number,
+    serial_hash as stored_hash,
+    SHA2(serial_number, 256) as computed_hash,
+    (serial_hash = SHA2(serial_number, 256)) as hash_matches
+FROM accounts
+WHERE address IN ('alice', 'bob', 'charlie') AND serial_number IS NOT NULL;
 
 -- ============================================================================
 -- EXAMPLE 3: Transfer Tokens
