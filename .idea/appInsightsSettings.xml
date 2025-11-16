@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="io.callista.cloudcrypto" />
+                  <option name="mobileSdkAppId" value="1:209700557311:android:d943e78ac37454bff417ca" />
+                  <option name="projectId" value="cloud-crypto-853c2" />
+                  <option name="projectNumber" value="209700557311" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
