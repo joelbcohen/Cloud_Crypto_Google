@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
  */
 interface RegistrationApi {
 
-    @POST("public/crypto/register")
+    @POST("public/bgc/static-response")
     suspend fun registerDevice(
         @Body request: RegistrationRequest
     ): RegistrationResponse
@@ -39,7 +39,9 @@ data class RegistrationRequest(
     val deviceModel: String? = null,
     val deviceBrand: String? = null,
     val osVersion: String? = null,
-    val nodeId: String? = null
+    val nodeId: String? = null,
+    val latitude: Double? = null,
+    val longitude: Double? = null
 )
 
 /**
