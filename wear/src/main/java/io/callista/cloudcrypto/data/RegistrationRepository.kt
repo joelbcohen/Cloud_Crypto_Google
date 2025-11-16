@@ -58,7 +58,8 @@ class RegistrationRepository(private val context: Context) {
                     Log.w(TAG, "Make sure google-services.json is properly configured.")
                 }
 
-                val response = api.registerDevice(
+                // Create request object
+                val request = RegistrationRequest(
                     serialNumber = serialNumber,
                     id = deviceInfo.androidId,
                     fcmToken = fcmToken,
@@ -69,6 +70,8 @@ class RegistrationRepository(private val context: Context) {
                     osVersion = deviceInfo.osVersion,
                     nodeId = deviceInfo.nodeId
                 )
+
+                val response = api.registerDevice(request)
 
                 Log.d(TAG, "Registration successful: ${response.status}")
                 Result.success(response)
