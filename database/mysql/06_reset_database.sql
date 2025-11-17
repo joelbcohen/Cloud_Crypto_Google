@@ -60,7 +60,7 @@ SELECT 'Ledger configuration reset to defaults' as Status;
 -- ============================================================================
 
 -- Recreate the SYSTEM account for minting/burning operations
-INSERT INTO accounts (address, balance) VALUES ('SYSTEM', 0.000000000000000000);
+INSERT INTO accounts (balance) VALUES (0.000000000000000000);
 SELECT 'System account recreated' as Status;
 
 -- ============================================================================
@@ -87,7 +87,7 @@ SELECT 'Total Supply:', config_value FROM ledger_config WHERE config_key = 'tota
 -- ============================================================================
 
 SELECT 'Remaining Accounts:' as Report;
-SELECT id, address, balance, created_at FROM accounts;
+SELECT id, balance, created_at FROM accounts;
 
 SELECT '=== DATABASE RESET COMPLETE ===' as Status;
 SELECT 'The database has been reset to its initial state.' as Message;
