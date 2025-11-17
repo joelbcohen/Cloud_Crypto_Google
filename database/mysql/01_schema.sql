@@ -9,8 +9,6 @@
 -- ============================================================================
 
 -- Drop existing database if it exists (use with caution in production)
-DROP DATABASE IF EXISTS jcohen_ccrypto;
-CREATE DATABASE jcohen_ccrypto CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE jcohen_ccrypto;
 
 -- ============================================================================

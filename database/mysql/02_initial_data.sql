@@ -14,9 +14,9 @@ INSERT INTO ledger_config (config_key, config_value, description) VALUES
 ('ledger_version', '1.0.0', 'Version of the ledger schema'),
 ('created_at', NOW(), 'Ledger creation timestamp');
 
--- Optional: Create a system account for minting/burning
-INSERT INTO accounts (id, balance) VALUES
-('SYSTEM', 0.000000000000000000);
+-- Create a system account for minting/burning
+INSERT INTO accounts (balance, node_id) VALUES
+(0.000000000000000000, 1);
 
 -- Optional: Create an initial admin account
 -- INSERT INTO accounts (id, balance) VALUES

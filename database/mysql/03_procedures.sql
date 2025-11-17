@@ -31,8 +31,7 @@ BEGIN
     DECLARE v_existing_id BIGINT;
     DECLARE v_existing_balance DECIMAL(65, 18);
     DECLARE v_tx_hash VARCHAR(66);
-    DECLARE v_total_supply DECIMAL(65, 18);
-    DECLARE v_max_supply DECIMAL(65, 18);
+    DECLARE v_system_balance DECIMAL(65, 18);
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -74,17 +73,19 @@ BEGIN
             SET p_initial_balance = 0;
         END IF;
 
-        -- Check max supply if minting initial balance
+        -- Check SYSTEM account balance if minting initial balance
         IF p_initial_balance > 0 THEN
-            SELECT CAST(config_value AS DECIMAL(65,18)) INTO v_max_supply
-            FROM ledger_config WHERE config_key = 'max_supply';
+            SELECT balance INTO v_system_balance
+            FROM accounts WHERE id = 1 FOR UPDATE;
 
-            SELECT CAST(config_value AS DECIMAL(65,18)) INTO v_total_supply
-            FROM ledger_config WHERE config_key = 'total_supply';
-
-            IF v_max_supply > 0 AND (v_total_supply + p_initial_balance) > v_max_supply THEN
+            IF v_system_balance IS NULL THEN
                 SET p_success = FALSE;
-                SET p_message = 'Error: Would exceed max supply';
+                SET p_message = 'Error: SYSTEM account does not exist';
+                SET p_account_id = NULL;
+                ROLLBACK;
+            ELSEIF v_system_balance < p_initial_balance THEN
+                SET p_success = FALSE;
+                SET p_message = 'Error: Insufficient SYSTEM account balance';
                 SET p_account_id = NULL;
                 ROLLBACK;
             ELSE
@@ -100,22 +101,19 @@ BEGIN
                 );
                 SET p_account_id = LAST_INSERT_ID();
 
-                -- Record mint transaction if initial balance > 0
-                IF p_initial_balance > 0 THEN
-                    SET v_tx_hash = CONCAT('0x', MD5(CONCAT(p_account_id, UNIX_TIMESTAMP(), 'mint')));
+                -- Transfer from SYSTEM account
+                SET v_tx_hash = CONCAT('0x', MD5(CONCAT(1, p_account_id, UNIX_TIMESTAMP(), 'mint')));
 
-                    INSERT INTO transactions (tx_hash, from_account_id, to_account_id, amount, tx_type, status, memo, completed_at)
-                    VALUES (v_tx_hash, NULL, p_account_id, p_initial_balance, 'mint', 'completed', 'Registration bonus', NOW());
+                UPDATE accounts SET balance = balance - p_initial_balance WHERE id = 1;
 
-                    -- Update total supply
-                    UPDATE ledger_config
-                    SET config_value = CAST((v_total_supply + p_initial_balance) AS CHAR)
-                    WHERE config_key = 'total_supply';
+                INSERT INTO transactions (tx_hash, from_account_id, to_account_id, amount, tx_type, status, memo, completed_at)
+                VALUES (v_tx_hash, 1, p_account_id, p_initial_balance, 'mint', 'completed', 'Registration bonus', NOW());
 
-                    -- Log balance change
-                    INSERT INTO transaction_log (account_id, previous_balance, new_balance, change_amount, transaction_id)
-                    VALUES (p_account_id, 0, p_initial_balance, p_initial_balance, LAST_INSERT_ID());
-                END IF;
+                -- Log balance changes
+                INSERT INTO transaction_log (account_id, previous_balance, new_balance, change_amount, transaction_id)
+                VALUES
+                    (1, v_system_balance, v_system_balance - p_initial_balance, -p_initial_balance, LAST_INSERT_ID()),
+                    (p_account_id, 0, p_initial_balance, p_initial_balance, LAST_INSERT_ID());
 
                 SET p_success = TRUE;
                 SET p_message = 'Account created successfully';
@@ -331,8 +329,7 @@ BEGIN
     DECLARE v_account_id BIGINT;
     DECLARE v_balance DECIMAL(65, 18);
     DECLARE v_tx_hash VARCHAR(66);
-    DECLARE v_total_supply DECIMAL(65, 18);
-    DECLARE v_max_supply DECIMAL(65, 18);
+    DECLARE v_system_balance DECIMAL(65, 18);
 
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
@@ -362,38 +359,38 @@ BEGIN
             SET p_tx_id = NULL;
             ROLLBACK;
         ELSE
-            -- Check max supply
-            SELECT CAST(config_value AS DECIMAL(65,18)) INTO v_max_supply
-            FROM ledger_config WHERE config_key = 'max_supply';
+            -- Get SYSTEM account balance with row lock
+            SELECT balance INTO v_system_balance
+            FROM accounts WHERE id = 1 FOR UPDATE;
 
-            SELECT CAST(config_value AS DECIMAL(65,18)) INTO v_total_supply
-            FROM ledger_config WHERE config_key = 'total_supply';
-
-            IF v_max_supply > 0 AND (v_total_supply + p_amount) > v_max_supply THEN
+            IF v_system_balance IS NULL THEN
                 SET p_success = FALSE;
-                SET p_message = 'Error: Would exceed max supply';
+                SET p_message = 'Error: SYSTEM account does not exist';
+                SET p_tx_id = NULL;
+                ROLLBACK;
+            ELSEIF v_system_balance < p_amount THEN
+                SET p_success = FALSE;
+                SET p_message = 'Error: Insufficient SYSTEM account balance';
                 SET p_tx_id = NULL;
                 ROLLBACK;
             ELSE
                 -- Generate transaction hash
-                SET v_tx_hash = CONCAT('0x', MD5(CONCAT(v_account_id, p_amount, UNIX_TIMESTAMP(), 'mint')));
+                SET v_tx_hash = CONCAT('0x', MD5(CONCAT(1, v_account_id, p_amount, UNIX_TIMESTAMP(), 'mint')));
 
-                -- Update balance
+                -- Update balances: subtract from SYSTEM, add to target
+                UPDATE accounts SET balance = balance - p_amount WHERE id = 1;
                 UPDATE accounts SET balance = balance + p_amount WHERE id = v_account_id;
 
                 -- Record mint transaction
                 INSERT INTO transactions (tx_hash, from_account_id, to_account_id, amount, tx_type, status, memo, completed_at)
-                VALUES (v_tx_hash, NULL, v_account_id, p_amount, 'mint', 'completed', p_memo, NOW());
+                VALUES (v_tx_hash, 1, v_account_id, p_amount, 'mint', 'completed', p_memo, NOW());
                 SET p_tx_id = LAST_INSERT_ID();
 
-                -- Update total supply
-                UPDATE ledger_config
-                SET config_value = CAST((v_total_supply + p_amount) AS CHAR)
-                WHERE config_key = 'total_supply';
-
-                -- Log balance change
+                -- Log balance changes
                 INSERT INTO transaction_log (account_id, previous_balance, new_balance, change_amount, transaction_id)
-                VALUES (v_account_id, v_balance, v_balance + p_amount, p_amount, p_tx_id);
+                VALUES
+                    (1, v_system_balance, v_system_balance - p_amount, -p_amount, p_tx_id),
+                    (v_account_id, v_balance, v_balance + p_amount, p_amount, p_tx_id);
 
                 SET p_success = TRUE;
                 SET p_message = 'Tokens minted successfully';
