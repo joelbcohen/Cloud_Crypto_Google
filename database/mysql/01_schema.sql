@@ -146,3 +146,15 @@ CREATE TABLE transaction_log (
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 COMMENT='Audit log tracking all balance changes';
+
+ALTER TABLE `jcohen_ccrypto`.`accounts` 
+DROP COLUMN `gps_longitude`,
+DROP COLUMN `gps_latitude`,
+DROP COLUMN `address`,
+DROP INDEX `unique_address` ;
+;
+
+-- Add node_id column to accounts table
+ALTER TABLE accounts 
+ADD COLUMN node_id VARCHAR(255) NULL AFTER address,
+ADD INDEX idx_node_id (node_id);accounts
