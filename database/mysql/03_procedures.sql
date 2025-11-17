@@ -9,6 +9,7 @@ DELIMITER $$
 -- ============================================================================
 -- Procedure: register_account
 -- Creates a new account with device information and optional initial balance (mint)
+-- If serial number exists, updates the existing account instead
 -- ============================================================================
 DROP PROCEDURE IF EXISTS register_account$$
 CREATE PROCEDURE register_account(
@@ -28,6 +29,7 @@ CREATE PROCEDURE register_account(
 )
 BEGIN
     DECLARE v_existing_id BIGINT;
+    DECLARE v_existing_balance DECIMAL(65, 18);
     DECLARE v_tx_hash VARCHAR(66);
     DECLARE v_total_supply DECIMAL(65, 18);
     DECLARE v_max_supply DECIMAL(65, 18);
@@ -42,15 +44,31 @@ BEGIN
 
     START TRANSACTION;
 
-    -- Check if account already exists
-    SELECT id INTO v_existing_id FROM accounts WHERE id = p_id LIMIT 1;
+    -- Check if account with this serial number already exists
+    SELECT id, balance INTO v_existing_id, v_existing_balance 
+    FROM accounts 
+    WHERE serial_number = p_serial_number 
+    LIMIT 1;
 
     IF v_existing_id IS NOT NULL THEN
-        SET p_success = FALSE;
-        SET p_message = 'Error: Account already exists';
+        -- Account with this serial number already exists - update it
+        UPDATE accounts SET
+            attestation_blob = COALESCE(p_attestation_blob, attestation_blob),
+            public_key = COALESCE(p_public_key, public_key),
+            model = COALESCE(p_model, model),
+            brand = COALESCE(p_brand, brand),
+            os_version = COALESCE(p_os_version, os_version),
+            node_id = COALESCE(p_node_id, node_id),
+            fcm_token = COALESCE(p_fcm_token, fcm_token),
+            updated_at = NOW()
+        WHERE id = v_existing_id;
+        
         SET p_account_id = v_existing_id;
-        ROLLBACK;
+        SET p_success = TRUE;
+        SET p_message = 'Account already exists - device information updated';
+        COMMIT;
     ELSE
+        -- New account - create it
         -- Set default balance to 0 if not provided
         IF p_initial_balance IS NULL THEN
             SET p_initial_balance = 0;
@@ -72,10 +90,10 @@ BEGIN
             ELSE
                 -- Create account with device information
                 INSERT INTO accounts (
-                    id, balance, serial_number, serial_hash, attestation_blob, public_key,
+                    balance, serial_number, serial_hash, attestation_blob, public_key,
                     model, brand, os_version, node_id, fcm_token
                 ) VALUES (
-                    p_id, p_initial_balance, p_serial_number,
+                    p_initial_balance, p_serial_number,
                     IF(p_serial_number IS NOT NULL, SHA2(p_serial_number, 256), NULL),
                     p_attestation_blob, p_public_key,
                     p_model, p_brand, p_os_version, p_node_id, p_fcm_token
@@ -86,8 +104,8 @@ BEGIN
                 IF p_initial_balance > 0 THEN
                     SET v_tx_hash = CONCAT('0x', MD5(CONCAT(p_account_id, UNIX_TIMESTAMP(), 'mint')));
 
-                    INSERT INTO transactions (tx_hash, from_account_id, to_account_id, amount, tx_type, status, completed_at)
-                    VALUES (v_tx_hash, NULL, p_account_id, p_initial_balance, 'mint', 'completed', NOW());
+                    INSERT INTO transactions (tx_hash, from_account_id, to_account_id, amount, tx_type, status, memo, completed_at)
+                    VALUES (v_tx_hash, NULL, p_account_id, p_initial_balance, 'mint', 'completed', 'Registration bonus', NOW());
 
                     -- Update total supply
                     UPDATE ledger_config
@@ -106,10 +124,10 @@ BEGIN
         ELSE
             -- Create account with zero balance and device information
             INSERT INTO accounts (
-                id, balance, serial_number, serial_hash, attestation_blob, public_key,
+                balance, serial_number, serial_hash, attestation_blob, public_key,
                 model, brand, os_version, node_id, fcm_token
             ) VALUES (
-                p_id, 0, p_serial_number,
+                0, p_serial_number,
                 IF(p_serial_number IS NOT NULL, SHA2(p_serial_number, 256), NULL),
                 p_attestation_blob, p_public_key,
                 p_model, p_brand, p_os_version, p_node_id, p_fcm_token
