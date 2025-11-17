@@ -19,7 +19,6 @@ USE jcohen_ccrypto;
 -- ============================================================================
 CREATE TABLE accounts (
     id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-    address VARCHAR(255) NOT NULL,
     balance DECIMAL(65, 18) NOT NULL DEFAULT 0.000000000000000000,
 
     -- Device identification and security
@@ -33,10 +32,6 @@ CREATE TABLE accounts (
     brand VARCHAR(255) NULL,
     os_version VARCHAR(100) NULL,
 
-    -- Location
-    gps_latitude DECIMAL(10, 8) NULL,
-    gps_longitude DECIMAL(11, 8) NULL,
-
     -- Push notification
     fcm_token VARCHAR(500) NULL,
 
@@ -44,7 +39,6 @@ CREATE TABLE accounts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),
-    UNIQUE KEY unique_address (address),
     UNIQUE KEY unique_serial_number (serial_number),
     INDEX idx_balance (balance),
     INDEX idx_created_at (created_at),
@@ -147,14 +141,7 @@ CREATE TABLE transaction_log (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 COMMENT='Audit log tracking all balance changes';
 
-ALTER TABLE `jcohen_ccrypto`.`accounts` 
-DROP COLUMN `gps_longitude`,
-DROP COLUMN `gps_latitude`,
-DROP COLUMN `address`,
-DROP INDEX `unique_address` ;
-;
-
 -- Add node_id column to accounts table
 ALTER TABLE accounts 
-ADD COLUMN node_id VARCHAR(255) NULL AFTER address,
-ADD INDEX idx_node_id (node_id);accounts
+ADD COLUMN node_id VARCHAR(255) NULL AFTER serial_number,
+ADD INDEX idx_node_id (node_id);

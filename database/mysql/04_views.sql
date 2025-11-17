@@ -11,15 +11,13 @@ USE jcohen_ccrypto;
 CREATE OR REPLACE VIEW account_summary AS
 SELECT
     a.id,
-    a.address,
     a.balance,
     a.serial_number,
     a.serial_hash,
     a.model,
     a.brand,
     a.os_version,
-    a.gps_latitude,
-    a.gps_longitude,
+    a.node_id,
     COUNT(DISTINCT t1.id) as total_sent_transactions,
     COUNT(DISTINCT t2.id) as total_received_transactions,
     COALESCE(SUM(DISTINCT t1.amount), 0) as total_sent_amount,
@@ -29,8 +27,8 @@ SELECT
 FROM accounts a
 LEFT JOIN transactions t1 ON a.id = t1.from_account_id AND t1.status = 'completed'
 LEFT JOIN transactions t2 ON a.id = t2.to_account_id AND t2.status = 'completed'
-GROUP BY a.id, a.address, a.balance, a.serial_number, a.serial_hash, a.model, a.brand, a.os_version,
-         a.gps_latitude, a.gps_longitude, a.created_at, a.updated_at;
+GROUP BY a.id, a.balance, a.serial_number, a.serial_hash, a.model, a.brand, a.os_version,
+         a.node_id, a.created_at, a.updated_at;
 
 -- ============================================================================
 -- View: transaction_history
@@ -41,8 +39,8 @@ SELECT
     t.id,
     t.tx_hash,
     t.tx_type,
-    from_acc.address as from_address,
-    to_acc.address as to_address,
+    from_acc.id as from_id,
+    to_acc.id as to_id,
     t.amount,
     t.status,
     t.memo,
@@ -78,8 +76,8 @@ CREATE OR REPLACE VIEW recent_transactions AS
 SELECT
     t.tx_hash,
     t.tx_type,
-    from_acc.address as from_address,
-    to_acc.address as to_address,
+    from_acc.id as from_id,
+    to_acc.id as to_id,
     t.amount,
     t.status,
     t.created_at
@@ -95,13 +93,13 @@ LIMIT 100;
 -- ============================================================================
 CREATE OR REPLACE VIEW top_balances AS
 SELECT
-    address,
+    id,
     balance,
     model,
     brand,
     created_at
 FROM accounts
-WHERE address != 'SYSTEM'
+WHERE id != 'SYSTEM'
 ORDER BY balance DESC
 LIMIT 100;
 

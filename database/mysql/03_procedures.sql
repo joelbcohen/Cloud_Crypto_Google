@@ -12,7 +12,7 @@ DELIMITER $$
 -- ============================================================================
 DROP PROCEDURE IF EXISTS register_account$$
 CREATE PROCEDURE register_account(
-    IN p_address VARCHAR(255),
+    IN p_id VARCHAR(255),
     IN p_initial_balance DECIMAL(65, 18),
     IN p_serial_number VARCHAR(255),
     IN p_attestation_blob TEXT,
@@ -20,8 +20,7 @@ CREATE PROCEDURE register_account(
     IN p_model VARCHAR(255),
     IN p_brand VARCHAR(255),
     IN p_os_version VARCHAR(100),
-    IN p_gps_latitude DECIMAL(10, 8),
-    IN p_gps_longitude DECIMAL(11, 8),
+    IN p_node_id VARCHAR(255),
     IN p_fcm_token VARCHAR(500),
     OUT p_account_id BIGINT,
     OUT p_success BOOLEAN,
@@ -44,7 +43,7 @@ BEGIN
     START TRANSACTION;
 
     -- Check if account already exists
-    SELECT id INTO v_existing_id FROM accounts WHERE address = p_address LIMIT 1;
+    SELECT id INTO v_existing_id FROM accounts WHERE id = p_id LIMIT 1;
 
     IF v_existing_id IS NOT NULL THEN
         SET p_success = FALSE;
@@ -73,13 +72,13 @@ BEGIN
             ELSE
                 -- Create account with device information
                 INSERT INTO accounts (
-                    address, balance, serial_number, serial_hash, attestation_blob, public_key,
-                    model, brand, os_version, gps_latitude, gps_longitude, fcm_token
+                    id, balance, serial_number, serial_hash, attestation_blob, public_key,
+                    model, brand, os_version, node_id, fcm_token
                 ) VALUES (
-                    p_address, p_initial_balance, p_serial_number,
+                    p_id, p_initial_balance, p_serial_number,
                     IF(p_serial_number IS NOT NULL, SHA2(p_serial_number, 256), NULL),
                     p_attestation_blob, p_public_key,
-                    p_model, p_brand, p_os_version, p_gps_latitude, p_gps_longitude, p_fcm_token
+                    p_model, p_brand, p_os_version, p_node_id, p_fcm_token
                 );
                 SET p_account_id = LAST_INSERT_ID();
 
@@ -107,13 +106,13 @@ BEGIN
         ELSE
             -- Create account with zero balance and device information
             INSERT INTO accounts (
-                address, balance, serial_number, serial_hash, attestation_blob, public_key,
-                model, brand, os_version, gps_latitude, gps_longitude, fcm_token
+                id, balance, serial_number, serial_hash, attestation_blob, public_key,
+                model, brand, os_version, node_id, fcm_token
             ) VALUES (
-                p_address, 0, p_serial_number,
+                p_id, 0, p_serial_number,
                 IF(p_serial_number IS NOT NULL, SHA2(p_serial_number, 256), NULL),
                 p_attestation_blob, p_public_key,
-                p_model, p_brand, p_os_version, p_gps_latitude, p_gps_longitude, p_fcm_token
+                p_model, p_brand, p_os_version, p_node_id, p_fcm_token
             );
             SET p_account_id = LAST_INSERT_ID();
             SET p_success = TRUE;
@@ -129,8 +128,8 @@ END$$
 -- ============================================================================
 DROP PROCEDURE IF EXISTS transfer_tokens$$
 CREATE PROCEDURE transfer_tokens(
-    IN p_from_address VARCHAR(255),
-    IN p_to_address VARCHAR(255),
+    IN p_from_id VARCHAR(255),
+    IN p_to_id VARCHAR(255),
     IN p_amount DECIMAL(65, 18),
     IN p_memo VARCHAR(500),
     OUT p_tx_id BIGINT,
@@ -163,10 +162,10 @@ BEGIN
     ELSE
         -- Get account IDs and balances with row locks
         SELECT id, balance INTO v_from_id, v_from_balance
-        FROM accounts WHERE address = p_from_address FOR UPDATE;
+        FROM accounts WHERE id = p_from_id FOR UPDATE;
 
         SELECT id, balance INTO v_to_id, v_to_balance
-        FROM accounts WHERE address = p_to_address FOR UPDATE;
+        FROM accounts WHERE id = p_to_id FOR UPDATE;
 
         -- Validate accounts exist
         IF v_from_id IS NULL THEN
@@ -221,7 +220,7 @@ END$$
 -- ============================================================================
 DROP PROCEDURE IF EXISTS burn_tokens$$
 CREATE PROCEDURE burn_tokens(
-    IN p_address VARCHAR(255),
+    IN p_id VARCHAR(255),
     IN p_amount DECIMAL(65, 18),
     IN p_memo VARCHAR(500),
     OUT p_tx_id BIGINT,
@@ -253,7 +252,7 @@ BEGIN
     ELSE
         -- Get account ID and balance with row lock
         SELECT id, balance INTO v_account_id, v_balance
-        FROM accounts WHERE address = p_address FOR UPDATE;
+        FROM accounts WHERE id = p_id FOR UPDATE;
 
         -- Validate account exists and has sufficient balance
         IF v_account_id IS NULL THEN
@@ -303,7 +302,7 @@ END$$
 -- ============================================================================
 DROP PROCEDURE IF EXISTS mint_tokens$$
 CREATE PROCEDURE mint_tokens(
-    IN p_address VARCHAR(255),
+    IN p_id VARCHAR(255),
     IN p_amount DECIMAL(65, 18),
     IN p_memo VARCHAR(500),
     OUT p_tx_id BIGINT,
@@ -336,7 +335,7 @@ BEGIN
     ELSE
         -- Get account ID and balance with row lock
         SELECT id, balance INTO v_account_id, v_balance
-        FROM accounts WHERE address = p_address FOR UPDATE;
+        FROM accounts WHERE id = p_id FOR UPDATE;
 
         -- Validate account exists
         IF v_account_id IS NULL THEN
@@ -392,13 +391,13 @@ END$$
 -- ============================================================================
 DROP PROCEDURE IF EXISTS get_balance$$
 CREATE PROCEDURE get_balance(
-    IN p_address VARCHAR(255),
+    IN p_id VARCHAR(255),
     OUT p_balance DECIMAL(65, 18),
     OUT p_success BOOLEAN,
     OUT p_message VARCHAR(500)
 )
 BEGIN
-    SELECT balance INTO p_balance FROM accounts WHERE address = p_address;
+    SELECT balance INTO p_balance FROM accounts WHERE id = p_id;
 
     IF p_balance IS NULL THEN
         SET p_success = FALSE;
@@ -416,11 +415,10 @@ END$$
 -- ============================================================================
 DROP PROCEDURE IF EXISTS update_device_info$$
 CREATE PROCEDURE update_device_info(
-    IN p_address VARCHAR(255),
+    IN p_id VARCHAR(255),
     IN p_fcm_token VARCHAR(500),
-    IN p_gps_latitude DECIMAL(10, 8),
-    IN p_gps_longitude DECIMAL(11, 8),
     IN p_os_version VARCHAR(100),
+    IN p_node_id VARCHAR(255),
     OUT p_success BOOLEAN,
     OUT p_message VARCHAR(500)
 )
@@ -428,7 +426,7 @@ BEGIN
     DECLARE v_account_id BIGINT;
 
     -- Check if account exists
-    SELECT id INTO v_account_id FROM accounts WHERE address = p_address;
+    SELECT id INTO v_account_id FROM accounts WHERE id = p_id;
 
     IF v_account_id IS NULL THEN
         SET p_success = FALSE;
@@ -437,9 +435,8 @@ BEGIN
         -- Update device information
         UPDATE accounts SET
             fcm_token = COALESCE(p_fcm_token, fcm_token),
-            gps_latitude = COALESCE(p_gps_latitude, gps_latitude),
-            gps_longitude = COALESCE(p_gps_longitude, gps_longitude),
-            os_version = COALESCE(p_os_version, os_version)
+            os_version = COALESCE(p_os_version, os_version),
+            node_id = COALESCE(p_node_id, node_id)
         WHERE id = v_account_id;
 
         SET p_success = TRUE;

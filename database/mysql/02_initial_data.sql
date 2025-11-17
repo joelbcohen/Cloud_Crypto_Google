@@ -15,10 +15,10 @@ INSERT INTO ledger_config (config_key, config_value, description) VALUES
 ('created_at', NOW(), 'Ledger creation timestamp');
 
 -- Optional: Create a system account for minting/burning
-INSERT INTO accounts (address, balance) VALUES
+INSERT INTO accounts (id, balance) VALUES
 ('SYSTEM', 0.000000000000000000);
 
 -- Optional: Create an initial admin account
--- INSERT INTO accounts (address, balance) VALUES
--- ('ADMIN_ADDRESS_HERE', 1000000.000000000000000000);
+-- INSERT INTO accounts (id, balance) VALUES
+-- ('ADMIN_ID_HERE', 1000000.000000000000000000);
 
