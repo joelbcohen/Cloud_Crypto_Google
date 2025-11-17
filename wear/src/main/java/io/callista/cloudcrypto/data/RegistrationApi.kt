@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
  */
 interface RegistrationApi {
 
-    @POST("public/bgc/static-response")
+    @POST("public/crypto/register")
     suspend fun registerDevice(
         @Body request: RegistrationRequest
     ): RegistrationResponse
