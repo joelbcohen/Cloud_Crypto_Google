@@ -1,9 +1,11 @@
 package io.callista.cloudcrypto.data
 
 import android.content.Context
+import android.util.Base64
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.security.PrivateKey
 
 /**
  * Repository for handling device registration.
@@ -166,11 +168,12 @@ class RegistrationRepository(private val context: Context) {
     /**
      * Saves the public and private keys to SharedPreferences.
      */
-    private fun saveKeys(publicKey: String, privateKey: String?) {
+    private fun saveKeys(publicKey: String, privateKey: PrivateKey?) {
         val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
+        val privateKeyString = privateKey?.encoded?.let { Base64.encodeToString(it, Base64.NO_WRAP) }
         prefs.edit().apply {
             putString("public_key", publicKey)
-            putString("private_key", privateKey)
+            putString("private_key", privateKeyString)
             apply()
         }
         Log.d(TAG, "Keys saved to SharedPreferences")

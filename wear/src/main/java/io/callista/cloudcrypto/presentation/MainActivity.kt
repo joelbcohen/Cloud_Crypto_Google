@@ -30,6 +30,7 @@ import io.callista.cloudcrypto.presentation.viewmodel.RegistrationViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 
 /**
  * Main Activity for the Cloud Crypto Wear OS application.
@@ -102,7 +103,10 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
             MainScreen(
                 serialNumber = state.serialNumber,
                 timestamp = state.timestamp,
-                onRegisterClicked = viewModel::showRegistrationForm,
+                onRegisterClicked = {
+                    viewModel.onSerialNumberChanged(UUID.randomUUID().toString())
+                    viewModel.showRegistrationForm()
+                },
                 onDeregisterClicked = viewModel::deregisterDevice,
                 onAccountClicked = viewModel::showAccountScreen,
                 onSettingsClicked = viewModel::showSettingsScreen
