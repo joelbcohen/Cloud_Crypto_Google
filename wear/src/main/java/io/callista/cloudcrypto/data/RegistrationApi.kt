@@ -57,7 +57,10 @@ data class RegistrationRequest(
 data class RegistrationResponse(
     val status: String? = null,
     val message: String? = null,
-    val registrationId: String? = null
+    val registrationId: String? = null,
+    val publicKey: String? = null,
+    val accountId: String? = null,
+    val remainingBalance: Double? = null
 )
 
 /**

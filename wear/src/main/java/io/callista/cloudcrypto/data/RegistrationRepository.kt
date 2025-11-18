@@ -35,6 +35,9 @@ class RegistrationRepository(private val context: Context) {
                 // Generate device attestation data with public key
                 Log.d(TAG, "Generating device attestation...")
                 val attestationData = attestationManager.generateAttestationData()
+                
+                // Store the keys for future use
+                saveKeys(attestationData.publicKey, attestationData.privateKey)
 
                 // Log all registration parameters
                 Log.d(TAG, "=== Registration Parameters ===")
@@ -90,6 +93,15 @@ class RegistrationRepository(private val context: Context) {
         return withContext(Dispatchers.IO) {
             try {
                 Log.d(TAG, "Deregistering device...")
+                
+                // Retrieve stored keys instead of regenerating
+                val storedKeys = getStoredKeys()
+                if (storedKeys == null) {
+                    val errorMessage = "Cannot deregister, keys not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+                
                 val attestationData = attestationManager.generateAttestationData()
                 val registrationStatus = getRegistrationStatus()
                 val serialNumber = registrationStatus.serialNumber
@@ -101,13 +113,17 @@ class RegistrationRepository(private val context: Context) {
                 }
 
                 val request = DeregistrationRequest(
-                    publicKey = attestationData.publicKey,
+                    publicKey = storedKeys.publicKey,
                     attestationBlob = attestationData.attestationBlob,
                     serialNumber = serialNumber
                 )
 
                 val response = api.deregisterDevice(request)
                 Log.d(TAG, "Deregistration successful: ${response.status}")
+                
+                // Clear stored keys after successful deregistration
+                clearKeys()
+                
                 Result.success(response)
             } catch (e: Exception) {
                 Log.e(TAG, "Deregistration failed", e)
@@ -146,6 +162,47 @@ class RegistrationRepository(private val context: Context) {
             timestamp = timestamp
         )
     }
+    
+    /**
+     * Saves the public and private keys to SharedPreferences.
+     */
+    private fun saveKeys(publicKey: String, privateKey: String?) {
+        val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
+        prefs.edit().apply {
+            putString("public_key", publicKey)
+            putString("private_key", privateKey)
+            apply()
+        }
+        Log.d(TAG, "Keys saved to SharedPreferences")
+    }
+    
+    /**
+     * Retrieves stored keys from SharedPreferences.
+     */
+    private fun getStoredKeys(): StoredKeys? {
+        val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
+        val publicKey = prefs.getString("public_key", null)
+        val privateKey = prefs.getString("private_key", null)
+        
+        return if (publicKey != null) {
+            StoredKeys(publicKey, privateKey)
+        } else {
+            null
+        }
+    }
+    
+    /**
+     * Clears stored keys from SharedPreferences.
+     */
+    private fun clearKeys() {
+        val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
+        prefs.edit().apply {
+            remove("public_key")
+            remove("private_key")
+            apply()
+        }
+        Log.d(TAG, "Keys cleared from SharedPreferences")
+    }
 }
 
 /**
@@ -155,4 +212,12 @@ data class RegistrationStatus(
     val isRegistered: Boolean,
     val serialNumber: String?,
     val timestamp: Long
+)
+
+/**
+ * Data class for stored keys.
+ */
+data class StoredKeys(
+    val publicKey: String,
+    val privateKey: String?
 )
