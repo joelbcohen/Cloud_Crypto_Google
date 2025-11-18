@@ -85,6 +85,7 @@ data class AccountSummaryRequest(
 data class AccountSummaryResponse(
     val status: String? = null,
     val message: String? = null,
+    @SerializedName("account")
     val data: AccountSummaryData? = null
 )
 
