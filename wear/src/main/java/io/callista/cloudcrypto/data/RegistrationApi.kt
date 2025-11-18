@@ -6,9 +6,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Query
 import java.util.concurrent.TimeUnit
 
 /**
@@ -16,16 +14,25 @@ import java.util.concurrent.TimeUnit
  */
 interface RegistrationApi {
 
-    @POST("public/bgc/static-response")
+    @POST("public/crypto/register")
     suspend fun registerDevice(
         @Body request: RegistrationRequest
     ): RegistrationResponse
 
-    @GET("public/bgc/static-response")
+    @POST("public/crypto/deregister")
     suspend fun deregisterDevice(
-        @Query("action") action: String = "deregister"
+        @Body request: DeregistrationRequest
     ): RegistrationResponse
 }
+
+/**
+ * Request body for device deregistration.
+ */
+data class DeregistrationRequest(
+    val publicKey: String,
+    val attestationBlob: String,
+    val serialNumber: String
+)
 
 /**
  * Request body for device registration.

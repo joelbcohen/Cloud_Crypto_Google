@@ -90,7 +90,23 @@ class RegistrationRepository(private val context: Context) {
         return withContext(Dispatchers.IO) {
             try {
                 Log.d(TAG, "Deregistering device...")
-                val response = api.deregisterDevice()
+                val attestationData = attestationManager.generateAttestationData()
+                val registrationStatus = getRegistrationStatus()
+                val serialNumber = registrationStatus.serialNumber
+
+                if (serialNumber == null) {
+                    val errorMessage = "Cannot deregister, serial number not found."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                val request = DeregistrationRequest(
+                    publicKey = attestationData.publicKey,
+                    attestationBlob = attestationData.attestationBlob,
+                    serialNumber = serialNumber
+                )
+
+                val response = api.deregisterDevice(request)
                 Log.d(TAG, "Deregistration successful: ${response.status}")
                 Result.success(response)
             } catch (e: Exception) {
