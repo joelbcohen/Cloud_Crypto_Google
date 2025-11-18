@@ -16,7 +16,7 @@ INSERT INTO ledger_config (config_key, config_value, description) VALUES
 
 -- Create a system account for minting/burning
 INSERT INTO accounts (balance, node_id) VALUES
-(0.000000000000000000, 1);
+(10000000, 1);
 
 -- Optional: Create an initial admin account
 -- INSERT INTO accounts (id, balance) VALUES
