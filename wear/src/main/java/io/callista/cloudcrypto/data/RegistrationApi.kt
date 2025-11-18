@@ -1,6 +1,7 @@
 package io.callista.cloudcrypto.data
 
 import android.util.Log
+import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -89,21 +90,49 @@ data class AccountSummaryResponse(
 
 /**
  * Account summary data from the database view.
+ * Uses @SerializedName to map snake_case JSON fields to camelCase Kotlin properties.
  */
 data class AccountSummaryData(
+    @SerializedName("id")
     val id: String? = null,
+
+    @SerializedName("balance")
     val balance: String? = null,
+
+    @SerializedName("serial_number")
     val serialNumber: String? = null,
+
+    @SerializedName("serial_hash")
     val serialHash: String? = null,
+
+    @SerializedName("model")
     val model: String? = null,
+
+    @SerializedName("brand")
     val brand: String? = null,
+
+    @SerializedName("os_version")
     val osVersion: String? = null,
+
+    @SerializedName("node_id")
     val nodeId: String? = null,
+
+    @SerializedName("total_sent_transactions")
     val totalSentTransactions: Int = 0,
+
+    @SerializedName("total_received_transactions")
     val totalReceivedTransactions: Int = 0,
+
+    @SerializedName("total_sent_amount")
     val totalSentAmount: String? = null,
+
+    @SerializedName("total_received_amount")
     val totalReceivedAmount: String? = null,
+
+    @SerializedName("account_created_at")
     val accountCreatedAt: String? = null,
+
+    @SerializedName("last_activity")
     val lastActivity: String? = null
 )
 
