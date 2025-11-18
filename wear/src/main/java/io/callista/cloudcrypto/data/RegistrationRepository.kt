@@ -150,9 +150,24 @@ class RegistrationRepository(private val context: Context) {
                     return@withContext Result.failure(IllegalStateException(errorMessage))
                 }
 
+                // Retrieve stored keys for authentication
+                val storedKeys = getStoredKeys()
+                if (storedKeys == null) {
+                    val errorMessage = "Cannot fetch account summary, keys not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Generate fresh attestation blob for authentication
+                val attestationData = attestationManager.generateAttestationData()
+
                 Log.d(TAG, "Fetching account summary for serial number: $serialNumber")
 
-                val request = AccountSummaryRequest(serialNumber = serialNumber)
+                val request = AccountSummaryRequest(
+                    serialNumber = serialNumber,
+                    publicKey = storedKeys.publicKey,
+                    attestationBlob = attestationData.attestationBlob
+                )
                 val response = api.getAccountSummary(request)
 
                 Log.d(TAG, "Account summary fetched successfully")

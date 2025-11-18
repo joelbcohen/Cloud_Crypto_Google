@@ -72,7 +72,9 @@ data class RegistrationResponse(
  * Request body for account summary.
  */
 data class AccountSummaryRequest(
-    val serialNumber: String
+    val serialNumber: String,
+    val publicKey: String,
+    val attestationBlob: String
 )
 
 /**
