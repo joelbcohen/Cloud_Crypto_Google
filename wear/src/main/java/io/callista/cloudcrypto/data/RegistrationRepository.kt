@@ -135,6 +135,36 @@ class RegistrationRepository(private val context: Context) {
     }
 
     /**
+     * Fetches the account summary for the current device.
+     * @return Result containing the account summary response or an error.
+     */
+    suspend fun getAccountSummary(): Result<AccountSummaryResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val registrationStatus = getRegistrationStatus()
+                val serialNumber = registrationStatus.serialNumber
+
+                if (serialNumber == null) {
+                    val errorMessage = "Cannot fetch account summary, serial number not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                Log.d(TAG, "Fetching account summary for serial number: $serialNumber")
+
+                val request = AccountSummaryRequest(serialNumber = serialNumber)
+                val response = api.getAccountSummary(request)
+
+                Log.d(TAG, "Account summary fetched successfully")
+                Result.success(response)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to fetch account summary", e)
+                Result.failure(e)
+            }
+        }
+    }
+
+    /**
      * Saves the registration status to SharedPreferences.
      */
     suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean) {

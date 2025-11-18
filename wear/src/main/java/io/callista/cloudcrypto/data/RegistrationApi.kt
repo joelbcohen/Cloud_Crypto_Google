@@ -23,6 +23,11 @@ interface RegistrationApi {
     suspend fun deregisterDevice(
         @Body request: DeregistrationRequest
     ): RegistrationResponse
+
+    @POST("public/crypto/account_summary")
+    suspend fun getAccountSummary(
+        @Body request: AccountSummaryRequest
+    ): AccountSummaryResponse
 }
 
 /**
@@ -61,6 +66,43 @@ data class RegistrationResponse(
     val publicKey: String? = null,
     val accountId: String? = null,
     val remainingBalance: Double? = null
+)
+
+/**
+ * Request body for account summary.
+ */
+data class AccountSummaryRequest(
+    val serialNumber: String
+)
+
+/**
+ * Response from the account summary API.
+ * Matches the account_summary MySQL view structure.
+ */
+data class AccountSummaryResponse(
+    val status: String? = null,
+    val message: String? = null,
+    val data: AccountSummaryData? = null
+)
+
+/**
+ * Account summary data from the database view.
+ */
+data class AccountSummaryData(
+    val id: String? = null,
+    val balance: String? = null,
+    val serialNumber: String? = null,
+    val serialHash: String? = null,
+    val model: String? = null,
+    val brand: String? = null,
+    val osVersion: String? = null,
+    val nodeId: String? = null,
+    val totalSentTransactions: Int = 0,
+    val totalReceivedTransactions: Int = 0,
+    val totalSentAmount: String? = null,
+    val totalReceivedAmount: String? = null,
+    val accountCreatedAt: String? = null,
+    val lastActivity: String? = null
 )
 
 /**

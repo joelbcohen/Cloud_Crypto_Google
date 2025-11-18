@@ -3,6 +3,7 @@ package io.callista.cloudcrypto.presentation.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import io.callista.cloudcrypto.data.AccountSummaryData
 import io.callista.cloudcrypto.data.RegistrationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -142,10 +143,44 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     }
 
     /**
-     * Shows the account screen (placeholder for future implementation).
+     * Shows the account screen and fetches account summary.
      */
     fun showAccountScreen() {
-        // TODO: Navigate to account screen
+        _uiState.value = RegistrationUiState.Loading
+
+        viewModelScope.launch {
+            try {
+                val result = repository.getAccountSummary()
+
+                result.fold(
+                    onSuccess = { response ->
+                        if (response.data != null) {
+                            _uiState.value = RegistrationUiState.AccountSummary(response.data)
+                        } else {
+                            _uiState.value = RegistrationUiState.Error(
+                                response.message ?: "Failed to fetch account summary"
+                            )
+                        }
+                    },
+                    onFailure = { error ->
+                        _uiState.value = RegistrationUiState.Error(
+                            error.message ?: "Failed to fetch account summary"
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                _uiState.value = RegistrationUiState.Error(
+                    e.message ?: "An unexpected error occurred"
+                )
+            }
+        }
+    }
+
+    /**
+     * Returns to the main screen from account summary.
+     */
+    fun closeAccountScreen() {
+        loadMainScreen()
     }
 
     /**
@@ -162,6 +197,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 sealed interface RegistrationUiState {
     data class MainScreen(val serialNumber: String?, val timestamp: Long) : RegistrationUiState
     data object RegistrationForm : RegistrationUiState
+    data class AccountSummary(val data: AccountSummaryData) : RegistrationUiState
     data object Loading : RegistrationUiState
     data class Error(val message: String) : RegistrationUiState
 }

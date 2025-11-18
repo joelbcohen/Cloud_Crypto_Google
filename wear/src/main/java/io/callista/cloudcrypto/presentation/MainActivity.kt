@@ -24,9 +24,11 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.*
 import androidx.compose.material3.OutlinedTextField
+import io.callista.cloudcrypto.data.AccountSummaryData
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationUiState
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationViewModel
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -118,6 +120,12 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
                 onSerialNumberChanged = viewModel::onSerialNumberChanged,
                 onSaveClicked = viewModel::registerDevice,
                 onCancelClicked = viewModel::cancelRegistration
+            )
+        }
+        is RegistrationUiState.AccountSummary -> {
+            AccountSummaryScreen(
+                accountData = state.data,
+                onBackClicked = viewModel::closeAccountScreen
             )
         }
         is RegistrationUiState.Loading -> {
@@ -414,5 +422,231 @@ fun ErrorScreen(
                 Text("CANCEL")
             }
         }
+    }
+}
+
+@Composable
+fun AccountSummaryScreen(
+    accountData: AccountSummaryData,
+    onBackClicked: () -> Unit
+) {
+    val listState = rememberScalingLazyListState()
+
+    // Format large numbers with commas
+    val decimalFormat = remember { DecimalFormat("#,##0.00") }
+
+    // Format balance
+    val formattedBalance = remember(accountData.balance) {
+        accountData.balance?.let {
+            try {
+                decimalFormat.format(it.toDouble())
+            } catch (e: Exception) {
+                it
+            }
+        } ?: "0.00"
+    }
+
+    // Format sent amount
+    val formattedSentAmount = remember(accountData.totalSentAmount) {
+        accountData.totalSentAmount?.let {
+            try {
+                decimalFormat.format(it.toDouble())
+            } catch (e: Exception) {
+                it
+            }
+        } ?: "0.00"
+    }
+
+    // Format received amount
+    val formattedReceivedAmount = remember(accountData.totalReceivedAmount) {
+        accountData.totalReceivedAmount?.let {
+            try {
+                decimalFormat.format(it.toDouble())
+            } catch (e: Exception) {
+                it
+            }
+        } ?: "0.00"
+    }
+
+    ScalingLazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = listState,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // Title
+        item {
+            Text(
+                text = "Account Summary",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+
+        // Balance Card
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth(0.95f)
+                    .padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = "Current Balance",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = formattedBalance,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        // Transaction Statistics Title
+        item {
+            Text(
+                text = "Transaction Stats",
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+
+        // Sent Transactions
+        item {
+            StatisticRow(
+                label = "Total Sent",
+                count = accountData.totalSentTransactions.toString() + " txns",
+                amount = formattedSentAmount
+            )
+        }
+
+        // Received Transactions
+        item {
+            StatisticRow(
+                label = "Total Received",
+                count = accountData.totalReceivedTransactions.toString() + " txns",
+                amount = formattedReceivedAmount
+            )
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        // Device Info Title
+        item {
+            Text(
+                text = "Device Info",
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+
+        // Device Model
+        if (!accountData.model.isNullOrBlank() || !accountData.brand.isNullOrBlank()) {
+            item {
+                InfoRow(
+                    label = "Device",
+                    value = "${accountData.brand ?: ""} ${accountData.model ?: ""}".trim()
+                )
+            }
+        }
+
+        // Account ID
+        if (!accountData.id.isNullOrBlank()) {
+            item {
+                InfoRow(
+                    label = "Account ID",
+                    value = accountData.id.take(12) + "..."
+                )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        // Back Button
+        item {
+            FilledTonalButton(
+                onClick = onBackClicked,
+                modifier = Modifier.fillMaxWidth(0.85f)
+            ) {
+                Text("BACK")
+            }
+        }
+    }
+}
+
+@Composable
+fun StatisticRow(
+    label: String,
+    count: String,
+    amount: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .padding(vertical = 2.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = count,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 2.dp)
+        )
+        Text(
+            text = amount,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun InfoRow(
+    label: String,
+    value: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .padding(vertical = 2.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 2.dp)
+        )
     }
 }
