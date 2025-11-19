@@ -5,134 +5,184 @@
 	};
 	objectVersion = 56;
 	objects = {
-		rootObject = {
+
+/* Begin PBXBuildFile section */
+		40A161452A04406B970853FA /* CloudCryptoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B230374630154290AC493CD9 /* CloudCryptoApp.swift */; };
+		AFDE4EE369D34CC98641D5B0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CE0831DF3D4C36BBC5886C /* ContentView.swift */; };
+		EB6D8F0743C04497B05FF4E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C20A49885F4FE9BF649359 /* AppDelegate.swift */; };
+		F78F1B56BB8941C78E90C758 /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E9DD90513043F1BF1D4BB4 /* RegistrationViewModel.swift */; };
+		E8F28996E2144D42AA8BF42E /* MainScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66136C9E174E40FFACFB20C4 /* MainScreenView.swift */; };
+		619A2BA8CE9749B98B99466E /* RegistrationFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6AB6EACE8242AC8E0E7763 /* RegistrationFormView.swift */; };
+		081833B407AD4C9F9A3F8383 /* AccountSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F63836213C94E2BBAD9B55D /* AccountSummaryView.swift */; };
+		A316C7941FBF44A9A6BA81C9 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53EB52B89DBF4A679F15983C /* LoadingView.swift */; };
+		75FD966472AE483FA2B3D880 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01FEF8670302452A921498A6 /* ErrorView.swift */; };
+		C55F335B3E6A4CE9A7A52502 /* RegistrationApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6927F4A25524E02995D0C49 /* RegistrationApi.swift */; };
+		26A3383236494B55AD25E4FD /* RegistrationRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7343AC3EF4F84E09AA38B36A /* RegistrationRepository.swift */; };
+		A039743B8FF84824AC5BD2BA /* ApiModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8794F0F5500C455A8D468A60 /* ApiModels.swift */; };
+		2B2A73ABCA224AD1BBFB6931 /* DeviceInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F9A7D1D7AB4E5F9E7BF50B /* DeviceInfoManager.swift */; };
+		56DB7A21D2A44080BB01BD98 /* APNsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F0A60B48414D458ADEB5F0 /* APNsManager.swift */; };
+		B744A9D3323D42B099336B36 /* DeviceAttestationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E73E8FB1EBF48EF87757F87 /* DeviceAttestationManager.swift */; };
+		FC3BA08DD1B14C07BA5848C8 /* CloudCryptoComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9B7A8ECF6C4EAA8BB6727C /* CloudCryptoComplication.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B4F41EA6EFB9478BB901656F /* CloudCrypto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CloudCrypto.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B230374630154290AC493CD9 /* CloudCryptoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCryptoApp.swift; sourceTree = "<group>"; };
+		67CE0831DF3D4C36BBC5886C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		39C20A49885F4FE9BF649359 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		98E9DD90513043F1BF1D4BB4 /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
+		66136C9E174E40FFACFB20C4 /* MainScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenView.swift; sourceTree = "<group>"; };
+		8F6AB6EACE8242AC8E0E7763 /* RegistrationFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationFormView.swift; sourceTree = "<group>"; };
+		2F63836213C94E2BBAD9B55D /* AccountSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSummaryView.swift; sourceTree = "<group>"; };
+		53EB52B89DBF4A679F15983C /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		01FEF8670302452A921498A6 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		A6927F4A25524E02995D0C49 /* RegistrationApi.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationApi.swift; sourceTree = "<group>"; };
+		7343AC3EF4F84E09AA38B36A /* RegistrationRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationRepository.swift; sourceTree = "<group>"; };
+		8794F0F5500C455A8D468A60 /* ApiModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApiModels.swift; sourceTree = "<group>"; };
+		13F9A7D1D7AB4E5F9E7BF50B /* DeviceInfoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoManager.swift; sourceTree = "<group>"; };
+		47F0A60B48414D458ADEB5F0 /* APNsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNsManager.swift; sourceTree = "<group>"; };
+		3E73E8FB1EBF48EF87757F87 /* DeviceAttestationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAttestationManager.swift; sourceTree = "<group>"; };
+		DB9B7A8ECF6C4EAA8BB6727C /* CloudCryptoComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCryptoComplication.swift; sourceTree = "<group>"; };
+		FD96F16EE92A4F2F91BE39CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9E842FB49CBA43BEAFBBCECD /* CloudCrypto.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CloudCrypto.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0AD7E0EDD73A4E8AAD19BD7F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2029E22D79BA40C78C9D73ED = {
+			isa = PBXGroup;
+			children = (
+				EC141E234AE94FB994EC82BE /* CloudCrypto Watch App */,
+				D7C422F75DB047439FED6A10 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D7C422F75DB047439FED6A10 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B4F41EA6EFB9478BB901656F /* CloudCrypto.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EC141E234AE94FB994EC82BE /* CloudCrypto Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				B230374630154290AC493CD9 /* CloudCryptoApp.swift */,
+				67CE0831DF3D4C36BBC5886C /* ContentView.swift */,
+				39C20A49885F4FE9BF649359 /* AppDelegate.swift */,
+				B4C8D9E45EFD4F18A4D15568 /* Views */,
+				52D2E71FF69A4B68B5A0639B /* ViewModels */,
+				222F624D038542F48C3838B2 /* Data */,
+				39740C6B52C34C79A53AF847 /* Models */,
+				07F0E957109E44449D2A3BAC /* Services */,
+				FD2867C698714133AA755CC3 /* Complications */,
+				FD96F16EE92A4F2F91BE39CA /* Info.plist */,
+				9E842FB49CBA43BEAFBBCECD /* CloudCrypto.entitlements */,
+			);
+			path = "CloudCrypto Watch App";
+			sourceTree = "<group>";
+		};
+		B4C8D9E45EFD4F18A4D15568 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				66136C9E174E40FFACFB20C4 /* MainScreenView.swift */,
+				8F6AB6EACE8242AC8E0E7763 /* RegistrationFormView.swift */,
+				2F63836213C94E2BBAD9B55D /* AccountSummaryView.swift */,
+				53EB52B89DBF4A679F15983C /* LoadingView.swift */,
+				01FEF8670302452A921498A6 /* ErrorView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		52D2E71FF69A4B68B5A0639B /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				98E9DD90513043F1BF1D4BB4 /* RegistrationViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		222F624D038542F48C3838B2 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				A6927F4A25524E02995D0C49 /* RegistrationApi.swift */,
+				7343AC3EF4F84E09AA38B36A /* RegistrationRepository.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		39740C6B52C34C79A53AF847 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8794F0F5500C455A8D468A60 /* ApiModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		07F0E957109E44449D2A3BAC /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				13F9A7D1D7AB4E5F9E7BF50B /* DeviceInfoManager.swift */,
+				47F0A60B48414D458ADEB5F0 /* APNsManager.swift */,
+				3E73E8FB1EBF48EF87757F87 /* DeviceAttestationManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		FD2867C698714133AA755CC3 /* Complications */ = {
+			isa = PBXGroup;
+			children = (
+				DB9B7A8ECF6C4EAA8BB6727C /* CloudCryptoComplication.swift */,
+			);
+			path = Complications;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CE28AF6B67EA4959830EA774 /* CloudCrypto Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4251D75C8ADE4CFCB7A9167E /* Build configuration list for PBXNativeTarget "CloudCrypto Watch App" */;
+			buildPhases = (
+				C0749D6A8DDE4D639DF64A8F /* Sources */,
+				0AD7E0EDD73A4E8AAD19BD7F /* Frameworks */,
+				078C80CE55754DD5BBC73030 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CloudCrypto Watch App";
+			productName = "CloudCrypto Watch App";
+			productReference = B4F41EA6EFB9478BB901656F /* CloudCrypto.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2029E22D79BA40C78C9D73ED /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					CE28AF6B67EA4959830EA774 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
 			};
-			buildConfigurationList = {
-				isa = XCConfigurationList;
-				buildConfigurations = (
-					{
-						isa = XCBuildConfiguration;
-						buildSettings = {
-							ALWAYS_SEARCH_USER_PATHS = NO;
-							ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-							CLANG_ANALYZER_NONNULL = YES;
-							CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-							CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-							CLANG_ENABLE_MODULES = YES;
-							CLANG_ENABLE_OBJC_ARC = YES;
-							CLANG_ENABLE_OBJC_WEAK = YES;
-							CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-							CLANG_WARN_BOOL_CONVERSION = YES;
-							CLANG_WARN_COMMA = YES;
-							CLANG_WARN_CONSTANT_CONVERSION = YES;
-							CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-							CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-							CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-							CLANG_WARN_EMPTY_BODY = YES;
-							CLANG_WARN_ENUM_CONVERSION = YES;
-							CLANG_WARN_INFINITE_RECURSION = YES;
-							CLANG_WARN_INT_CONVERSION = YES;
-							CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-							CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-							CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-							CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-							CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-							CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-							CLANG_WARN_STRICT_PROTOTYPES = YES;
-							CLANG_WARN_SUSPICIOUS_MOVE = YES;
-							CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-							CLANG_WARN_UNREACHABLE_CODE = YES;
-							CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-							COPY_PHASE_STRIP = NO;
-							DEBUG_INFORMATION_FORMAT = dwarf;
-							ENABLE_STRICT_OBJC_MSGSEND = YES;
-							ENABLE_TESTABILITY = YES;
-							ENABLE_USER_SCRIPT_SANDBOXING = YES;
-							GCC_C_LANGUAGE_STANDARD = gnu17;
-							GCC_DYNAMIC_NO_PIC = NO;
-							GCC_NO_COMMON_BLOCKS = YES;
-							GCC_OPTIMIZATION_LEVEL = 0;
-							GCC_PREPROCESSOR_DEFINITIONS = (
-								"DEBUG=1",
-								"$(inherited)",
-							);
-							GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-							GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-							GCC_WARN_UNDECLARED_SELECTOR = YES;
-							GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-							GCC_WARN_UNUSED_FUNCTION = YES;
-							GCC_WARN_UNUSED_VARIABLE = YES;
-							LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-							MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-							MTL_FAST_MATH = YES;
-							ONLY_ACTIVE_ARCH = YES;
-							SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-							SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-							WATCHOS_DEPLOYMENT_TARGET = 10.0;
-						};
-						name = Debug;
-					},
-					{
-						isa = XCBuildConfiguration;
-						buildSettings = {
-							ALWAYS_SEARCH_USER_PATHS = NO;
-							ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-							CLANG_ANALYZER_NONNULL = YES;
-							CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-							CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-							CLANG_ENABLE_MODULES = YES;
-							CLANG_ENABLE_OBJC_ARC = YES;
-							CLANG_ENABLE_OBJC_WEAK = YES;
-							CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-							CLANG_WARN_BOOL_CONVERSION = YES;
-							CLANG_WARN_COMMA = YES;
-							CLANG_WARN_CONSTANT_CONVERSION = YES;
-							CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-							CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-							CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-							CLANG_WARN_EMPTY_BODY = YES;
-							CLANG_WARN_ENUM_CONVERSION = YES;
-							CLANG_WARN_INFINITE_RECURSION = YES;
-							CLANG_WARN_INT_CONVERSION = YES;
-							CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-							CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-							CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-							CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-							CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-							CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-							CLANG_WARN_STRICT_PROTOTYPES = YES;
-							CLANG_WARN_SUSPICIOUS_MOVE = YES;
-							CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-							CLANG_WARN_UNREACHABLE_CODE = YES;
-							CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-							COPY_PHASE_STRIP = NO;
-							DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-							ENABLE_NS_ASSERTIONS = NO;
-							ENABLE_STRICT_OBJC_MSGSEND = YES;
-							ENABLE_USER_SCRIPT_SANDBOXING = YES;
-							GCC_C_LANGUAGE_STANDARD = gnu17;
-							GCC_NO_COMMON_BLOCKS = YES;
-							GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-							GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-							GCC_WARN_UNDECLARED_SELECTOR = YES;
-							GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-							GCC_WARN_UNUSED_FUNCTION = YES;
-							GCC_WARN_UNUSED_VARIABLE = YES;
-							LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-							MTL_ENABLE_DEBUG_INFO = NO;
-							MTL_FAST_MATH = YES;
-							SWIFT_COMPILATION_MODE = wholemodule;
-							WATCHOS_DEPLOYMENT_TARGET = 10.0;
-						};
-						name = Release;
-					}
-				);
-			};
+			buildConfigurationList = 7DA31CE456774B1E989F6615 /* Build configuration list for PBXProject "CloudCrypto" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -140,21 +190,252 @@
 				en,
 				Base,
 			);
-			mainGroup = {
-				isa = PBXGroup;
-				children = (
-					"CloudCrypto Watch App",
-				);
-			};
-			productRefGroup = {
-				isa = PBXGroup;
-				children = (
-				);
-			};
+			mainGroup = 2029E22D79BA40C78C9D73ED;
+			productRefGroup = D7C422F75DB047439FED6A10 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				CE28AF6B67EA4959830EA774 /* CloudCrypto Watch App */,
 			);
 		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		078C80CE55754DD5BBC73030 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C0749D6A8DDE4D639DF64A8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				40A161452A04406B970853FA /* CloudCryptoApp.swift in Sources */,
+				AFDE4EE369D34CC98641D5B0 /* ContentView.swift in Sources */,
+				EB6D8F0743C04497B05FF4E0 /* AppDelegate.swift in Sources */,
+				F78F1B56BB8941C78E90C758 /* RegistrationViewModel.swift in Sources */,
+				E8F28996E2144D42AA8BF42E /* MainScreenView.swift in Sources */,
+				619A2BA8CE9749B98B99466E /* RegistrationFormView.swift in Sources */,
+				081833B407AD4C9F9A3F8383 /* AccountSummaryView.swift in Sources */,
+				A316C7941FBF44A9A6BA81C9 /* LoadingView.swift in Sources */,
+				75FD966472AE483FA2B3D880 /* ErrorView.swift in Sources */,
+				C55F335B3E6A4CE9A7A52502 /* RegistrationApi.swift in Sources */,
+				26A3383236494B55AD25E4FD /* RegistrationRepository.swift in Sources */,
+				A039743B8FF84824AC5BD2BA /* ApiModels.swift in Sources */,
+				2B2A73ABCA224AD1BBFB6931 /* DeviceInfoManager.swift in Sources */,
+				56DB7A21D2A44080BB01BD98 /* APNsManager.swift in Sources */,
+				B744A9D3323D42B099336B36 /* DeviceAttestationManager.swift in Sources */,
+				FC3BA08DD1B14C07BA5848C8 /* CloudCryptoComplication.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E76B4D493C814A7CB000918D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
+		ADD982D02E504D7181983D4C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		A14813117A2C4D33BFAD0DC8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CloudCrypto Watch App/CloudCrypto.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "CloudCrypto Watch App/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cloud Crypto";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.callista.cloudcrypto.watchapp;
+				PRODUCT_NAME = "CloudCrypto";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Debug;
+		};
+		13F43AA4E5CF4889B543BCD7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "CloudCrypto Watch App/CloudCrypto.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "CloudCrypto Watch App/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Cloud Crypto";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.callista.cloudcrypto.watchapp;
+				PRODUCT_NAME = "CloudCrypto";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		7DA31CE456774B1E989F6615 /* Build configuration list for PBXProject "CloudCrypto" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E76B4D493C814A7CB000918D /* Debug */,
+				ADD982D02E504D7181983D4C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4251D75C8ADE4CFCB7A9167E /* Build configuration list for PBXNativeTarget "CloudCrypto Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A14813117A2C4D33BFAD0DC8 /* Debug */,
+				13F43AA4E5CF4889B543BCD7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
 	};
+	rootObject = 2029E22D79BA40C78C9D73ED /* Project object */;
 }
+
