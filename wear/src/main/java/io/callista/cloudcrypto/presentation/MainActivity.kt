@@ -664,7 +664,8 @@ fun TransferScreen(
                     onValueChange = onToAccountChanged,
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = androidx.compose.ui.graphics.Color.White
                     ),
                     singleLine = true,
                     enabled = !isTransferring
@@ -690,7 +691,8 @@ fun TransferScreen(
                     onValueChange = onAmountChanged,
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        color = androidx.compose.ui.graphics.Color.White
                     ),
                     singleLine = true,
                     enabled = !isTransferring

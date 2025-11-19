@@ -101,7 +101,7 @@ data class TransferRequest(
     val serialNumber: String,
     val publicKey: String,
     val attestationBlob: String,
-    val toAccount: String,
+    val toAccountId: String,
     val amount: String
 )
 

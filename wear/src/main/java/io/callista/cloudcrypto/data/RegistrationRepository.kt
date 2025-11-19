@@ -214,7 +214,7 @@ class RegistrationRepository(private val context: Context) {
                     serialNumber = serialNumber,
                     publicKey = storedKeys.publicKey,
                     attestationBlob = attestationData.attestationBlob,
-                    toAccount = toAccount,
+                    toAccountId = toAccount,
                     amount = amount
                 )
                 val response = api.transfer(request)
