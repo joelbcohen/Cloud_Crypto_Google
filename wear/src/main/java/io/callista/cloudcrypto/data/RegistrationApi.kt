@@ -29,6 +29,11 @@ interface RegistrationApi {
     suspend fun getAccountSummary(
         @Body request: AccountSummaryRequest
     ): AccountSummaryResponse
+
+    @POST("public/crypto/transfer")
+    suspend fun transfer(
+        @Body request: TransferRequest
+    ): TransferResponse
 }
 
 /**
@@ -87,6 +92,27 @@ data class AccountSummaryResponse(
     val message: String? = null,
     @SerializedName("account")
     val data: AccountSummaryData? = null
+)
+
+/**
+ * Request body for transfer.
+ */
+data class TransferRequest(
+    val serialNumber: String,
+    val publicKey: String,
+    val attestationBlob: String,
+    val toAccountId: String,
+    val amount: String
+)
+
+/**
+ * Response from the transfer API.
+ */
+data class TransferResponse(
+    val status: String? = null,
+    val message: String? = null,
+    val transactionId: String? = null,
+    val newBalance: String? = null
 )
 
 /**
