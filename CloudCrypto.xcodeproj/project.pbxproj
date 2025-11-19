@@ -10,7 +10,6 @@
 		F1E2D3C4B5A6478AB9012346 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6478AB9012345 /* Assets.xcassets */; };
 		40A161452A04406B970853FA /* CloudCryptoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B230374630154290AC493CD9 /* CloudCryptoApp.swift */; };
 		AFDE4EE369D34CC98641D5B0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CE0831DF3D4C36BBC5886C /* ContentView.swift */; };
-		EB6D8F0743C04497B05FF4E0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C20A49885F4FE9BF649359 /* AppDelegate.swift */; };
 		F78F1B56BB8941C78E90C758 /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98E9DD90513043F1BF1D4BB4 /* RegistrationViewModel.swift */; };
 		E8F28996E2144D42AA8BF42E /* MainScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66136C9E174E40FFACFB20C4 /* MainScreenView.swift */; };
 		619A2BA8CE9749B98B99466E /* RegistrationFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6AB6EACE8242AC8E0E7763 /* RegistrationFormView.swift */; };
@@ -23,14 +22,12 @@
 		2B2A73ABCA224AD1BBFB6931 /* DeviceInfoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F9A7D1D7AB4E5F9E7BF50B /* DeviceInfoManager.swift */; };
 		56DB7A21D2A44080BB01BD98 /* APNsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47F0A60B48414D458ADEB5F0 /* APNsManager.swift */; };
 		B744A9D3323D42B099336B36 /* DeviceAttestationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E73E8FB1EBF48EF87757F87 /* DeviceAttestationManager.swift */; };
-		FC3BA08DD1B14C07BA5848C8 /* CloudCryptoComplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB9B7A8ECF6C4EAA8BB6727C /* CloudCryptoComplication.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B4F41EA6EFB9478BB901656F /* CloudCrypto.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CloudCrypto.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B230374630154290AC493CD9 /* CloudCryptoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCryptoApp.swift; sourceTree = "<group>"; };
 		67CE0831DF3D4C36BBC5886C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		39C20A49885F4FE9BF649359 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		98E9DD90513043F1BF1D4BB4 /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 		66136C9E174E40FFACFB20C4 /* MainScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainScreenView.swift; sourceTree = "<group>"; };
 		8F6AB6EACE8242AC8E0E7763 /* RegistrationFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationFormView.swift; sourceTree = "<group>"; };
@@ -43,7 +40,6 @@
 		13F9A7D1D7AB4E5F9E7BF50B /* DeviceInfoManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceInfoManager.swift; sourceTree = "<group>"; };
 		47F0A60B48414D458ADEB5F0 /* APNsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APNsManager.swift; sourceTree = "<group>"; };
 		3E73E8FB1EBF48EF87757F87 /* DeviceAttestationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceAttestationManager.swift; sourceTree = "<group>"; };
-		DB9B7A8ECF6C4EAA8BB6727C /* CloudCryptoComplication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudCryptoComplication.swift; sourceTree = "<group>"; };
 		FD96F16EE92A4F2F91BE39CA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9E842FB49CBA43BEAFBBCECD /* CloudCrypto.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CloudCrypto.entitlements; sourceTree = "<group>"; };
 		A1B2C3D4E5F6478AB9012345 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -81,13 +77,11 @@
 			children = (
 				B230374630154290AC493CD9 /* CloudCryptoApp.swift */,
 				67CE0831DF3D4C36BBC5886C /* ContentView.swift */,
-				39C20A49885F4FE9BF649359 /* AppDelegate.swift */,
 				B4C8D9E45EFD4F18A4D15568 /* Views */,
 				52D2E71FF69A4B68B5A0639B /* ViewModels */,
 				222F624D038542F48C3838B2 /* Data */,
 				39740C6B52C34C79A53AF847 /* Models */,
 				07F0E957109E44449D2A3BAC /* Services */,
-				FD2867C698714133AA755CC3 /* Complications */,
 				A1B2C3D4E5F6478AB9012345 /* Assets.xcassets */,
 				FD96F16EE92A4F2F91BE39CA /* Info.plist */,
 				9E842FB49CBA43BEAFBBCECD /* CloudCrypto.entitlements */,
@@ -140,14 +134,6 @@
 				3E73E8FB1EBF48EF87757F87 /* DeviceAttestationManager.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		FD2867C698714133AA755CC3 /* Complications */ = {
-			isa = PBXGroup;
-			children = (
-				DB9B7A8ECF6C4EAA8BB6727C /* CloudCryptoComplication.swift */,
-			);
-			path = Complications;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -221,7 +207,6 @@
 			files = (
 				40A161452A04406B970853FA /* CloudCryptoApp.swift in Sources */,
 				AFDE4EE369D34CC98641D5B0 /* ContentView.swift in Sources */,
-				EB6D8F0743C04497B05FF4E0 /* AppDelegate.swift in Sources */,
 				F78F1B56BB8941C78E90C758 /* RegistrationViewModel.swift in Sources */,
 				E8F28996E2144D42AA8BF42E /* MainScreenView.swift in Sources */,
 				619A2BA8CE9749B98B99466E /* RegistrationFormView.swift in Sources */,
@@ -234,7 +219,6 @@
 				2B2A73ABCA224AD1BBFB6931 /* DeviceInfoManager.swift in Sources */,
 				56DB7A21D2A44080BB01BD98 /* APNsManager.swift in Sources */,
 				B744A9D3323D42B099336B36 /* DeviceAttestationManager.swift in Sources */,
-				FC3BA08DD1B14C07BA5848C8 /* CloudCryptoComplication.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

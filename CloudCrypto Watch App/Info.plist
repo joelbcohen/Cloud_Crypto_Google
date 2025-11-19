@@ -24,8 +24,6 @@
     <true/>
     <key>WKWatchOnly</key>
     <true/>
-    <key>WKExtensionDelegateClassName</key>
-    <string>$(PRODUCT_MODULE_NAME).AppDelegate</string>
     <key>UIBackgroundModes</key>
     <array>
         <string>remote-notification</string>
