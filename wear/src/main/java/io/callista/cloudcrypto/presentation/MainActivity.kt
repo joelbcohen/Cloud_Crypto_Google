@@ -89,6 +89,9 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val serialNumber by viewModel.serialNumber.collectAsStateWithLifecycle()
     val toastMessage by viewModel.toastMessage.collectAsStateWithLifecycle()
+    val toAccount by viewModel.toAccount.collectAsStateWithLifecycle()
+    val amount by viewModel.amount.collectAsStateWithLifecycle()
+    val isTransferring by viewModel.isTransferring.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
 
@@ -111,6 +114,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
                 },
                 onDeregisterClicked = viewModel::deregisterDevice,
                 onAccountClicked = viewModel::showAccountScreen,
+                onTransferClicked = viewModel::showTransferScreen,
                 onSettingsClicked = viewModel::showSettingsScreen
             )
         }
@@ -126,6 +130,17 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
             AccountSummaryScreen(
                 accountData = state.data,
                 onBackClicked = viewModel::closeAccountScreen
+            )
+        }
+        is RegistrationUiState.TransferScreen -> {
+            TransferScreen(
+                toAccount = toAccount,
+                amount = amount,
+                onToAccountChanged = viewModel::onToAccountChanged,
+                onAmountChanged = viewModel::onAmountChanged,
+                onSendClicked = viewModel::executeTransfer,
+                onCancelClicked = viewModel::closeTransferScreen,
+                isTransferring = isTransferring
             )
         }
         is RegistrationUiState.Loading -> {
@@ -148,6 +163,7 @@ fun MainScreen(
     onRegisterClicked: () -> Unit,
     onDeregisterClicked: () -> Unit,
     onAccountClicked: () -> Unit,
+    onTransferClicked: () -> Unit,
     onSettingsClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
@@ -251,6 +267,16 @@ fun MainScreen(
                 modifier = Modifier.fillMaxWidth(0.85f)
             ) {
                 Text("ACCOUNT")
+            }
+        }
+
+        // TRANSFER Button
+        item {
+            FilledTonalButton(
+                onClick = onTransferClicked,
+                modifier = Modifier.fillMaxWidth(0.85f)
+            ) {
+                Text("TRANSFER")
             }
         }
 
@@ -586,6 +612,115 @@ fun AccountSummaryScreen(
                 modifier = Modifier.fillMaxWidth(0.85f)
             ) {
                 Text("BACK")
+            }
+        }
+    }
+}
+
+@Composable
+fun TransferScreen(
+    toAccount: String,
+    amount: String,
+    onToAccountChanged: (String) -> Unit,
+    onAmountChanged: (String) -> Unit,
+    onSendClicked: () -> Unit,
+    onCancelClicked: () -> Unit,
+    isTransferring: Boolean
+) {
+    val listState = rememberScalingLazyListState()
+
+    ScalingLazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = listState,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // Title
+        item {
+            Text(
+                text = "Transfer",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+
+        // To Account Text Field
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(0.95f)
+            ) {
+                Text(
+                    text = "To Account",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                OutlinedTextField(
+                    value = toAccount,
+                    onValueChange = onToAccountChanged,
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        textAlign = TextAlign.Center
+                    ),
+                    singleLine = true,
+                    enabled = !isTransferring
+                )
+            }
+        }
+
+        // Amount Text Field
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(0.95f)
+            ) {
+                Text(
+                    text = "Amount",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                OutlinedTextField(
+                    value = amount,
+                    onValueChange = onAmountChanged,
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        textAlign = TextAlign.Center
+                    ),
+                    singleLine = true,
+                    enabled = !isTransferring
+                )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        // Send Button
+        item {
+            FilledTonalButton(
+                onClick = onSendClicked,
+                modifier = Modifier.fillMaxWidth(0.85f),
+                enabled = !isTransferring
+            ) {
+                Text(if (isTransferring) "SENDING..." else "SEND")
+            }
+        }
+
+        // Cancel Button
+        item {
+            FilledTonalButton(
+                onClick = onCancelClicked,
+                modifier = Modifier.fillMaxWidth(0.85f),
+                enabled = !isTransferring
+            ) {
+                Text("CANCEL")
             }
         }
     }

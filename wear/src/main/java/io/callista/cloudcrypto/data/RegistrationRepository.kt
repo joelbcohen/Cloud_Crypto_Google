@@ -180,6 +180,55 @@ class RegistrationRepository(private val context: Context) {
     }
 
     /**
+     * Transfers funds to another account.
+     * @param toAccount The account to transfer to
+     * @param amount The amount to transfer
+     * @return Result containing the transfer response or an error.
+     */
+    suspend fun transfer(toAccount: String, amount: String): Result<TransferResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val registrationStatus = getRegistrationStatus()
+                val serialNumber = registrationStatus.serialNumber
+
+                if (serialNumber == null) {
+                    val errorMessage = "Cannot transfer, serial number not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Retrieve stored keys for authentication
+                val storedKeys = getStoredKeys()
+                if (storedKeys == null) {
+                    val errorMessage = "Cannot transfer, keys not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Generate fresh attestation blob for authentication
+                val attestationData = attestationManager.generateAttestationData()
+
+                Log.d(TAG, "Initiating transfer to account: $toAccount, amount: $amount")
+
+                val request = TransferRequest(
+                    serialNumber = serialNumber,
+                    publicKey = storedKeys.publicKey,
+                    attestationBlob = attestationData.attestationBlob,
+                    toAccount = toAccount,
+                    amount = amount
+                )
+                val response = api.transfer(request)
+
+                Log.d(TAG, "Transfer successful: ${response.status}")
+                Result.success(response)
+            } catch (e: Exception) {
+                Log.e(TAG, "Transfer failed", e)
+                Result.failure(e)
+            }
+        }
+    }
+
+    /**
      * Saves the registration status to SharedPreferences.
      */
     suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean) {
