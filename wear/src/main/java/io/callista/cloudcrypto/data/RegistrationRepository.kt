@@ -135,6 +135,51 @@ class RegistrationRepository(private val context: Context) {
     }
 
     /**
+     * Fetches the account summary for the current device.
+     * @return Result containing the account summary response or an error.
+     */
+    suspend fun getAccountSummary(): Result<AccountSummaryResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val registrationStatus = getRegistrationStatus()
+                val serialNumber = registrationStatus.serialNumber
+
+                if (serialNumber == null) {
+                    val errorMessage = "Cannot fetch account summary, serial number not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Retrieve stored keys for authentication
+                val storedKeys = getStoredKeys()
+                if (storedKeys == null) {
+                    val errorMessage = "Cannot fetch account summary, keys not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Generate fresh attestation blob for authentication
+                val attestationData = attestationManager.generateAttestationData()
+
+                Log.d(TAG, "Fetching account summary for serial number: $serialNumber")
+
+                val request = AccountSummaryRequest(
+                    serialNumber = serialNumber,
+                    publicKey = storedKeys.publicKey,
+                    attestationBlob = attestationData.attestationBlob
+                )
+                val response = api.getAccountSummary(request)
+
+                Log.d(TAG, "Account summary fetched successfully")
+                Result.success(response)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to fetch account summary", e)
+                Result.failure(e)
+            }
+        }
+    }
+
+    /**
      * Saves the registration status to SharedPreferences.
      */
     suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean) {
