@@ -56,7 +56,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2029E22D79BA40C78C9D73ED = {
+		F9A8B7C6D5E4F3A2B1C0D9E8 = {
 			isa = PBXGroup;
 			children = (
 				EC141E234AE94FB994EC82BE /* CloudCrypto Watch App */,
@@ -179,7 +179,7 @@
 				en,
 				Base,
 			);
-			mainGroup = 2029E22D79BA40C78C9D73ED;
+			mainGroup = F9A8B7C6D5E4F3A2B1C0D9E8;
 			productRefGroup = D7C422F75DB047439FED6A10 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
