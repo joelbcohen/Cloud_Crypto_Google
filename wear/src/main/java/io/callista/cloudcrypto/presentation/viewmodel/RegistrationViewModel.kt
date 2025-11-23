@@ -3,6 +3,7 @@ package io.callista.cloudcrypto.presentation.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import io.callista.cloudcrypto.data.AccountSummaryData
 import io.callista.cloudcrypto.data.RegistrationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,15 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
     private val _toastMessage = MutableStateFlow<String?>(null)
     val toastMessage: StateFlow<String?> = _toastMessage.asStateFlow()
+
+    private val _toAccount = MutableStateFlow("")
+    val toAccount: StateFlow<String> = _toAccount.asStateFlow()
+
+    private val _amount = MutableStateFlow("")
+    val amount: StateFlow<String> = _amount.asStateFlow()
+
+    private val _isTransferring = MutableStateFlow(false)
+    val isTransferring: StateFlow<Boolean> = _isTransferring.asStateFlow()
 
     init {
         loadMainScreen()
@@ -142,10 +152,44 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     }
 
     /**
-     * Shows the account screen (placeholder for future implementation).
+     * Shows the account screen and fetches account summary.
      */
     fun showAccountScreen() {
-        // TODO: Navigate to account screen
+        _uiState.value = RegistrationUiState.Loading
+
+        viewModelScope.launch {
+            try {
+                val result = repository.getAccountSummary()
+
+                result.fold(
+                    onSuccess = { response ->
+                        if (response.data != null) {
+                            _uiState.value = RegistrationUiState.AccountSummary(response.data)
+                        } else {
+                            _uiState.value = RegistrationUiState.Error(
+                                response.message ?: "Failed to fetch account summary"
+                            )
+                        }
+                    },
+                    onFailure = { error ->
+                        _uiState.value = RegistrationUiState.Error(
+                            error.message ?: "Failed to fetch account summary"
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                _uiState.value = RegistrationUiState.Error(
+                    e.message ?: "An unexpected error occurred"
+                )
+            }
+        }
+    }
+
+    /**
+     * Returns to the main screen from account summary.
+     */
+    fun closeAccountScreen() {
+        loadMainScreen()
     }
 
     /**
@@ -153,6 +197,90 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
      */
     fun showSettingsScreen() {
         // TODO: Navigate to settings screen
+    }
+
+    /**
+     * Shows the transfer screen.
+     */
+    fun showTransferScreen() {
+        _toAccount.value = ""
+        _amount.value = ""
+        _uiState.value = RegistrationUiState.TransferScreen
+    }
+
+    /**
+     * Updates the to account input.
+     */
+    fun onToAccountChanged(newValue: String) {
+        _toAccount.value = newValue
+    }
+
+    /**
+     * Updates the amount input.
+     */
+    fun onAmountChanged(newValue: String) {
+        _amount.value = newValue
+    }
+
+    /**
+     * Executes the transfer.
+     */
+    fun executeTransfer() {
+        val currentToAccount = _toAccount.value
+        val currentAmount = _amount.value
+
+        if (currentToAccount.isBlank()) {
+            _toastMessage.value = "To Account cannot be empty"
+            return
+        }
+
+        if (currentAmount.isBlank()) {
+            _toastMessage.value = "Amount cannot be empty"
+            return
+        }
+
+        // Prevent double-click
+        if (_isTransferring.value) {
+            return
+        }
+
+        _isTransferring.value = true
+        _uiState.value = RegistrationUiState.Loading
+
+        viewModelScope.launch {
+            try {
+                val result = repository.transfer(currentToAccount, currentAmount)
+
+                result.fold(
+                    onSuccess = { response ->
+                        _isTransferring.value = false
+                        // Show success message
+                        _toastMessage.value = response.message ?: "Transfer successful"
+                        // Return to main screen
+                        loadMainScreen()
+                    },
+                    onFailure = { error ->
+                        _isTransferring.value = false
+                        _uiState.value = RegistrationUiState.Error(
+                            error.message ?: "Transfer failed"
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                _isTransferring.value = false
+                _uiState.value = RegistrationUiState.Error(
+                    e.message ?: "An unexpected error occurred"
+                )
+            }
+        }
+    }
+
+    /**
+     * Returns to the main screen from transfer screen.
+     */
+    fun closeTransferScreen() {
+        _isTransferring.value = false
+        loadMainScreen()
     }
 }
 
@@ -162,6 +290,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 sealed interface RegistrationUiState {
     data class MainScreen(val serialNumber: String?, val timestamp: Long) : RegistrationUiState
     data object RegistrationForm : RegistrationUiState
+    data class AccountSummary(val data: AccountSummaryData) : RegistrationUiState
+    data object TransferScreen : RegistrationUiState
     data object Loading : RegistrationUiState
     data class Error(val message: String) : RegistrationUiState
 }

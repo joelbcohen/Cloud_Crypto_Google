@@ -1,9 +1,11 @@
 package io.callista.cloudcrypto.data
 
 import android.content.Context
+import android.util.Base64
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.security.PrivateKey
 
 /**
  * Repository for handling device registration.
@@ -133,6 +135,100 @@ class RegistrationRepository(private val context: Context) {
     }
 
     /**
+     * Fetches the account summary for the current device.
+     * @return Result containing the account summary response or an error.
+     */
+    suspend fun getAccountSummary(): Result<AccountSummaryResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val registrationStatus = getRegistrationStatus()
+                val serialNumber = registrationStatus.serialNumber
+
+                if (serialNumber == null) {
+                    val errorMessage = "Cannot fetch account summary, serial number not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Retrieve stored keys for authentication
+                val storedKeys = getStoredKeys()
+                if (storedKeys == null) {
+                    val errorMessage = "Cannot fetch account summary, keys not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Generate fresh attestation blob for authentication
+                val attestationData = attestationManager.generateAttestationData()
+
+                Log.d(TAG, "Fetching account summary for serial number: $serialNumber")
+
+                val request = AccountSummaryRequest(
+                    serialNumber = serialNumber,
+                    publicKey = storedKeys.publicKey,
+                    attestationBlob = attestationData.attestationBlob
+                )
+                val response = api.getAccountSummary(request)
+
+                Log.d(TAG, "Account summary fetched successfully")
+                Result.success(response)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to fetch account summary", e)
+                Result.failure(e)
+            }
+        }
+    }
+
+    /**
+     * Transfers funds to another account.
+     * @param toAccount The account to transfer to
+     * @param amount The amount to transfer
+     * @return Result containing the transfer response or an error.
+     */
+    suspend fun transfer(toAccount: String, amount: String): Result<TransferResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val registrationStatus = getRegistrationStatus()
+                val serialNumber = registrationStatus.serialNumber
+
+                if (serialNumber == null) {
+                    val errorMessage = "Cannot transfer, serial number not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Retrieve stored keys for authentication
+                val storedKeys = getStoredKeys()
+                if (storedKeys == null) {
+                    val errorMessage = "Cannot transfer, keys not found. Please register first."
+                    Log.e(TAG, errorMessage)
+                    return@withContext Result.failure(IllegalStateException(errorMessage))
+                }
+
+                // Generate fresh attestation blob for authentication
+                val attestationData = attestationManager.generateAttestationData()
+
+                Log.d(TAG, "Initiating transfer to account: $toAccount, amount: $amount")
+
+                val request = TransferRequest(
+                    serialNumber = serialNumber,
+                    publicKey = storedKeys.publicKey,
+                    attestationBlob = attestationData.attestationBlob,
+                    toAccountId = toAccount,
+                    amount = amount
+                )
+                val response = api.transfer(request)
+
+                Log.d(TAG, "Transfer successful: ${response.status}")
+                Result.success(response)
+            } catch (e: Exception) {
+                Log.e(TAG, "Transfer failed", e)
+                Result.failure(e)
+            }
+        }
+    }
+
+    /**
      * Saves the registration status to SharedPreferences.
      */
     suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean) {
@@ -166,11 +262,12 @@ class RegistrationRepository(private val context: Context) {
     /**
      * Saves the public and private keys to SharedPreferences.
      */
-    private fun saveKeys(publicKey: String, privateKey: String?) {
+    private fun saveKeys(publicKey: String, privateKey: PrivateKey?) {
         val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
+        val privateKeyString = privateKey?.encoded?.let { Base64.encodeToString(it, Base64.NO_WRAP) }
         prefs.edit().apply {
             putString("public_key", publicKey)
-            putString("private_key", privateKey)
+            putString("private_key", privateKeyString)
             apply()
         }
         Log.d(TAG, "Keys saved to SharedPreferences")

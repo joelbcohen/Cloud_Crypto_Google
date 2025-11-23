@@ -1,6 +1,7 @@
 package io.callista.cloudcrypto.data
 
 import android.util.Log
+import com.google.gson.annotations.SerializedName
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -23,6 +24,16 @@ interface RegistrationApi {
     suspend fun deregisterDevice(
         @Body request: DeregistrationRequest
     ): RegistrationResponse
+
+    @POST("public/crypto/account_summary")
+    suspend fun getAccountSummary(
+        @Body request: AccountSummaryRequest
+    ): AccountSummaryResponse
+
+    @POST("public/crypto/transfer")
+    suspend fun transfer(
+        @Body request: TransferRequest
+    ): TransferResponse
 }
 
 /**
@@ -61,6 +72,95 @@ data class RegistrationResponse(
     val publicKey: String? = null,
     val accountId: String? = null,
     val remainingBalance: Double? = null
+)
+
+/**
+ * Request body for account summary.
+ */
+data class AccountSummaryRequest(
+    val serialNumber: String,
+    val publicKey: String,
+    val attestationBlob: String
+)
+
+/**
+ * Response from the account summary API.
+ * Matches the account_summary MySQL view structure.
+ */
+data class AccountSummaryResponse(
+    val status: String? = null,
+    val message: String? = null,
+    @SerializedName("account")
+    val data: AccountSummaryData? = null
+)
+
+/**
+ * Request body for transfer.
+ */
+data class TransferRequest(
+    val serialNumber: String,
+    val publicKey: String,
+    val attestationBlob: String,
+    val toAccountId: String,
+    val amount: String
+)
+
+/**
+ * Response from the transfer API.
+ */
+data class TransferResponse(
+    val status: String? = null,
+    val message: String? = null,
+    val transactionId: String? = null,
+    val newBalance: String? = null
+)
+
+/**
+ * Account summary data from the database view.
+ * Uses @SerializedName to map snake_case JSON fields to camelCase Kotlin properties.
+ */
+data class AccountSummaryData(
+    @SerializedName("id")
+    val id: String? = null,
+
+    @SerializedName("balance")
+    val balance: String? = null,
+
+    @SerializedName("serial_number")
+    val serialNumber: String? = null,
+
+    @SerializedName("serial_hash")
+    val serialHash: String? = null,
+
+    @SerializedName("model")
+    val model: String? = null,
+
+    @SerializedName("brand")
+    val brand: String? = null,
+
+    @SerializedName("os_version")
+    val osVersion: String? = null,
+
+    @SerializedName("node_id")
+    val nodeId: String? = null,
+
+    @SerializedName("total_sent_transactions")
+    val totalSentTransactions: Int = 0,
+
+    @SerializedName("total_received_transactions")
+    val totalReceivedTransactions: Int = 0,
+
+    @SerializedName("total_sent_amount")
+    val totalSentAmount: String? = null,
+
+    @SerializedName("total_received_amount")
+    val totalReceivedAmount: String? = null,
+
+    @SerializedName("account_created_at")
+    val accountCreatedAt: String? = null,
+
+    @SerializedName("last_activity")
+    val lastActivity: String? = null
 )
 
 /**

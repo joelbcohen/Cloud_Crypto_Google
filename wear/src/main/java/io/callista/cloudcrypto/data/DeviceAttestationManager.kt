@@ -12,6 +12,7 @@ import java.security.cert.Certificate
 import java.security.cert.X509Certificate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.security.PrivateKey
 
 /**
  * Manages device attestation and key generation using Android KeyStore.
@@ -34,6 +35,7 @@ class DeviceAttestationManager(private val context: Context) {
      */
     data class AttestationData(
         val publicKey: String,           // Base64-encoded public key
+        val privateKey: PrivateKey,      // Private key
         val attestationBlob: String,     // Base64-encoded attestation certificate chain
         val algorithm: String = "RSA"    // Key algorithm
     )
@@ -67,6 +69,7 @@ class DeviceAttestationManager(private val context: Context) {
 
             AttestationData(
                 publicKey = publicKeyBase64,
+                privateKey = keyPair.private,
                 attestationBlob = attestationBlob,
                 algorithm = "RSA"
             )
@@ -188,6 +191,7 @@ class DeviceAttestationManager(private val context: Context) {
 
             return AttestationData(
                 publicKey = publicKeyBase64,
+                privateKey = keyPair.private,
                 attestationBlob = "",
                 algorithm = "RSA"
             )
