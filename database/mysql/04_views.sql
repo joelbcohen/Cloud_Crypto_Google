@@ -18,6 +18,8 @@ SELECT
     a.brand,
     a.os_version,
     a.node_id,
+    a.deviceType,
+    a.apnsEnvironment,
     COUNT(DISTINCT t1.id) as total_sent_transactions,
     COUNT(DISTINCT t2.id) as total_received_transactions,
     COALESCE(SUM(DISTINCT t1.amount), 0) as total_sent_amount,
@@ -28,7 +30,7 @@ FROM accounts a
 LEFT JOIN transactions t1 ON a.id = t1.from_account_id AND t1.status = 'completed'
 LEFT JOIN transactions t2 ON a.id = t2.to_account_id AND t2.status = 'completed'
 GROUP BY a.id, a.balance, a.serial_number, a.serial_hash, a.model, a.brand, a.os_version,
-         a.node_id, a.created_at, a.updated_at;
+         a.node_id, a.deviceType, a.apnsEnvironment, a.created_at, a.updated_at;
 
 -- ============================================================================
 -- View: transaction_history
@@ -97,6 +99,7 @@ SELECT
     balance,
     model,
     brand,
+    deviceType,
     created_at
 FROM accounts
 WHERE id != 'SYSTEM'
@@ -112,10 +115,11 @@ SELECT
     brand,
     model,
     os_version,
+    deviceType,
     COUNT(*) as device_count,
     SUM(balance) as total_balance,
     AVG(balance) as avg_balance
 FROM accounts
 WHERE brand IS NOT NULL AND model IS NOT NULL
-GROUP BY brand, model, os_version
+GROUP BY brand, model, os_version, deviceType
 ORDER BY device_count DESC;

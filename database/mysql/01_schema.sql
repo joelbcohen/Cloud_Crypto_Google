@@ -46,6 +46,14 @@ CREATE TABLE accounts (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
 COMMENT='Stores account addresses, balances, and device information';
 
+ALTER TABLE `jcohen_ccrypto`.`accounts` 
+ADD COLUMN `enabled` TINYINT NOT NULL DEFAULT 1 AFTER `fcm_token`,
+ADD COLUMN `apnsEnvironment` VARCHAR(45) NULL DEFAULT 'production' AFTER `enabled`,
+ADD COLUMN `public_id` VARCHAR(45) NULL AFTER `apnsEnvironment`;
+
+ALTER TABLE `jcohen_ccrypto`.`accounts` 
+ADD COLUMN `deviceType` VARCHAR(45) NULL AFTER `public_id`;
+
 -- ============================================================================
 -- Table: transactions
 -- Records all token transactions (transfers, burns, mints)

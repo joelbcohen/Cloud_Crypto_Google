@@ -23,6 +23,8 @@ CREATE PROCEDURE register_account(
     IN p_os_version VARCHAR(100),
     IN p_node_id VARCHAR(255),
     IN p_fcm_token VARCHAR(500),
+    IN p_apns_environment VARCHAR(45),
+    IN p_device_type VARCHAR(45),
     OUT p_account_id BIGINT,
     OUT p_success BOOLEAN,
     OUT p_message VARCHAR(500)
@@ -59,6 +61,8 @@ BEGIN
             os_version = COALESCE(p_os_version, os_version),
             node_id = COALESCE(p_node_id, node_id),
             fcm_token = COALESCE(p_fcm_token, fcm_token),
+            apnsEnvironment = COALESCE(p_apns_environment, apnsEnvironment),
+            deviceType = COALESCE(p_device_type, deviceType),
             updated_at = NOW()
         WHERE id = v_existing_id;
         
@@ -92,12 +96,12 @@ BEGIN
                 -- Create account with device information
                 INSERT INTO accounts (
                     balance, serial_number, serial_hash, attestation_blob, public_key,
-                    model, brand, os_version, node_id, fcm_token
+                    model, brand, os_version, node_id, fcm_token, apnsEnvironment, deviceType
                 ) VALUES (
                     p_initial_balance, p_serial_number,
                     IF(p_serial_number IS NOT NULL, SHA2(p_serial_number, 256), NULL),
                     p_attestation_blob, p_public_key,
-                    p_model, p_brand, p_os_version, p_node_id, p_fcm_token
+                    p_model, p_brand, p_os_version, p_node_id, p_fcm_token, p_apns_environment, p_device_type
                 );
                 SET p_account_id = LAST_INSERT_ID();
 
@@ -123,12 +127,12 @@ BEGIN
             -- Create account with zero balance and device information
             INSERT INTO accounts (
                 balance, serial_number, serial_hash, attestation_blob, public_key,
-                model, brand, os_version, node_id, fcm_token
+                model, brand, os_version, node_id, fcm_token, apnsEnvironment, deviceType
             ) VALUES (
                 0, p_serial_number,
                 IF(p_serial_number IS NOT NULL, SHA2(p_serial_number, 256), NULL),
                 p_attestation_blob, p_public_key,
-                p_model, p_brand, p_os_version, p_node_id, p_fcm_token
+                p_model, p_brand, p_os_version, p_node_id, p_fcm_token, p_apns_environment, p_device_type
             );
             SET p_account_id = LAST_INSERT_ID();
             SET p_success = TRUE;
