@@ -54,6 +54,10 @@ ADD COLUMN `public_id` VARCHAR(45) NULL AFTER `apnsEnvironment`;
 ALTER TABLE `jcohen_ccrypto`.`accounts` 
 ADD COLUMN `deviceType` VARCHAR(45) NULL AFTER `public_id`;
 
+-- Add unique index on public_id for fast lookups
+ALTER TABLE `jcohen_ccrypto`.`accounts` 
+ADD UNIQUE INDEX `idx_public_id` (`public_id` ASC);
+
 -- ============================================================================
 -- Table: transactions
 -- Records all token transactions (transfers, burns, mints)

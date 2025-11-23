@@ -11,6 +11,7 @@ USE jcohen_ccrypto;
 CREATE OR REPLACE VIEW account_summary AS
 SELECT
     a.id,
+    a.public_id,
     a.balance,
     a.serial_number,
     a.serial_hash,
@@ -29,7 +30,7 @@ SELECT
 FROM accounts a
 LEFT JOIN transactions t1 ON a.id = t1.from_account_id AND t1.status = 'completed'
 LEFT JOIN transactions t2 ON a.id = t2.to_account_id AND t2.status = 'completed'
-GROUP BY a.id, a.balance, a.serial_number, a.serial_hash, a.model, a.brand, a.os_version,
+GROUP BY a.id, a.public_id, a.balance, a.serial_number, a.serial_hash, a.model, a.brand, a.os_version,
          a.node_id, a.deviceType, a.apnsEnvironment, a.created_at, a.updated_at;
 
 -- ============================================================================
