@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -314,6 +315,9 @@ fun RegistrationInputScreen(
 ) {
     val listState = rememberScalingLazyListState()
 
+    // Handle back gesture/button
+    BackHandler(onBack = onCancelClicked)
+
     // Function to generate a unique serial number
     val generateSerialNumber = {
         val uuid = UUID.randomUUID().toString()
@@ -431,6 +435,9 @@ fun ErrorScreen(
 ) {
     val listState = rememberScalingLazyListState()
 
+    // Handle back gesture/button
+    BackHandler(onBack = onCancelClicked)
+
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = listState,
@@ -491,6 +498,9 @@ fun AccountSummaryScreen(
 ) {
     val listState = rememberScalingLazyListState()
     var showTransactions by remember { mutableStateOf(false) }
+
+    // Handle back gesture/button
+    BackHandler(onBack = onBackClicked)
 
     // Format large numbers with commas
     val decimalFormat = remember { DecimalFormat("#,##0.00") }
@@ -706,6 +716,9 @@ fun TransferScreen(
     isTransferring: Boolean
 ) {
     val listState = rememberScalingLazyListState()
+
+    // Handle back gesture/button (only when not transferring)
+    BackHandler(enabled = !isTransferring, onBack = onCancelClicked)
 
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
