@@ -25,6 +25,7 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.*
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.HorizontalDivider
 import io.callista.cloudcrypto.data.AccountSummaryData
 import io.callista.cloudcrypto.data.Transaction
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
@@ -665,8 +666,19 @@ fun AccountSummaryScreen(
                 Text(
                     text = "Transaction History",
                     style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 4.dp)
+                    modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                )
+            }
+
+            item {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(vertical = 4.dp),
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                 )
             }
 
@@ -681,9 +693,20 @@ fun AccountSummaryScreen(
                     )
                 }
             } else {
-                transactions.forEach { transaction ->
+                transactions.forEachIndexed { index, transaction ->
                     item {
                         TransactionItem(transaction = transaction, decimalFormat = decimalFormat)
+                    }
+                    if (index < transactions.size - 1) {
+                        item {
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .padding(vertical = 4.dp),
+                                thickness = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            )
+                        }
                     }
                 }
             }
@@ -884,60 +907,105 @@ fun TransactionItem(
         transaction.amount ?: "0.00"
     }
 
+    // Determine color based on transaction type
+    val txTypeColor = when (transaction.txType?.lowercase()) {
+        "mint" -> androidx.compose.ui.graphics.Color(0xFF4CAF50) // Green
+        "transfer" -> when (transaction.direction?.lowercase()) {
+            "sent" -> androidx.compose.ui.graphics.Color(0xFFFF9800) // Orange
+            "received" -> androidx.compose.ui.graphics.Color(0xFF2196F3) // Blue
+            else -> MaterialTheme.colorScheme.primary
+        }
+        else -> MaterialTheme.colorScheme.primary
+    }
+
+    // Transaction type icon/indicator
+    val txIcon = when (transaction.txType?.lowercase()) {
+        "mint" -> "⬇"
+        "transfer" -> when (transaction.direction?.lowercase()) {
+            "sent" -> "→"
+            "received" -> "←"
+            else -> "↔"
+        }
+        else -> "•"
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth(0.95f)
-            .padding(vertical = 4.dp)
+            .padding(vertical = 6.dp)
     ) {
-        Text(
-            text = transaction.txType?.uppercase() ?: "UNKNOWN",
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.primary,
-            textAlign = TextAlign.Center
-        )
-
+        // Transaction Type Badge
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(top = 2.dp)
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 4.dp)
         ) {
             Text(
-                text = "From: ${transaction.fromId ?: "N/A"}",
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center
+                text = txIcon,
+                style = MaterialTheme.typography.bodyMedium,
+                color = txTypeColor,
+                modifier = Modifier.padding(end = 4.dp)
             )
             Text(
-                text = " → ",
-                style = MaterialTheme.typography.bodySmall
-            )
-            Text(
-                text = "To: ${transaction.toId ?: "N/A"}",
-                style = MaterialTheme.typography.bodySmall,
+                text = transaction.txType?.uppercase() ?: "UNKNOWN",
+                style = MaterialTheme.typography.labelMedium,
+                color = txTypeColor,
                 textAlign = TextAlign.Center
             )
         }
 
+        // From/To Row
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 2.dp)
+        ) {
+            Text(
+                text = "${transaction.fromId ?: "?"}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = " → ",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+            Text(
+                text = "${transaction.toId ?: "?"}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // Amount (highlighted)
         Text(
             text = formattedAmount,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.titleMedium,
+            color = txTypeColor,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 2.dp)
+            modifier = Modifier.padding(vertical = 4.dp)
         )
 
-        Text(
-            text = completedDate,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 2.dp)
-        )
-
-        Text(
-            text = completedTime,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
+        // Date and Time
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = completedDate,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = completedTime,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
