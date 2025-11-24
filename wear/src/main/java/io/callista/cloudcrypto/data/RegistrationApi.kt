@@ -57,6 +57,7 @@ data class RegistrationRequest(
     val deviceModel: String? = null,
     val deviceBrand: String? = null,
     val osVersion: String? = null,
+    val deviceType: String = "android",
     val nodeId: String? = null,
     val latitude: Double? = null,
     val longitude: Double? = null
