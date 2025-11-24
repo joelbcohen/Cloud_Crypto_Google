@@ -25,6 +25,7 @@ import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.*
 import androidx.compose.material3.OutlinedTextField
 import io.callista.cloudcrypto.data.AccountSummaryData
+import io.callista.cloudcrypto.data.Transaction
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationUiState
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationViewModel
@@ -129,6 +130,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
         is RegistrationUiState.AccountSummary -> {
             AccountSummaryScreen(
                 accountData = state.data,
+                transactions = state.transactions,
                 onBackClicked = viewModel::closeAccountScreen
             )
         }
@@ -454,9 +456,11 @@ fun ErrorScreen(
 @Composable
 fun AccountSummaryScreen(
     accountData: AccountSummaryData,
+    transactions: List<Transaction>,
     onBackClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
+    var showTransactions by remember { mutableStateOf(false) }
 
     // Format large numbers with commas
     val decimalFormat = remember { DecimalFormat("#,##0.00") }
@@ -598,6 +602,50 @@ fun AccountSummaryScreen(
                     label = "Account ID",
                     value = accountData.id.take(12) + "..."
                 )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        // Transaction History Dropdown
+        item {
+            FilledTonalButton(
+                onClick = { showTransactions = !showTransactions },
+                modifier = Modifier.fillMaxWidth(0.85f)
+            ) {
+                Text(if (showTransactions) "HIDE HISTORY" else "SHOW HISTORY")
+            }
+        }
+
+        // Transaction List
+        if (showTransactions) {
+            item {
+                Text(
+                    text = "Transaction History",
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            if (transactions.isEmpty()) {
+                item {
+                    Text(
+                        text = "No transactions",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            } else {
+                transactions.forEach { transaction ->
+                    item {
+                        TransactionItem(transaction = transaction, decimalFormat = decimalFormat)
+                    }
+                }
             }
         }
 
@@ -784,6 +832,94 @@ fun InfoRow(
             style = MaterialTheme.typography.bodySmall,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 2.dp)
+        )
+    }
+}
+
+@Composable
+fun TransactionItem(
+    transaction: Transaction,
+    decimalFormat: DecimalFormat
+) {
+    // Parse and format completed date and time
+    val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
+    val (completedDate, completedTime) = try {
+        transaction.completedAt?.let {
+            val date = dateTimeFormat.parse(it)
+            if (date != null) {
+                Pair(dateFormat.format(date), timeFormat.format(date))
+            } else {
+                Pair("N/A", "N/A")
+            }
+        } ?: Pair("N/A", "N/A")
+    } catch (e: Exception) {
+        Pair("N/A", "N/A")
+    }
+
+    // Format amount
+    val formattedAmount = try {
+        transaction.amount?.toDouble()?.let { decimalFormat.format(it) } ?: "0.00"
+    } catch (e: Exception) {
+        transaction.amount ?: "0.00"
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .padding(vertical = 4.dp)
+    ) {
+        Text(
+            text = transaction.txType?.uppercase() ?: "UNKNOWN",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(top = 2.dp)
+        ) {
+            Text(
+                text = "From: ${transaction.fromId ?: "N/A"}",
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = " → ",
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                text = "To: ${transaction.toId ?: "N/A"}",
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        Text(
+            text = formattedAmount,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.secondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 2.dp)
+        )
+
+        Text(
+            text = completedDate,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 2.dp)
+        )
+
+        Text(
+            text = completedTime,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
         )
     }
 }

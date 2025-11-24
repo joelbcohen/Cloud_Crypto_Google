@@ -92,7 +92,9 @@ data class AccountSummaryResponse(
     val status: String? = null,
     val message: String? = null,
     @SerializedName("account")
-    val data: AccountSummaryData? = null
+    val data: AccountSummaryData? = null,
+    @SerializedName("transactions")
+    val transactions: List<Transaction>? = null
 )
 
 /**
@@ -162,6 +164,44 @@ data class AccountSummaryData(
 
     @SerializedName("last_activity")
     val lastActivity: String? = null
+)
+
+/**
+ * Transaction data from the API response.
+ */
+data class Transaction(
+    @SerializedName("id")
+    val id: Int? = null,
+
+    @SerializedName("tx_hash")
+    val txHash: String? = null,
+
+    @SerializedName("tx_type")
+    val txType: String? = null,
+
+    @SerializedName("amount")
+    val amount: String? = null,
+
+    @SerializedName("status")
+    val status: String? = null,
+
+    @SerializedName("memo")
+    val memo: String? = null,
+
+    @SerializedName("created_at")
+    val createdAt: String? = null,
+
+    @SerializedName("completed_at")
+    val completedAt: String? = null,
+
+    @SerializedName("from_id")
+    val fromId: Int? = null,
+
+    @SerializedName("to_id")
+    val toId: Int? = null,
+
+    @SerializedName("direction")
+    val direction: String? = null
 )
 
 /**
