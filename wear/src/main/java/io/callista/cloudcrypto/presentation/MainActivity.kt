@@ -314,6 +314,13 @@ fun RegistrationInputScreen(
 ) {
     val listState = rememberScalingLazyListState()
 
+    // Function to generate a unique serial number
+    val generateSerialNumber = {
+        val uuid = UUID.randomUUID().toString()
+        // Use first 8 characters of UUID for a shorter, readable serial
+        "WATCH-${uuid.substring(0, 8).uppercase()}"
+    }
+
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = listState,
@@ -358,8 +365,20 @@ fun RegistrationInputScreen(
             }
         }
 
+        // GENERATE Button
         item {
-            Spacer(modifier = Modifier.height(8.dp))
+            FilledTonalButton(
+                onClick = {
+                    onSerialNumberChanged(generateSerialNumber())
+                },
+                modifier = Modifier.fillMaxWidth(0.85f)
+            ) {
+                Text("GENERATE")
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
         }
 
         // SAVE Button
