@@ -148,7 +148,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
             )
         }
         is RegistrationUiState.Loading -> {
-            LoadingScreen()
+            LoadingScreen(message = state.message)
         }
         is RegistrationUiState.Error -> {
             ErrorScreen(
@@ -410,7 +410,7 @@ fun RegistrationInputScreen(
 }
 
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen(message: String = "Loading...") {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -421,8 +421,10 @@ fun LoadingScreen() {
         ) {
             CircularProgressIndicator()
             Text(
-                text = "Registering...",
-                style = MaterialTheme.typography.bodyMedium
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
     }

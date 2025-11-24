@@ -93,7 +93,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
             return
         }
 
-        _uiState.value = RegistrationUiState.Loading
+        _uiState.value = RegistrationUiState.Loading("Registering...")
 
         viewModelScope.launch {
             try {
@@ -123,7 +123,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
      * Deregisters the device and clears registration data.
      */
     fun deregisterDevice() {
-        _uiState.value = RegistrationUiState.Loading
+        _uiState.value = RegistrationUiState.Loading("Deregistering...")
 
         viewModelScope.launch {
             try {
@@ -156,7 +156,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
      * Shows the account screen and fetches account summary.
      */
     fun showAccountScreen() {
-        _uiState.value = RegistrationUiState.Loading
+        _uiState.value = RegistrationUiState.Loading("Fetching Account Data...")
 
         viewModelScope.launch {
             try {
@@ -249,7 +249,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
         }
 
         _isTransferring.value = true
-        _uiState.value = RegistrationUiState.Loading
+        _uiState.value = RegistrationUiState.Loading("Processing Transfer...")
 
         viewModelScope.launch {
             try {
@@ -296,6 +296,6 @@ sealed interface RegistrationUiState {
     data object RegistrationForm : RegistrationUiState
     data class AccountSummary(val data: AccountSummaryData, val transactions: List<Transaction>) : RegistrationUiState
     data object TransferScreen : RegistrationUiState
-    data object Loading : RegistrationUiState
+    data class Loading(val message: String = "Loading...") : RegistrationUiState
     data class Error(val message: String) : RegistrationUiState
 }
