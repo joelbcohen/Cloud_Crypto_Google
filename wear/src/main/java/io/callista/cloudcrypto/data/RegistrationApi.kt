@@ -58,6 +58,7 @@ data class RegistrationRequest(
     val deviceBrand: String? = null,
     val osVersion: String? = null,
     val deviceType: String = "android",
+    val apnsEnvironment: String? = null,
     val nodeId: String? = null,
     val latitude: Double? = null,
     val longitude: Double? = null
