@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.callista.cloudcrypto.data.AccountSummaryData
 import io.callista.cloudcrypto.data.RegistrationRepository
+import io.callista.cloudcrypto.data.Transaction
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -92,7 +93,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
             return
         }
 
-        _uiState.value = RegistrationUiState.Loading
+        _uiState.value = RegistrationUiState.Loading("Registering...")
 
         viewModelScope.launch {
             try {
@@ -122,7 +123,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
      * Deregisters the device and clears registration data.
      */
     fun deregisterDevice() {
-        _uiState.value = RegistrationUiState.Loading
+        _uiState.value = RegistrationUiState.Loading("Deregistering...")
 
         viewModelScope.launch {
             try {
@@ -155,7 +156,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
      * Shows the account screen and fetches account summary.
      */
     fun showAccountScreen() {
-        _uiState.value = RegistrationUiState.Loading
+        _uiState.value = RegistrationUiState.Loading("Fetching Account Data...")
 
         viewModelScope.launch {
             try {
@@ -164,7 +165,10 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         if (response.data != null) {
-                            _uiState.value = RegistrationUiState.AccountSummary(response.data)
+                            _uiState.value = RegistrationUiState.AccountSummary(
+                                response.data,
+                                response.transactions ?: emptyList()
+                            )
                         } else {
                             _uiState.value = RegistrationUiState.Error(
                                 response.message ?: "Failed to fetch account summary"
@@ -245,7 +249,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
         }
 
         _isTransferring.value = true
-        _uiState.value = RegistrationUiState.Loading
+        _uiState.value = RegistrationUiState.Loading("Processing Transfer...")
 
         viewModelScope.launch {
             try {
@@ -290,8 +294,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 sealed interface RegistrationUiState {
     data class MainScreen(val serialNumber: String?, val timestamp: Long) : RegistrationUiState
     data object RegistrationForm : RegistrationUiState
-    data class AccountSummary(val data: AccountSummaryData) : RegistrationUiState
+    data class AccountSummary(val data: AccountSummaryData, val transactions: List<Transaction>) : RegistrationUiState
     data object TransferScreen : RegistrationUiState
-    data object Loading : RegistrationUiState
+    data class Loading(val message: String = "Loading...") : RegistrationUiState
     data class Error(val message: String) : RegistrationUiState
 }

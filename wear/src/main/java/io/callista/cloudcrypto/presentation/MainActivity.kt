@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -24,7 +25,9 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material3.*
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.HorizontalDivider
 import io.callista.cloudcrypto.data.AccountSummaryData
+import io.callista.cloudcrypto.data.Transaction
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationUiState
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationViewModel
@@ -129,6 +132,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
         is RegistrationUiState.AccountSummary -> {
             AccountSummaryScreen(
                 accountData = state.data,
+                transactions = state.transactions,
                 onBackClicked = viewModel::closeAccountScreen
             )
         }
@@ -144,7 +148,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
             )
         }
         is RegistrationUiState.Loading -> {
-            LoadingScreen()
+            LoadingScreen(message = state.message)
         }
         is RegistrationUiState.Error -> {
             ErrorScreen(
@@ -241,16 +245,9 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // REGISTER or DE-REGISTER Button
-        item {
-            if (isRegistered) {
-                FilledTonalButton(
-                    onClick = onDeregisterClicked,
-                    modifier = Modifier.fillMaxWidth(0.85f)
-                ) {
-                    Text("DE-REGISTER")
-                }
-            } else {
+        // REGISTER Button (only show when not registered)
+        if (!isRegistered) {
+            item {
                 FilledTonalButton(
                     onClick = onRegisterClicked,
                     modifier = Modifier.fillMaxWidth(0.85f)
@@ -260,33 +257,51 @@ fun MainScreen(
             }
         }
 
-        // ACCOUNT Button
-        item {
-            FilledTonalButton(
-                onClick = onAccountClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("ACCOUNT")
+        // DE-REGISTER Button (hidden/commented out)
+        // item {
+        //     if (isRegistered) {
+        //         FilledTonalButton(
+        //             onClick = onDeregisterClicked,
+        //             modifier = Modifier.fillMaxWidth(0.85f)
+        //         ) {
+        //             Text("DE-REGISTER")
+        //         }
+        //     }
+        // }
+
+        // ACCOUNT Button (only show when registered)
+        if (isRegistered) {
+            item {
+                FilledTonalButton(
+                    onClick = onAccountClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("ACCOUNT")
+                }
             }
         }
 
-        // TRANSFER Button
-        item {
-            FilledTonalButton(
-                onClick = onTransferClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("TRANSFER")
+        // TRANSFER Button (only show when registered)
+        if (isRegistered) {
+            item {
+                FilledTonalButton(
+                    onClick = onTransferClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("TRANSFER")
+                }
             }
         }
 
-        // SETTINGS Button
-        item {
-            FilledTonalButton(
-                onClick = onSettingsClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("SETTINGS")
+        // SETTINGS Button (only show when registered)
+        if (isRegistered) {
+            item {
+                FilledTonalButton(
+                    onClick = onSettingsClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("SETTINGS")
+                }
             }
         }
     }
@@ -300,6 +315,16 @@ fun RegistrationInputScreen(
     onCancelClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
+
+    // Handle back gesture/button
+    BackHandler(onBack = onCancelClicked)
+
+    // Function to generate a unique serial number
+    val generateSerialNumber = {
+        val uuid = UUID.randomUUID().toString()
+        // Use first 8 characters of UUID for a shorter, readable serial
+        "WATCH-${uuid.substring(0, 8).uppercase()}"
+    }
 
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -345,8 +370,20 @@ fun RegistrationInputScreen(
             }
         }
 
+        // GENERATE Button
         item {
-            Spacer(modifier = Modifier.height(8.dp))
+            FilledTonalButton(
+                onClick = {
+                    onSerialNumberChanged(generateSerialNumber())
+                },
+                modifier = Modifier.fillMaxWidth(0.85f)
+            ) {
+                Text("GENERATE")
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
         }
 
         // SAVE Button
@@ -373,7 +410,7 @@ fun RegistrationInputScreen(
 }
 
 @Composable
-fun LoadingScreen() {
+fun LoadingScreen(message: String = "Loading...") {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -384,8 +421,10 @@ fun LoadingScreen() {
         ) {
             CircularProgressIndicator()
             Text(
-                text = "Registering...",
-                style = MaterialTheme.typography.bodyMedium
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
         }
     }
@@ -398,6 +437,9 @@ fun ErrorScreen(
     onCancelClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
+
+    // Handle back gesture/button
+    BackHandler(onBack = onCancelClicked)
 
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -454,9 +496,14 @@ fun ErrorScreen(
 @Composable
 fun AccountSummaryScreen(
     accountData: AccountSummaryData,
+    transactions: List<Transaction>,
     onBackClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
+    var showTransactions by remember { mutableStateOf(false) }
+
+    // Handle back gesture/button
+    BackHandler(onBack = onBackClicked)
 
     // Format large numbers with commas
     val decimalFormat = remember { DecimalFormat("#,##0.00") }
@@ -605,13 +652,65 @@ fun AccountSummaryScreen(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // Back Button
+        // Transaction History Dropdown
         item {
             FilledTonalButton(
-                onClick = onBackClicked,
+                onClick = { showTransactions = !showTransactions },
                 modifier = Modifier.fillMaxWidth(0.85f)
             ) {
-                Text("BACK")
+                Text(if (showTransactions) "HIDE HISTORY" else "SHOW HISTORY")
+            }
+        }
+
+        // Transaction List
+        if (showTransactions) {
+            item {
+                Text(
+                    text = "Transaction History",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                )
+            }
+
+            item {
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth(0.9f)
+                        .padding(vertical = 4.dp),
+                    thickness = 1.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                )
+            }
+
+            if (transactions.isEmpty()) {
+                item {
+                    Text(
+                        text = "No transactions",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+                }
+            } else {
+                transactions.forEachIndexed { index, transaction ->
+                    item {
+                        TransactionItem(transaction = transaction, decimalFormat = decimalFormat)
+                    }
+                    if (index < transactions.size - 1) {
+                        item {
+                            HorizontalDivider(
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .padding(vertical = 4.dp),
+                                thickness = 0.5.dp,
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -628,6 +727,9 @@ fun TransferScreen(
     isTransferring: Boolean
 ) {
     val listState = rememberScalingLazyListState()
+
+    // Handle back gesture/button (only when not transferring)
+    BackHandler(enabled = !isTransferring, onBack = onCancelClicked)
 
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -714,17 +816,6 @@ fun TransferScreen(
                 Text(if (isTransferring) "SENDING..." else "SEND")
             }
         }
-
-        // Cancel Button
-        item {
-            FilledTonalButton(
-                onClick = onCancelClicked,
-                modifier = Modifier.fillMaxWidth(0.85f),
-                enabled = !isTransferring
-            ) {
-                Text("CANCEL")
-            }
-        }
     }
 }
 
@@ -785,5 +876,138 @@ fun InfoRow(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 2.dp)
         )
+    }
+}
+
+@Composable
+fun TransactionItem(
+    transaction: Transaction,
+    decimalFormat: DecimalFormat
+) {
+    // Parse and format completed date and time
+    val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+    val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+
+    val (completedDate, completedTime) = try {
+        transaction.completedAt?.let {
+            val date = dateTimeFormat.parse(it)
+            if (date != null) {
+                Pair(dateFormat.format(date), timeFormat.format(date))
+            } else {
+                Pair("N/A", "N/A")
+            }
+        } ?: Pair("N/A", "N/A")
+    } catch (e: Exception) {
+        Pair("N/A", "N/A")
+    }
+
+    // Format amount
+    val formattedAmount = try {
+        transaction.amount?.toDouble()?.let { decimalFormat.format(it) } ?: "0.00"
+    } catch (e: Exception) {
+        transaction.amount ?: "0.00"
+    }
+
+    // Determine color based on transaction type
+    val txTypeColor = when (transaction.txType?.lowercase()) {
+        "mint" -> androidx.compose.ui.graphics.Color(0xFF4CAF50) // Green
+        "transfer" -> when (transaction.direction?.lowercase()) {
+            "sent" -> androidx.compose.ui.graphics.Color(0xFFFF9800) // Orange
+            "received" -> androidx.compose.ui.graphics.Color(0xFF2196F3) // Blue
+            else -> MaterialTheme.colorScheme.primary
+        }
+        else -> MaterialTheme.colorScheme.primary
+    }
+
+    // Transaction type icon/indicator
+    val txIcon = when (transaction.txType?.lowercase()) {
+        "mint" -> "⬇"
+        "transfer" -> when (transaction.direction?.lowercase()) {
+            "sent" -> "→"
+            "received" -> "←"
+            else -> "↔"
+        }
+        else -> "•"
+    }
+
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .padding(vertical = 6.dp)
+    ) {
+        // Transaction Type Badge
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 4.dp)
+        ) {
+            Text(
+                text = txIcon,
+                style = MaterialTheme.typography.bodyMedium,
+                color = txTypeColor,
+                modifier = Modifier.padding(end = 4.dp)
+            )
+            Text(
+                text = transaction.txType?.uppercase() ?: "UNKNOWN",
+                style = MaterialTheme.typography.labelMedium,
+                color = txTypeColor,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // From/To Row
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 2.dp)
+        ) {
+            Text(
+                text = "${transaction.fromId ?: "?"}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = " → ",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(horizontal = 4.dp)
+            )
+            Text(
+                text = "${transaction.toId ?: "?"}",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // Amount (highlighted)
+        Text(
+            text = formattedAmount,
+            style = MaterialTheme.typography.titleMedium,
+            color = txTypeColor,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
+
+        // Date and Time
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = completedDate,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+                textAlign = TextAlign.Center
+            )
+            Text(
+                text = completedTime,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }

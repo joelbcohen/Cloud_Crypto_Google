@@ -54,6 +54,7 @@ class RegistrationRepository(private val context: Context) {
                 Log.d(TAG, "Device Model: ${deviceInfo.deviceModel}")
                 Log.d(TAG, "Device Brand: ${deviceInfo.deviceBrand}")
                 Log.d(TAG, "OS Version: ${deviceInfo.osVersion}")
+                Log.d(TAG, "APNS Environment: ${deviceInfo.apnsEnvironment}")
                 Log.d(TAG, "Node ID: ${deviceInfo.nodeId}")
                 Log.d(TAG, "===============================")
 
@@ -73,6 +74,7 @@ class RegistrationRepository(private val context: Context) {
                     deviceModel = deviceInfo.deviceModel,
                     deviceBrand = deviceInfo.deviceBrand,
                     osVersion = deviceInfo.osVersion,
+                    apnsEnvironment = deviceInfo.apnsEnvironment,
                     nodeId = deviceInfo.nodeId
                 )
 
