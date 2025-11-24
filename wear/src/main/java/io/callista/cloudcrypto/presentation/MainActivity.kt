@@ -243,16 +243,9 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        // REGISTER or DE-REGISTER Button
-        item {
-            if (isRegistered) {
-                FilledTonalButton(
-                    onClick = onDeregisterClicked,
-                    modifier = Modifier.fillMaxWidth(0.85f)
-                ) {
-                    Text("DE-REGISTER")
-                }
-            } else {
+        // REGISTER Button (only show when not registered)
+        if (!isRegistered) {
+            item {
                 FilledTonalButton(
                     onClick = onRegisterClicked,
                     modifier = Modifier.fillMaxWidth(0.85f)
@@ -262,33 +255,51 @@ fun MainScreen(
             }
         }
 
-        // ACCOUNT Button
-        item {
-            FilledTonalButton(
-                onClick = onAccountClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("ACCOUNT")
+        // DE-REGISTER Button (hidden/commented out)
+        // item {
+        //     if (isRegistered) {
+        //         FilledTonalButton(
+        //             onClick = onDeregisterClicked,
+        //             modifier = Modifier.fillMaxWidth(0.85f)
+        //         ) {
+        //             Text("DE-REGISTER")
+        //         }
+        //     }
+        // }
+
+        // ACCOUNT Button (only show when registered)
+        if (isRegistered) {
+            item {
+                FilledTonalButton(
+                    onClick = onAccountClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("ACCOUNT")
+                }
             }
         }
 
-        // TRANSFER Button
-        item {
-            FilledTonalButton(
-                onClick = onTransferClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("TRANSFER")
+        // TRANSFER Button (only show when registered)
+        if (isRegistered) {
+            item {
+                FilledTonalButton(
+                    onClick = onTransferClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("TRANSFER")
+                }
             }
         }
 
-        // SETTINGS Button
-        item {
-            FilledTonalButton(
-                onClick = onSettingsClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("SETTINGS")
+        // SETTINGS Button (only show when registered)
+        if (isRegistered) {
+            item {
+                FilledTonalButton(
+                    onClick = onSettingsClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("SETTINGS")
+                }
             }
         }
     }
