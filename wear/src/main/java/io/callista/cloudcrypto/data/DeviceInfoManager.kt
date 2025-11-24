@@ -66,14 +66,38 @@ class DeviceInfoManager(private val context: Context) {
      * Checks if the app is running on an emulator.
      */
     fun isEmulator(): Boolean {
-        return (Build.FINGERPRINT.startsWith("generic")
+        // Log all Build properties for debugging
+        android.util.Log.d("DeviceInfoManager", "=== Build Properties ===")
+        android.util.Log.d("DeviceInfoManager", "FINGERPRINT: ${Build.FINGERPRINT}")
+        android.util.Log.d("DeviceInfoManager", "MODEL: ${Build.MODEL}")
+        android.util.Log.d("DeviceInfoManager", "MANUFACTURER: ${Build.MANUFACTURER}")
+        android.util.Log.d("DeviceInfoManager", "BRAND: ${Build.BRAND}")
+        android.util.Log.d("DeviceInfoManager", "DEVICE: ${Build.DEVICE}")
+        android.util.Log.d("DeviceInfoManager", "PRODUCT: ${Build.PRODUCT}")
+        android.util.Log.d("DeviceInfoManager", "HARDWARE: ${Build.HARDWARE}")
+        android.util.Log.d("DeviceInfoManager", "BOARD: ${Build.BOARD}")
+        android.util.Log.d("DeviceInfoManager", "========================")
+
+        val isEmulator = (Build.FINGERPRINT.startsWith("generic")
                 || Build.FINGERPRINT.startsWith("unknown")
+                || Build.FINGERPRINT.contains("test-keys")
                 || Build.MODEL.contains("google_sdk")
                 || Build.MODEL.contains("Emulator")
                 || Build.MODEL.contains("Android SDK built for")
+                || Build.MODEL.lowercase().contains("sdk")
                 || Build.MANUFACTURER.contains("Genymotion")
-                || Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic")
-                || "google_sdk" == Build.PRODUCT)
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || Build.PRODUCT.contains("sdk")
+                || Build.PRODUCT.contains("vbox")
+                || Build.PRODUCT.contains("emulator")
+                || Build.HARDWARE.contains("goldfish")
+                || Build.HARDWARE.contains("ranchu")
+                || Build.HARDWARE.contains("vbox")
+                || Build.BOARD.lowercase().contains("goldfish"))
+
+        android.util.Log.d("DeviceInfoManager", "isEmulator result: $isEmulator")
+
+        return isEmulator
     }
 
     /**
