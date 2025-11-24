@@ -688,20 +688,6 @@ fun AccountSummaryScreen(
                 }
             }
         }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        // Back Button
-        item {
-            FilledTonalButton(
-                onClick = onBackClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("BACK")
-            }
-        }
     }
 }
 
@@ -803,17 +789,6 @@ fun TransferScreen(
                 enabled = !isTransferring
             ) {
                 Text(if (isTransferring) "SENDING..." else "SEND")
-            }
-        }
-
-        // Cancel Button
-        item {
-            FilledTonalButton(
-                onClick = onCancelClicked,
-                modifier = Modifier.fillMaxWidth(0.85f),
-                enabled = !isTransferring
-            ) {
-                Text("CANCEL")
             }
         }
     }
