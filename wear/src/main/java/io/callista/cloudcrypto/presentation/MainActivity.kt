@@ -11,11 +11,13 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -198,7 +200,18 @@ fun MainScreen(
                 text = "Cloud Crypto",
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+
+        // App Icon
+        item {
+            Image(
+                painter = painterResource(id = io.callista.cloudcrypto.R.drawable.splash_icon),
+                contentDescription = "Cloud Crypto Icon",
+                modifier = Modifier
+                    .size(48.dp)
+                    .padding(bottom = 8.dp)
             )
         }
 
