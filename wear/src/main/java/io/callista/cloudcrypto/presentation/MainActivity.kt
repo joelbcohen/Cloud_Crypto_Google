@@ -918,20 +918,19 @@ fun TransactionItem(
 ) {
     // Parse and format completed date and time
     val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-    val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("MMM dd yyyy h:mm a", Locale.getDefault())
 
-    val (completedDate, completedTime) = try {
+    val completedDateTime = try {
         transaction.completedAt?.let {
             val date = dateTimeFormat.parse(it)
             if (date != null) {
-                Pair(dateFormat.format(date), timeFormat.format(date))
+                outputFormat.format(date)
             } else {
-                Pair("N/A", "N/A")
+                "N/A"
             }
-        } ?: Pair("N/A", "N/A")
+        } ?: "N/A"
     } catch (e: Exception) {
-        Pair("N/A", "N/A")
+        "N/A"
     }
 
     // Format amount
@@ -1024,22 +1023,24 @@ fun TransactionItem(
             modifier = Modifier.padding(vertical = 4.dp)
         )
 
-        // Date and Time
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        // Memo (if present)
+        if (!transaction.memo.isNullOrBlank()) {
             Text(
-                text = completedDate,
+                text = transaction.memo,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = completedTime,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                textAlign = TextAlign.Center
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 2.dp)
             )
         }
+
+        // Date and Time
+        Text(
+            text = completedDateTime,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 4.dp)
+        )
     }
 }
