@@ -94,6 +94,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
     val toastMessage by viewModel.toastMessage.collectAsStateWithLifecycle()
     val toAccount by viewModel.toAccount.collectAsStateWithLifecycle()
     val amount by viewModel.amount.collectAsStateWithLifecycle()
+    val memo by viewModel.memo.collectAsStateWithLifecycle()
     val isTransferring by viewModel.isTransferring.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
@@ -140,8 +141,10 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
             TransferScreen(
                 toAccount = toAccount,
                 amount = amount,
+                memo = memo,
                 onToAccountChanged = viewModel::onToAccountChanged,
                 onAmountChanged = viewModel::onAmountChanged,
+                onMemoChanged = viewModel::onMemoChanged,
                 onSendClicked = viewModel::executeTransfer,
                 onCancelClicked = viewModel::closeTransferScreen,
                 isTransferring = isTransferring
@@ -720,8 +723,10 @@ fun AccountSummaryScreen(
 fun TransferScreen(
     toAccount: String,
     amount: String,
+    memo: String,
     onToAccountChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
+    onMemoChanged: (String) -> Unit,
     onSendClicked: () -> Unit,
     onCancelClicked: () -> Unit,
     isTransferring: Boolean
@@ -791,6 +796,33 @@ fun TransferScreen(
                 OutlinedTextField(
                     value = amount,
                     onValueChange = onAmountChanged,
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        textAlign = TextAlign.Center,
+                        color = androidx.compose.ui.graphics.Color.White
+                    ),
+                    singleLine = true,
+                    enabled = !isTransferring
+                )
+            }
+        }
+
+        // Memo Text Field (Optional)
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(0.95f)
+            ) {
+                Text(
+                    text = "Memo (Optional)",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                OutlinedTextField(
+                    value = memo,
+                    onValueChange = onMemoChanged,
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         textAlign = TextAlign.Center,
@@ -886,20 +918,19 @@ fun TransactionItem(
 ) {
     // Parse and format completed date and time
     val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
-    val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("MMM dd yyyy h:mm a", Locale.getDefault())
 
-    val (completedDate, completedTime) = try {
+    val completedDateTime = try {
         transaction.completedAt?.let {
             val date = dateTimeFormat.parse(it)
             if (date != null) {
-                Pair(dateFormat.format(date), timeFormat.format(date))
+                outputFormat.format(date)
             } else {
-                Pair("N/A", "N/A")
+                "N/A"
             }
-        } ?: Pair("N/A", "N/A")
+        } ?: "N/A"
     } catch (e: Exception) {
-        Pair("N/A", "N/A")
+        "N/A"
     }
 
     // Format amount
@@ -992,22 +1023,24 @@ fun TransactionItem(
             modifier = Modifier.padding(vertical = 4.dp)
         )
 
-        // Date and Time
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        // Memo (if present)
+        if (!transaction.memo.isNullOrBlank()) {
             Text(
-                text = completedDate,
+                text = transaction.memo,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = completedTime,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                textAlign = TextAlign.Center
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 2.dp)
             )
         }
+
+        // Date and Time
+        Text(
+            text = completedDateTime,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 4.dp)
+        )
     }
 }
