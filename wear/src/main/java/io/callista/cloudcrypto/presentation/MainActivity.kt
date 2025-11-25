@@ -979,7 +979,7 @@ fun NetworkStatusScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         NetworkStatItem(
-                            label = "Total Accounts",
+                            label = "Accounts",
                             value = stats.totalAccounts?.let { decimalFormat.format(it) } ?: "0",
                             color = Color(0xFF4CAF50)
                         )
@@ -988,7 +988,7 @@ fun NetworkStatusScreen(
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
                         )
                         NetworkStatItem(
-                            label = "Total Transactions",
+                            label = "Transactions",
                             value = stats.totalTransactions?.let { decimalFormat.format(it) } ?: "0",
                             color = Color(0xFF2196F3)
                         )
@@ -997,7 +997,7 @@ fun NetworkStatusScreen(
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
                         )
                         NetworkStatItem(
-                            label = "Total Mints",
+                            label = "Mints",
                             value = stats.totalMints?.let { decimalFormat.format(it) } ?: "0",
                             color = Color(0xFFFF9800)
                         )
@@ -1006,7 +1006,7 @@ fun NetworkStatusScreen(
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
                         )
                         NetworkStatItem(
-                            label = "Total Transfers",
+                            label = "Transfers",
                             value = stats.totalTransfers?.let { decimalFormat.format(it) } ?: "0",
                             color = Color(0xFF9C27B0)
                         )
@@ -1015,7 +1015,7 @@ fun NetworkStatusScreen(
                             color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
                         )
                         NetworkStatItem(
-                            label = "Total Minted",
+                            label = "Minted",
                             value = stats.totalMinted?.let { decimalFormat.format(it) } ?: "0",
                             color = Color(0xFFFFEB3B)
                         )
@@ -1286,15 +1286,6 @@ fun TransactionItem(
             )
         }
 
-        // Amount (highlighted)
-        Text(
-            text = formattedAmount,
-            style = MaterialTheme.typography.titleMedium,
-            color = txTypeColor,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(vertical = 4.dp)
-        )
-
         // Memo (if present)
         if (!transaction.memo.isNullOrBlank()) {
             Text(
@@ -1305,6 +1296,15 @@ fun TransactionItem(
                 modifier = Modifier.padding(vertical = 2.dp)
             )
         }
+
+        // Amount (highlighted)
+        Text(
+            text = formattedAmount,
+            style = MaterialTheme.typography.titleMedium,
+            color = txTypeColor,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 4.dp)
+        )
 
         // Date and Time
         Text(
