@@ -12,9 +12,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -27,6 +31,7 @@ import androidx.wear.compose.material3.*
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.HorizontalDivider
 import io.callista.cloudcrypto.data.AccountSummaryData
+import io.callista.cloudcrypto.data.NetworkStatusResponse
 import io.callista.cloudcrypto.data.Transaction
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationUiState
@@ -119,6 +124,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
                 onDeregisterClicked = viewModel::deregisterDevice,
                 onAccountClicked = viewModel::showAccountScreen,
                 onTransferClicked = viewModel::showTransferScreen,
+                onNetworkClicked = viewModel::showNetworkStatusScreen,
                 onSettingsClicked = viewModel::showSettingsScreen
             )
         }
@@ -150,6 +156,12 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
                 isTransferring = isTransferring
             )
         }
+        is RegistrationUiState.NetworkStatus -> {
+            NetworkStatusScreen(
+                networkStatus = state.data,
+                onBackClicked = viewModel::closeNetworkStatusScreen
+            )
+        }
         is RegistrationUiState.Loading -> {
             LoadingScreen(message = state.message)
         }
@@ -171,6 +183,7 @@ fun MainScreen(
     onDeregisterClicked: () -> Unit,
     onAccountClicked: () -> Unit,
     onTransferClicked: () -> Unit,
+    onNetworkClicked: () -> Unit,
     onSettingsClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
@@ -292,6 +305,18 @@ fun MainScreen(
                     modifier = Modifier.fillMaxWidth(0.85f)
                 ) {
                     Text("TRANSFER")
+                }
+            }
+        }
+
+        // NETWORK Button (only show when registered)
+        if (isRegistered) {
+            item {
+                FilledTonalButton(
+                    onClick = onNetworkClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("NETWORK")
                 }
             }
         }
@@ -848,6 +873,253 @@ fun TransferScreen(
                 Text(if (isTransferring) "SENDING..." else "SEND")
             }
         }
+    }
+}
+
+@Composable
+fun NetworkStatusScreen(
+    networkStatus: NetworkStatusResponse,
+    onBackClicked: () -> Unit
+) {
+    val listState = rememberScalingLazyListState()
+
+    // Handle back gesture/button
+    BackHandler(onBack = onBackClicked)
+
+    // Format large numbers with commas
+    val decimalFormat = remember { DecimalFormat("#,###") }
+
+    ScalingLazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = listState,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        // Title
+        item {
+            Text(
+                text = "Network Status",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+        }
+
+        // Status Card - Prominent Display
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.95f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        if (networkStatus.status == "Online")
+                            MaterialTheme.colorScheme.primaryContainer
+                        else
+                            MaterialTheme.colorScheme.errorContainer
+                    )
+                    .padding(vertical = 12.dp, horizontal = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = "● ${networkStatus.status ?: "Unknown"}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = if (networkStatus.status == "Online")
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        else
+                            MaterialTheme.colorScheme.onErrorContainer,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        // Ledger Statistics Section
+        item {
+            Column(
+                modifier = Modifier.fillMaxWidth(0.95f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "━━━━━━━━━━━",
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Text(
+                    text = "LEDGER STATS",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 6.dp)
+                )
+            }
+        }
+
+        networkStatus.ledgerStats?.let { stats ->
+            // Ledger Stats Card
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White.copy(alpha = 0.1f))
+                        .padding(vertical = 10.dp, horizontal = 12.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        NetworkStatItem(
+                            label = "Total Accounts",
+                            value = stats.totalAccounts?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFF4CAF50)
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        )
+                        NetworkStatItem(
+                            label = "Total Transactions",
+                            value = stats.totalTransactions?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFF2196F3)
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        )
+                        NetworkStatItem(
+                            label = "Total Mints",
+                            value = stats.totalMints?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFFFF9800)
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        )
+                        NetworkStatItem(
+                            label = "Total Transfers",
+                            value = stats.totalTransfers?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFF9C27B0)
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        )
+                        NetworkStatItem(
+                            label = "Total Minted",
+                            value = stats.totalMinted?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFFFFEB3B)
+                        )
+                    }
+                }
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        // Device Statistics Section
+        item {
+            Column(
+                modifier = Modifier.fillMaxWidth(0.95f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "━━━━━━━━━━━",
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Text(
+                    text = "DEVICE STATS",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.secondary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 6.dp)
+                )
+            }
+        }
+
+        // Device Stats Card
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.95f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.White.copy(alpha = 0.1f))
+                    .padding(vertical = 10.dp, horizontal = 12.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    networkStatus.deviceStats?.ios?.let { iosStats ->
+                        NetworkStatItem(
+                            label = "iOS Devices",
+                            value = iosStats.count?.toString() ?: "0",
+                            color = Color(0xFF64B5F6)
+                        )
+
+                        networkStatus.deviceStats?.android?.let {
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            )
+                        }
+                    }
+
+                    networkStatus.deviceStats?.android?.let { androidStats ->
+                        NetworkStatItem(
+                            label = "Android Devices",
+                            value = androidStats.count?.toString() ?: "0",
+                            color = Color(0xFF81C784)
+                        )
+                    }
+                }
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+    }
+}
+
+@Composable
+fun NetworkStatItem(
+    label: String,
+    value: String,
+    color: Color
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Start,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.titleMedium,
+            color = color,
+            textAlign = TextAlign.End
+        )
     }
 }
 

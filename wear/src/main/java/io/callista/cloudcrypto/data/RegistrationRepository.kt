@@ -233,6 +233,24 @@ class RegistrationRepository(private val context: Context) {
     }
 
     /**
+     * Fetches the network status.
+     * @return Result containing the network status response or an error.
+     */
+    suspend fun getNetworkStatus(): Result<NetworkStatusResponse> {
+        return withContext(Dispatchers.IO) {
+            try {
+                Log.d(TAG, "Fetching network status...")
+                val response = api.getNetworkStatus()
+                Log.d(TAG, "Network status retrieved: ${response.status}")
+                Result.success(response)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to fetch network status", e)
+                Result.failure(e)
+            }
+        }
+    }
+
+    /**
      * Saves the registration status to SharedPreferences.
      */
     suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean) {
