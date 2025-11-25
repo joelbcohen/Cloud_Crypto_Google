@@ -20,5 +20,4 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Cloud Crypto"
-include(":mobile")
 include(":wear")
