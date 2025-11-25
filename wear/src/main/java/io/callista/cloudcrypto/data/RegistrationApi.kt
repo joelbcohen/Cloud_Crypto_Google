@@ -7,6 +7,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
@@ -34,6 +35,9 @@ interface RegistrationApi {
     suspend fun transfer(
         @Body request: TransferRequest
     ): TransferResponse
+
+    @GET("public/crypto/network_status")
+    suspend fun getNetworkStatus(): NetworkStatusResponse
 }
 
 /**
@@ -204,6 +208,53 @@ data class Transaction(
 
     @SerializedName("direction")
     val direction: String? = null
+)
+
+/**
+ * Response from the network status API.
+ */
+data class NetworkStatusResponse(
+    val status: String? = null,
+    @SerializedName("Blockchain Version")
+    val blockchainVersion: String? = null,
+    @SerializedName("ledger_stats")
+    val ledgerStats: LedgerStats? = null,
+    @SerializedName("device_stats")
+    val deviceStats: DeviceStats? = null
+)
+
+/**
+ * Ledger statistics from the network status.
+ */
+data class LedgerStats(
+    @SerializedName("total_accounts")
+    val totalAccounts: Int? = null,
+    @SerializedName("total_transactions")
+    val totalTransactions: Int? = null,
+    @SerializedName("total_mints")
+    val totalMints: Int? = null,
+    @SerializedName("total_transfers")
+    val totalTransfers: Int? = null,
+    @SerializedName("total_minted")
+    val totalMinted: Long? = null
+)
+
+/**
+ * Device statistics from the network status.
+ */
+data class DeviceStats(
+    @SerializedName("ios")
+    val ios: DeviceCount? = null,
+    @SerializedName("android")
+    val android: DeviceCount? = null
+)
+
+/**
+ * Device count for a specific platform.
+ */
+data class DeviceCount(
+    @SerializedName("count")
+    val count: Int? = null
 )
 
 /**

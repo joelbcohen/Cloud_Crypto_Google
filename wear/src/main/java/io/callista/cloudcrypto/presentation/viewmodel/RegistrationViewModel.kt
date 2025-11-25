@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import io.callista.cloudcrypto.data.AccountSummaryData
+import io.callista.cloudcrypto.data.NetworkStatusResponse
 import io.callista.cloudcrypto.data.RegistrationRepository
 import io.callista.cloudcrypto.data.Transaction
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -207,6 +208,41 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     }
 
     /**
+     * Shows the network status screen and fetches network status.
+     */
+    fun showNetworkStatusScreen() {
+        _uiState.value = RegistrationUiState.Loading("Fetching Network Status...")
+
+        viewModelScope.launch {
+            try {
+                val result = repository.getNetworkStatus()
+
+                result.fold(
+                    onSuccess = { response ->
+                        _uiState.value = RegistrationUiState.NetworkStatus(response)
+                    },
+                    onFailure = { error ->
+                        _uiState.value = RegistrationUiState.Error(
+                            error.message ?: "Failed to fetch network status"
+                        )
+                    }
+                )
+            } catch (e: Exception) {
+                _uiState.value = RegistrationUiState.Error(
+                    e.message ?: "An unexpected error occurred"
+                )
+            }
+        }
+    }
+
+    /**
+     * Returns to the main screen from network status screen.
+     */
+    fun closeNetworkStatusScreen() {
+        loadMainScreen()
+    }
+
+    /**
      * Shows the transfer screen.
      */
     fun showTransferScreen() {
@@ -308,6 +344,7 @@ sealed interface RegistrationUiState {
     data object RegistrationForm : RegistrationUiState
     data class AccountSummary(val data: AccountSummaryData, val transactions: List<Transaction>) : RegistrationUiState
     data object TransferScreen : RegistrationUiState
+    data class NetworkStatus(val data: NetworkStatusResponse) : RegistrationUiState
     data class Loading(val message: String = "Loading...") : RegistrationUiState
     data class Error(val message: String) : RegistrationUiState
 }

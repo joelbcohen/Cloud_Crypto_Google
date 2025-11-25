@@ -27,6 +27,7 @@ import androidx.wear.compose.material3.*
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.HorizontalDivider
 import io.callista.cloudcrypto.data.AccountSummaryData
+import io.callista.cloudcrypto.data.NetworkStatusResponse
 import io.callista.cloudcrypto.data.Transaction
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationUiState
@@ -119,6 +120,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
                 onDeregisterClicked = viewModel::deregisterDevice,
                 onAccountClicked = viewModel::showAccountScreen,
                 onTransferClicked = viewModel::showTransferScreen,
+                onNetworkClicked = viewModel::showNetworkStatusScreen,
                 onSettingsClicked = viewModel::showSettingsScreen
             )
         }
@@ -150,6 +152,12 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
                 isTransferring = isTransferring
             )
         }
+        is RegistrationUiState.NetworkStatus -> {
+            NetworkStatusScreen(
+                networkStatus = state.data,
+                onBackClicked = viewModel::closeNetworkStatusScreen
+            )
+        }
         is RegistrationUiState.Loading -> {
             LoadingScreen(message = state.message)
         }
@@ -171,6 +179,7 @@ fun MainScreen(
     onDeregisterClicked: () -> Unit,
     onAccountClicked: () -> Unit,
     onTransferClicked: () -> Unit,
+    onNetworkClicked: () -> Unit,
     onSettingsClicked: () -> Unit
 ) {
     val listState = rememberScalingLazyListState()
@@ -292,6 +301,18 @@ fun MainScreen(
                     modifier = Modifier.fillMaxWidth(0.85f)
                 ) {
                     Text("TRANSFER")
+                }
+            }
+        }
+
+        // NETWORK Button (only show when registered)
+        if (isRegistered) {
+            item {
+                FilledTonalButton(
+                    onClick = onNetworkClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("NETWORK")
                 }
             }
         }
@@ -848,6 +869,182 @@ fun TransferScreen(
                 Text(if (isTransferring) "SENDING..." else "SEND")
             }
         }
+    }
+}
+
+@Composable
+fun NetworkStatusScreen(
+    networkStatus: NetworkStatusResponse,
+    onBackClicked: () -> Unit
+) {
+    val listState = rememberScalingLazyListState()
+
+    // Handle back gesture/button
+    BackHandler(onBack = onBackClicked)
+
+    // Format large numbers with commas
+    val decimalFormat = remember { DecimalFormat("#,###") }
+
+    ScalingLazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        state = listState,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        // Title
+        item {
+            Text(
+                text = "Network Status",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+        }
+
+        // Status
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth(0.95f)
+                    .padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = "Status",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = networkStatus.status ?: "Unknown",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = if (networkStatus.status == "Online")
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        // Ledger Statistics Title
+        item {
+            Text(
+                text = "Ledger Statistics",
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+
+        // Total Accounts
+        networkStatus.ledgerStats?.let { stats ->
+            item {
+                NetworkStatRow(
+                    label = "Total Accounts",
+                    value = stats.totalAccounts?.let { decimalFormat.format(it) } ?: "0"
+                )
+            }
+
+            // Total Transactions
+            item {
+                NetworkStatRow(
+                    label = "Total Transactions",
+                    value = stats.totalTransactions?.let { decimalFormat.format(it) } ?: "0"
+                )
+            }
+
+            // Total Mints
+            item {
+                NetworkStatRow(
+                    label = "Total Mints",
+                    value = stats.totalMints?.let { decimalFormat.format(it) } ?: "0"
+                )
+            }
+
+            // Total Transfers
+            item {
+                NetworkStatRow(
+                    label = "Total Transfers",
+                    value = stats.totalTransfers?.let { decimalFormat.format(it) } ?: "0"
+                )
+            }
+
+            // Total Minted
+            item {
+                NetworkStatRow(
+                    label = "Total Minted",
+                    value = stats.totalMinted?.let { decimalFormat.format(it) } ?: "0"
+                )
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        // Device Statistics Title
+        item {
+            Text(
+                text = "Device Statistics",
+                style = MaterialTheme.typography.labelMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+
+        // iOS Devices
+        networkStatus.deviceStats?.ios?.let { iosStats ->
+            item {
+                NetworkStatRow(
+                    label = "iOS Devices",
+                    value = iosStats.count?.toString() ?: "0"
+                )
+            }
+        }
+
+        // Android Devices
+        networkStatus.deviceStats?.android?.let { androidStats ->
+            item {
+                NetworkStatRow(
+                    label = "Android Devices",
+                    value = androidStats.count?.toString() ?: "0"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun NetworkStatRow(
+    label: String,
+    value: String
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier
+            .fillMaxWidth(0.95f)
+            .padding(vertical = 2.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.secondary,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(top = 4.dp)
+        )
     }
 }
 
