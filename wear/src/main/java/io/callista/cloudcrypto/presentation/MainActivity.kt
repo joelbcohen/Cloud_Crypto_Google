@@ -12,9 +12,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -889,99 +893,134 @@ fun NetworkStatusScreen(
         modifier = Modifier.fillMaxSize(),
         state = listState,
         horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         // Title
         item {
             Text(
                 text = "Network Status",
-                style = MaterialTheme.typography.titleMedium,
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = 4.dp)
             )
         }
 
-        // Status
+        // Status Card - Prominent Display
         item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
-                    .padding(vertical = 4.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        if (networkStatus.status == "Online")
+                            MaterialTheme.colorScheme.primaryContainer
+                        else
+                            MaterialTheme.colorScheme.errorContainer
+                    )
+                    .padding(vertical = 12.dp, horizontal = 16.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        text = "● ${networkStatus.status ?: "Unknown"}",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = if (networkStatus.status == "Online")
+                            MaterialTheme.colorScheme.onPrimaryContainer
+                        else
+                            MaterialTheme.colorScheme.onErrorContainer,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
+        // Ledger Statistics Section
+        item {
+            Column(
+                modifier = Modifier.fillMaxWidth(0.95f),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Status",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
+                    text = "━━━━━━━━━━━",
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.bodySmall
                 )
                 Text(
-                    text = networkStatus.status ?: "Unknown",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = if (networkStatus.status == "Online")
-                        MaterialTheme.colorScheme.primary
-                    else
-                        MaterialTheme.colorScheme.error,
+                    text = "LEDGER STATS",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(vertical = 6.dp)
                 )
             }
         }
 
-        item {
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        // Ledger Statistics Title
-        item {
-            Text(
-                text = "Ledger Statistics",
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
-
-        // Total Accounts
         networkStatus.ledgerStats?.let { stats ->
+            // Ledger Stats Card
             item {
-                NetworkStatRow(
-                    label = "Total Accounts",
-                    value = stats.totalAccounts?.let { decimalFormat.format(it) } ?: "0"
-                )
-            }
-
-            // Total Transactions
-            item {
-                NetworkStatRow(
-                    label = "Total Transactions",
-                    value = stats.totalTransactions?.let { decimalFormat.format(it) } ?: "0"
-                )
-            }
-
-            // Total Mints
-            item {
-                NetworkStatRow(
-                    label = "Total Mints",
-                    value = stats.totalMints?.let { decimalFormat.format(it) } ?: "0"
-                )
-            }
-
-            // Total Transfers
-            item {
-                NetworkStatRow(
-                    label = "Total Transfers",
-                    value = stats.totalTransfers?.let { decimalFormat.format(it) } ?: "0"
-                )
-            }
-
-            // Total Minted
-            item {
-                NetworkStatRow(
-                    label = "Total Minted",
-                    value = stats.totalMinted?.let { decimalFormat.format(it) } ?: "0"
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+                        .padding(vertical = 10.dp, horizontal = 12.dp)
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        NetworkStatItem(
+                            label = "Total Accounts",
+                            value = stats.totalAccounts?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFF4CAF50)
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        )
+                        NetworkStatItem(
+                            label = "Total Transactions",
+                            value = stats.totalTransactions?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFF2196F3)
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        )
+                        NetworkStatItem(
+                            label = "Total Mints",
+                            value = stats.totalMints?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFFFF9800)
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        )
+                        NetworkStatItem(
+                            label = "Total Transfers",
+                            value = stats.totalTransfers?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFF9C27B0)
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxWidth(0.8f),
+                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        )
+                        NetworkStatItem(
+                            label = "Total Minted",
+                            value = stats.totalMinted?.let { decimalFormat.format(it) } ?: "0",
+                            color = Color(0xFFFFEB3B)
+                        )
+                    }
+                }
             }
         }
 
@@ -989,61 +1028,97 @@ fun NetworkStatusScreen(
             Spacer(modifier = Modifier.height(4.dp))
         }
 
-        // Device Statistics Title
+        // Device Statistics Section
         item {
-            Text(
-                text = "Device Statistics",
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
-
-        // iOS Devices
-        networkStatus.deviceStats?.ios?.let { iosStats ->
-            item {
-                NetworkStatRow(
-                    label = "iOS Devices",
-                    value = iosStats.count?.toString() ?: "0"
+            Column(
+                modifier = Modifier.fillMaxWidth(0.95f),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "━━━━━━━━━━━",
+                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Text(
+                    text = "DEVICE STATS",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.secondary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 6.dp)
                 )
             }
         }
 
-        // Android Devices
-        networkStatus.deviceStats?.android?.let { androidStats ->
-            item {
-                NetworkStatRow(
-                    label = "Android Devices",
-                    value = androidStats.count?.toString() ?: "0"
-                )
+        // Device Stats Card
+        item {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(0.95f)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+                    .padding(vertical = 10.dp, horizontal = 12.dp)
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    networkStatus.deviceStats?.ios?.let { iosStats ->
+                        NetworkStatItem(
+                            label = "iOS Devices",
+                            value = iosStats.count?.toString() ?: "0",
+                            color = Color(0xFF64B5F6)
+                        )
+
+                        networkStatus.deviceStats?.android?.let {
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            )
+                        }
+                    }
+
+                    networkStatus.deviceStats?.android?.let { androidStats ->
+                        NetworkStatItem(
+                            label = "Android Devices",
+                            value = androidStats.count?.toString() ?: "0",
+                            color = Color(0xFF81C784)
+                        )
+                    }
+                }
             }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-fun NetworkStatRow(
+fun NetworkStatItem(
     label: String,
-    value: String
+    value: String,
+    color: Color
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    Row(
         modifier = Modifier
-            .fillMaxWidth(0.95f)
-            .padding(vertical = 2.dp)
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.labelSmall,
+            style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Start,
+            modifier = Modifier.weight(1f)
         )
         Text(
             text = value,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.secondary,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 4.dp)
+            style = MaterialTheme.typography.titleMedium,
+            color = color,
+            textAlign = TextAlign.End
         )
     }
 }
