@@ -185,9 +185,10 @@ class RegistrationRepository(private val context: Context) {
      * Transfers funds to another account.
      * @param toAccount The account to transfer to
      * @param amount The amount to transfer
+     * @param memo Optional memo for the transfer
      * @return Result containing the transfer response or an error.
      */
-    suspend fun transfer(toAccount: String, amount: String): Result<TransferResponse> {
+    suspend fun transfer(toAccount: String, amount: String, memo: String? = null): Result<TransferResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val registrationStatus = getRegistrationStatus()
@@ -210,14 +211,15 @@ class RegistrationRepository(private val context: Context) {
                 // Generate fresh attestation blob for authentication
                 val attestationData = attestationManager.generateAttestationData()
 
-                Log.d(TAG, "Initiating transfer to account: $toAccount, amount: $amount")
+                Log.d(TAG, "Initiating transfer to account: $toAccount, amount: $amount, memo: $memo")
 
                 val request = TransferRequest(
                     serialNumber = serialNumber,
                     publicKey = storedKeys.publicKey,
                     attestationBlob = attestationData.attestationBlob,
                     toAccountId = toAccount,
-                    amount = amount
+                    amount = amount,
+                    memo = memo
                 )
                 val response = api.transfer(request)
 

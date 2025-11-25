@@ -106,7 +106,8 @@ data class TransferRequest(
     val publicKey: String,
     val attestationBlob: String,
     val toAccountId: String,
-    val amount: String
+    val amount: String,
+    val memo: String? = null
 )
 
 /**

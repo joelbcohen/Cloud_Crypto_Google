@@ -94,6 +94,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
     val toastMessage by viewModel.toastMessage.collectAsStateWithLifecycle()
     val toAccount by viewModel.toAccount.collectAsStateWithLifecycle()
     val amount by viewModel.amount.collectAsStateWithLifecycle()
+    val memo by viewModel.memo.collectAsStateWithLifecycle()
     val isTransferring by viewModel.isTransferring.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
@@ -140,8 +141,10 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
             TransferScreen(
                 toAccount = toAccount,
                 amount = amount,
+                memo = memo,
                 onToAccountChanged = viewModel::onToAccountChanged,
                 onAmountChanged = viewModel::onAmountChanged,
+                onMemoChanged = viewModel::onMemoChanged,
                 onSendClicked = viewModel::executeTransfer,
                 onCancelClicked = viewModel::closeTransferScreen,
                 isTransferring = isTransferring
@@ -720,8 +723,10 @@ fun AccountSummaryScreen(
 fun TransferScreen(
     toAccount: String,
     amount: String,
+    memo: String,
     onToAccountChanged: (String) -> Unit,
     onAmountChanged: (String) -> Unit,
+    onMemoChanged: (String) -> Unit,
     onSendClicked: () -> Unit,
     onCancelClicked: () -> Unit,
     isTransferring: Boolean
@@ -791,6 +796,33 @@ fun TransferScreen(
                 OutlinedTextField(
                     value = amount,
                     onValueChange = onAmountChanged,
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+                        textAlign = TextAlign.Center,
+                        color = androidx.compose.ui.graphics.Color.White
+                    ),
+                    singleLine = true,
+                    enabled = !isTransferring
+                )
+            }
+        }
+
+        // Memo Text Field (Optional)
+        item {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(0.95f)
+            ) {
+                Text(
+                    text = "Memo (Optional)",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                OutlinedTextField(
+                    value = memo,
+                    onValueChange = onMemoChanged,
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = MaterialTheme.typography.bodyMedium.copy(
                         textAlign = TextAlign.Center,

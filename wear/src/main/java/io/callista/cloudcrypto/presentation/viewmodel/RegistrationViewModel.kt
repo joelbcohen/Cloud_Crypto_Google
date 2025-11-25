@@ -33,6 +33,9 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> = _amount.asStateFlow()
 
+    private val _memo = MutableStateFlow("")
+    val memo: StateFlow<String> = _memo.asStateFlow()
+
     private val _isTransferring = MutableStateFlow(false)
     val isTransferring: StateFlow<Boolean> = _isTransferring.asStateFlow()
 
@@ -209,6 +212,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     fun showTransferScreen() {
         _toAccount.value = ""
         _amount.value = ""
+        _memo.value = ""
         _uiState.value = RegistrationUiState.TransferScreen
     }
 
@@ -227,11 +231,19 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
     }
 
     /**
+     * Updates the memo input.
+     */
+    fun onMemoChanged(newValue: String) {
+        _memo.value = newValue
+    }
+
+    /**
      * Executes the transfer.
      */
     fun executeTransfer() {
         val currentToAccount = _toAccount.value
         val currentAmount = _amount.value
+        val currentMemo = _memo.value.ifBlank { null }
 
         if (currentToAccount.isBlank()) {
             _toastMessage.value = "To Account cannot be empty"
@@ -253,7 +265,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
         viewModelScope.launch {
             try {
-                val result = repository.transfer(currentToAccount, currentAmount)
+                val result = repository.transfer(currentToAccount, currentAmount, currentMemo)
 
                 result.fold(
                     onSuccess = { response ->
