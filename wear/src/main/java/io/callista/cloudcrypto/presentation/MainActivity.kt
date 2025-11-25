@@ -322,16 +322,16 @@ fun MainScreen(
         }
 
         // SETTINGS Button (only show when registered)
-        if (isRegistered) {
-            item {
-                FilledTonalButton(
-                    onClick = onSettingsClicked,
-                    modifier = Modifier.fillMaxWidth(0.85f)
-                ) {
-                    Text("SETTINGS")
-                }
-            }
-        }
+        // if (isRegistered) {
+        //     item {
+        //         FilledTonalButton(
+        //             onClick = onSettingsClicked,
+        //             modifier = Modifier.fillMaxWidth(0.85f)
+        //         ) {
+        //             Text("SETTINGS")
+        //         }
+        //     }
+        // }
     }
 }
 
@@ -1064,7 +1064,7 @@ fun NetworkStatusScreen(
                 ) {
                     networkStatus.deviceStats?.ios?.let { iosStats ->
                         NetworkStatItem(
-                            label = "iOS Devices",
+                            label = "Apple WatchOS",
                             value = iosStats.count?.toString() ?: "0",
                             color = Color(0xFF64B5F6)
                         )
@@ -1079,7 +1079,7 @@ fun NetworkStatusScreen(
 
                     networkStatus.deviceStats?.android?.let { androidStats ->
                         NetworkStatItem(
-                            label = "Android Devices",
+                            label = "Google WearOS",
                             value = androidStats.count?.toString() ?: "0",
                             color = Color(0xFF81C784)
                         )
