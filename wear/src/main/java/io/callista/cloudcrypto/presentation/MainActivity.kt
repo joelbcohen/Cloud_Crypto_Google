@@ -971,7 +971,7 @@ fun NetworkStatusScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.95f)
                         .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.3f))
+                        .background(Color.White.copy(alpha = 0.1f))
                         .padding(vertical = 10.dp, horizontal = 12.dp)
                 ) {
                     Column(
@@ -1055,7 +1055,7 @@ fun NetworkStatusScreen(
                 modifier = Modifier
                     .fillMaxWidth(0.95f)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.3f))
+                    .background(Color.White.copy(alpha = 0.1f))
                     .padding(vertical = 10.dp, horizontal = 12.dp)
             ) {
                 Column(
