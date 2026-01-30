@@ -174,6 +174,10 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         if (response.data != null) {
+                            // Save account ID so the main screen can display it
+                            if (!response.data.id.isNullOrBlank()) {
+                                repository.saveAccountId(response.data.id)
+                            }
                             _uiState.value = RegistrationUiState.AccountSummary(
                                 response.data,
                                 response.transactions ?: emptyList()
