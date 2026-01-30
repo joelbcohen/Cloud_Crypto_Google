@@ -250,13 +250,19 @@ fun MainScreen(
                         modifier = Modifier.padding(top = 4.dp)
                     )
                     
-                     if (accountId != null) {
+                    if (isRegistered) {
                         Spacer(modifier = Modifier.height(16.dp))
+
                         Text(
-                            text = "Account ID: ${accountId}",
+                            text = "Account ID",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = accountId ?: "---",
                             style = MaterialTheme.typography.bodyMedium,
                             textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurface
+                            modifier = Modifier.padding(top = 4.dp)
                         )
                     }
                 }
