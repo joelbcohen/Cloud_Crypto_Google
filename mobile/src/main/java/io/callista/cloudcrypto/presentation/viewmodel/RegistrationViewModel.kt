@@ -107,11 +107,25 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         repository.saveRegistrationStatus(currentSerialNumber, true, response.accountId)
+
+                        // Fetch account summary to get the account ID
+                        // (the registration endpoint may not return it)
+                        var accountId = response.accountId
+                        if (accountId.isNullOrBlank()) {
+                            try {
+                                val summaryResult = repository.getAccountSummary()
+                                summaryResult.getOrNull()?.data?.id?.let { id ->
+                                    accountId = id
+                                    repository.saveAccountId(id)
+                                }
+                            } catch (_: Exception) { }
+                        }
+
                         // Return to main screen after successful registration
                         _uiState.value = RegistrationUiState.MainScreen(
                             serialNumber = currentSerialNumber,
                             timestamp = System.currentTimeMillis(),
-                            accountId = response.accountId
+                            accountId = accountId
                         )
                     },
                     onFailure = { error ->
