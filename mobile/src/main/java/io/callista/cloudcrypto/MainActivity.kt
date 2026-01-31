@@ -237,40 +237,43 @@ fun MainScreen(
                     Text(
                         text = "Serial Number",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color(0xFF00D4AA)  // Teal
                     )
                     Text(
                         text = serialNumber ?: "---",
                         style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFFE0E6ED),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(top = 4.dp)
                     )
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     Text(
                         text = "Date Registered",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color(0xFF00D4AA)  // Teal
                     )
                     Text(
                         text = dateFormatted,
                         style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFFE0E6ED),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(top = 4.dp)
                     )
-                    
+
                     if (isRegistered) {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
                             text = "Account ID",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = Color(0xFF00D4AA)  // Teal
                         )
                         Text(
                             text = accountId ?: "---",
                             style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFFE0E6ED),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(top = 4.dp)
                         )
