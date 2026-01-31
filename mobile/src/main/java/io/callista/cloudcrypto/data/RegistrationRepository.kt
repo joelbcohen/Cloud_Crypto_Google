@@ -267,6 +267,14 @@ class RegistrationRepository(private val context: Context) {
     }
 
     /**
+     * Saves the account ID to SharedPreferences.
+     */
+    fun saveAccountId(accountId: String) {
+        val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putString("account_id", accountId).apply()
+    }
+
+    /**
      * Gets the current registration status.
      */
     fun getRegistrationStatus(): RegistrationStatus {

@@ -74,9 +74,13 @@ data class RegistrationRequest(
 data class RegistrationResponse(
     val status: String? = null,
     val message: String? = null,
+    @SerializedName("registration_id")
     val registrationId: String? = null,
+    @SerializedName("public_key")
     val publicKey: String? = null,
+    @SerializedName("account_id")
     val accountId: String? = null,
+    @SerializedName("remaining_balance")
     val remainingBalance: Double? = null
 )
 
