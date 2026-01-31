@@ -118,6 +118,14 @@
         .transaction-item {
             border-bottom: 1px solid rgba(0,0,0,0.05);
             padding: 15px 0;
+            transition: background-color 0.3s;
+        }
+        
+        .transaction-item.new-tx {
+            background-color: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 5px;
         }
         
         .transaction-item:last-child {
@@ -157,6 +165,19 @@
             align-items: center;
             display: none;
         }
+        
+        /* Toast Customization */
+        .toast {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+        }
+        .toast-header {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--text-primary);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -167,25 +188,23 @@
         </div>
     </div>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="index.html">
-                <img src="MobileCloudCrypto_1024.png" alt="Cloud Crypto Logo" style="height: 40px; width: auto; margin-right: 10px;">
-                <span style="background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cloud Crypto</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="wallet.html">Wallet</a></li>
-                    <li class="nav-item"><a class="nav-link" href="support.html">Support</a></li>
-                </ul>
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i class="fas fa-coins me-2" style="color: var(--primary-cyan);"></i>
+                <strong class="me-auto">Crypto Received!</strong>
+                <small>Just now</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toast-message">
+                You received funds.
             </div>
         </div>
-    </nav>
+    </div>
+
+    <!-- Navbar Container -->
+    <div id="navbar-container"></div>
 
     <!-- Main Content -->
     <section class="section-padding">
@@ -289,9 +308,12 @@
                                 <div class="wallet-card">
                                     <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h4 class="m-0">Recent Transactions</h4>
-                                        <button class="btn btn-sm btn-outline-primary" onclick="refreshData()">
-                                            <i class="fas fa-sync-alt"></i> Refresh
-                                        </button>
+                                        <div>
+                                            <span class="badge bg-light text-dark me-2" id="auto-refresh-badge" style="display:none;"><i class="fas fa-circle text-success small me-1"></i> Live</span>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="refreshData()">
+                                                <i class="fas fa-sync-alt"></i> Refresh
+                                            </button>
+                                        </div>
                                     </div>
                                     <div id="transactions-list">
                                         <!-- Transcations will be populated here -->
@@ -320,6 +342,10 @@
     <script>
         const API_BASE = 'https://fusio.callista.io/public/crypto/';
         const STORAGE_KEY = 'cloud_crypto_wallet';
+        
+        let knownTxIds = new Set();
+        let isFirstLoad = true;
+        let refreshInterval;
         
         // Helper to generate UUID
         function generateUUID() {
@@ -365,12 +391,32 @@
         function showLogin() {
             document.getElementById('login-view').style.display = 'block';
             document.getElementById('dashboard-view').style.display = 'none';
+            stopAutoRefresh();
         }
 
         function showDashboard() {
             document.getElementById('login-view').style.display = 'none';
             document.getElementById('dashboard-view').style.display = 'block';
+            
+            // Reset known transactions for this session to avoid stale state if switching accounts
+            // knownTxIds.clear(); // Actually better to keep if we just refreshed, but clear on logout
+            
             refreshData();
+            startAutoRefresh();
+        }
+        
+        function startAutoRefresh() {
+            if (refreshInterval) clearInterval(refreshInterval);
+            document.getElementById('auto-refresh-badge').style.display = 'inline-block';
+            // Refresh every 15 seconds
+            refreshInterval = setInterval(() => {
+                refreshData(true);
+            }, 15000); 
+        }
+        
+        function stopAutoRefresh() {
+            if (refreshInterval) clearInterval(refreshInterval);
+            document.getElementById('auto-refresh-badge').style.display = 'none';
         }
 
         async function createWallet() {
@@ -401,6 +447,8 @@
                     walletData.registrationId = result.registration_id;
                     
                     localStorage.setItem(STORAGE_KEY, JSON.stringify(walletData));
+                    knownTxIds.clear();
+                    isFirstLoad = true;
                     showDashboard();
                 } else {
                     alert('Registration failed: ' + (result.message || 'Unknown error'));
@@ -419,10 +467,6 @@
             
             showLoading(true);
             
-            // Construct a wallet object with the entered serial
-            // We generate new keys because we don't have the old ones.
-            // This attempts to see if the server will accept new keys for an existing serial 
-            // or if it allows data retrieval with these credentials.
             const walletData = {
                 serialNumber: serial,
                 id: generateUUID(),
@@ -434,8 +478,6 @@
             };
             
             try {
-                // First try to register/update with this serial
-                // This is often the best way to "claim" the serial on a new device (browser session)
                 const regResponse = await fetch(API_BASE + 'register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -445,13 +487,10 @@
                 const regResult = await regResponse.json();
                 
                 if (regResult.status === 'success' || regResult.registration_id) {
-                     // Successfully restored/registered
                      walletData.accountId = regResult.account_id;
                      walletData.registrationId = regResult.registration_id;
                      
-                     // If account_id is missing in register response (sometimes happens), try summary
                      if (!walletData.accountId) {
-                         // fetch summary to get ID
                          const sumResponse = await fetch(API_BASE + 'account_summary', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -468,9 +507,10 @@
                      }
                      
                      localStorage.setItem(STORAGE_KEY, JSON.stringify(walletData));
+                     knownTxIds.clear();
+                     isFirstLoad = true;
                      showDashboard();
                 } else {
-                    // Registration failed, try just fetching summary in case it's a read-only issue
                     const sumResponse = await fetch(API_BASE + 'account_summary', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -486,6 +526,8 @@
                     if (sumData.status === 'success' || sumData.account) {
                         walletData.accountId = sumData.account.id;
                         localStorage.setItem(STORAGE_KEY, JSON.stringify(walletData));
+                        knownTxIds.clear();
+                        isFirstLoad = true;
                         showDashboard();
                     } else {
                         alert('Could not restore wallet. The serial number might be invalid or the account is locked to a different key.');
@@ -499,7 +541,7 @@
             }
         }
 
-        async function refreshData() {
+        async function refreshData(isAutoRefresh = false) {
             const wallet = JSON.parse(localStorage.getItem(STORAGE_KEY));
             if (!wallet) return;
 
@@ -528,38 +570,76 @@
                     
                     // Update Transactions
                     const txList = document.getElementById('transactions-list');
-                    txList.innerHTML = '';
                     
                     if (data.transactions && data.transactions.length > 0) {
+                        let innerHTML = '';
+                        
                         data.transactions.forEach(tx => {
                             const isReceived = tx.to_id == data.account.id;
                             const amountClass = isReceived ? 'tx-received' : 'tx-sent';
                             const icon = isReceived ? 'fa-arrow-down' : 'fa-arrow-up';
                             const sign = isReceived ? '+' : '-';
+                            const txId = tx.id || tx.tx_hash; // Fallback to hash if id null
                             
-                            const div = document.createElement('div');
-                            div.className = 'transaction-item';
-                            div.innerHTML = `
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <span class="${amountClass} me-2"><i class="fas ${icon}"></i></span>
-                                        <span class="fw-bold">${isReceived ? 'Received from' : 'Sent to'} ID: ${isReceived ? tx.from_id : tx.to_id}</span>
-                                        <div class="small text-secondary">${tx.completed_at || tx.created_at}</div>
-                                    </div>
-                                    <div class="tx-amount ${amountClass}">
-                                        ${sign}${parseFloat(tx.amount).toFixed(2)}
+                            // Check for new transaction
+                            let isNew = false;
+                            if (txId && !knownTxIds.has(txId)) {
+                                knownTxIds.add(txId);
+                                isNew = true;
+                                
+                                // Show toast if not first load and received funds
+                                if (!isFirstLoad && isReceived && isAutoRefresh) {
+                                    showToast(`Received ${parseFloat(tx.amount).toFixed(2)} from ID: ${tx.from_id}`);
+                                }
+                            }
+                            
+                            // Highlight style for new transactions
+                            const itemClass = (isNew && !isFirstLoad) ? 'transaction-item new-tx' : 'transaction-item';
+                            
+                            // Determine memo to display
+                            let memoHtml = '';
+                            if (tx.memo) {
+                                memoHtml = `<div class="small text-muted fst-italic mt-1"><i class="fas fa-quote-left me-1" style="font-size: 0.7em;"></i>${tx.memo}</div>`;
+                            }
+                            
+                            innerHTML += `
+                                <div class="${itemClass}">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="${amountClass} me-2"><i class="fas ${icon}"></i></span>
+                                            <span class="fw-bold">${isReceived ? 'Received from' : 'Sent to'} ID: ${isReceived ? tx.from_id : tx.to_id}</span>
+                                            <div class="small text-secondary">${tx.completed_at || tx.created_at}</div>
+                                            ${memoHtml}
+                                        </div>
+                                        <div class="tx-amount ${amountClass}">
+                                            ${sign}${parseFloat(tx.amount).toFixed(2)}
+                                        </div>
                                     </div>
                                 </div>
                             `;
-                            txList.appendChild(div);
                         });
+                        
+                        txList.innerHTML = innerHTML;
                     } else {
                         txList.innerHTML = '<p class="text-center text-secondary">No recent transactions.</p>';
                     }
+                    
+                    isFirstLoad = false;
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
+        }
+        
+        function showToast(message) {
+            const toastEl = document.getElementById('liveToast');
+            document.getElementById('toast-message').textContent = message;
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+            
+            // Play notification sound if desired
+            // const audio = new Audio('notification.mp3');
+            // audio.play().catch(e => console.log('Audio play failed', e));
         }
 
         async function transferFunds() {
@@ -594,7 +674,7 @@
                     msgDiv.innerHTML = '<div class="alert alert-success">Transfer successful!</div>';
                     document.getElementById('transfer-to-id').value = '';
                     document.getElementById('transfer-amount').value = '';
-                    refreshData();
+                    refreshData(); // Immediate refresh
                 } else {
                     msgDiv.innerHTML = `<div class="alert alert-danger">Transfer failed: ${result.message}</div>`;
                 }
@@ -608,9 +688,11 @@
         function logout() {
             if (confirm('Are you sure you want to clear your wallet from this browser? Make sure you have backed up your details if you wish to access it later.')) {
                 localStorage.removeItem(STORAGE_KEY);
+                stopAutoRefresh();
                 location.reload();
             }
         }
     </script>
+    <script src="nav.js"></script>
 </body>
 </html>
