@@ -530,12 +530,12 @@ fun AccountSummaryScreen(
                         Text(
                             text = "Current Balance",
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color(0xFF00D4AA)
                         )
                         Text(
                             text = formattedBalance,
                             style = MaterialTheme.typography.displayMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color(0xFFE0E6ED)
                         )
                     }
                 }
@@ -580,11 +580,12 @@ fun AccountSummaryScreen(
                             Text(
                                 text = "Account ID",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = Color(0xFF00D4AA)
                             )
                             Text(
                                 text = accountData.id,
                                 style = MaterialTheme.typography.bodyMedium,
+                                color = Color(0xFFE0E6ED),
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(top = 4.dp)
                             )
@@ -597,6 +598,7 @@ fun AccountSummaryScreen(
                 Text(
                     text = "Transaction History",
                     style = MaterialTheme.typography.titleMedium,
+                    color = Color(0xFF00D4AA),
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                 )
             }
@@ -650,17 +652,17 @@ fun StatCard(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color(0xFF00D4AA)
             )
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = Color(0xFFE0E6ED)
             )
             Text(
                 text = subtext,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color(0xFFA0B0C0)
             )
         }
     }
