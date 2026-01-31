@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallet - Cloud Crypto</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-cyan: #00d4ff;
+            --primary-purple: #8b5cf6;
+            --dark-bg: #f0f4f8;
+            --darker-bg: #e5eaf0;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--darker-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-cyan) !important;
+            text-shadow: var(--glow-cyan);
+        }
+        
+        .section-padding {
+            padding: 120px 0 60px;
+        }
+        
+        .wallet-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+        
+        .btn-futuristic {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            border: none;
+            padding: 10px 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            border-radius: 50px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: var(--glow-cyan);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-futuristic:hover {
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .balance-text {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .transaction-item {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding: 15px 0;
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .tx-amount {
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .tx-received { color: #00d4ff; }
+        .tx-sent { color: #8b5cf6; }
+        
+        .form-control {
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+            border-color: var(--primary-cyan);
+        }
+
+        #login-view, #dashboard-view {
+            display: none;
+        }
+        
+        .spinner-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div class="spinner-overlay" id="loading">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="MobileCloudCrypto_1024.png" alt="Cloud Crypto Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                <span style="background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cloud Crypto</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="wallet.html">Wallet</a></li>
+                    <li class="nav-item"><a class="nav-link" href="support.html">Support</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="section-padding">
+        <div class="container">
+            
+            <!-- Login/Register View -->
+            <div id="login-view">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6">
+                        <div class="wallet-card text-center">
+                            <h2 class="mb-4">Web Wallet</h2>
+                            <p class="mb-4 text-secondary">Create a new cloud crypto wallet instantly in your browser.</p>
+                            <div class="d-grid gap-3">
+                                <button class="btn btn-futuristic btn-lg" onclick="createWallet()">
+                                    <i class="fas fa-plus-circle me-2"></i> Create New Wallet
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard View -->
+            <div id="dashboard-view">
+                <div class="row g-4">
+                    <!-- Account Info -->
+                    <div class="col-lg-4">
+                        <div class="wallet-card">
+                            <h4 class="mb-4">Account</h4>
+                            <div class="mb-3">
+                                <label class="text-secondary small">Balance</label>
+                                <div class="balance-text" id="balance-display">0.00</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-secondary small">Account ID</label>
+                                <div class="fw-bold" id="account-id-display">-</div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="text-secondary small">Serial Number</label>
+                                <div class="text-break small font-monospace" id="serial-display">-</div>
+                            </div>
+                            <hr>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-danger btn-sm" onclick="logout()">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Clear Wallet Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transfer -->
+                    <div class="col-lg-8">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="wallet-card">
+                                    <h4 class="mb-3">Transfer Funds</h4>
+                                    <form onsubmit="event.preventDefault(); transferFunds();">
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Recipient Account ID</label>
+                                                <input type="text" class="form-control" id="transfer-to-id" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Amount</label>
+                                                <input type="number" class="form-control" id="transfer-amount" step="0.01" min="0.01" required>
+                                            </div>
+                                            <div class="col-md-2 d-flex align-items-end">
+                                                <button type="submit" class="btn btn-futuristic w-100">Send</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    <div id="transfer-msg" class="mt-3"></div>
+                                </div>
+                            </div>
+
+                            <!-- Transactions -->
+                            <div class="col-12">
+                                <div class="wallet-card">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <h4 class="m-0">Recent Transactions</h4>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="refreshData()">
+                                            <i class="fas fa-sync-alt"></i> Refresh
+                                        </button>
+                                    </div>
+                                    <div id="transactions-list">
+                                        <!-- Transcations will be populated here -->
+                                        <p class="text-center text-secondary">No transactions found.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center py-4">
+            <p>&copy; 2025 Cloud Crypto. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const API_BASE = 'https://fusio.callista.io/public/crypto/';
+        
+        // Helper to generate UUID
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Helper to generate random string for attestation/key
+        function generateRandomString(length) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'flex' : 'none';
+        }
+
+        // Check login status on load
+        window.addEventListener('load', () => {
+            const wallet = localStorage.getItem('cloud_crypto_wallet');
+            if (wallet) {
+                showDashboard();
+            } else {
+                showLogin();
+            }
+        });
+
+        function showLogin() {
+            document.getElementById('login-view').style.display = 'block';
+            document.getElementById('dashboard-view').style.display = 'none';
+        }
+
+        function showDashboard() {
+            document.getElementById('login-view').style.display = 'none';
+            document.getElementById('dashboard-view').style.display = 'block';
+            refreshData();
+        }
+
+        async function createWallet() {
+            showLoading(true);
+            try {
+                // Generate wallet credentials
+                const walletData = {
+                    serialNumber: generateUUID(),
+                    id: generateUUID(),
+                    publicKey: generateRandomString(64), // Simulation
+                    attestationBlob: generateRandomString(128), // Simulation
+                    deviceType: 'web',
+                    deviceModel: navigator.userAgent,
+                    deviceBrand: 'Browser'
+                };
+
+                const response = await fetch(API_BASE + 'register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(walletData)
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success' || result.registration_id) {
+                    // Update with server response details
+                    walletData.accountId = result.account_id;
+                    walletData.registrationId = result.registration_id;
+                    
+                    localStorage.setItem('cloud_crypto_wallet', JSON.stringify(walletData));
+                    showDashboard();
+                } else {
+                    alert('Registration failed: ' + (result.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error(error);
+                alert('Error connecting to server.');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function refreshData() {
+            const wallet = JSON.parse(localStorage.getItem('cloud_crypto_wallet'));
+            if (!wallet) return;
+
+            // Update local display immediately if we have some data
+            document.getElementById('serial-display').textContent = wallet.serialNumber;
+            if (wallet.accountId) document.getElementById('account-id-display').textContent = wallet.accountId;
+
+            try {
+                const response = await fetch(API_BASE + 'account_summary', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        serialNumber: wallet.serialNumber,
+                        publicKey: wallet.publicKey,
+                        attestationBlob: wallet.attestationBlob
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.status === 'success' || data.account) {
+                    // Update Balance
+                    const balance = parseFloat(data.account.balance || 0).toFixed(2);
+                    document.getElementById('balance-display').textContent = balance;
+                    document.getElementById('account-id-display').textContent = data.account.id;
+                    
+                    // Update Transactions
+                    const txList = document.getElementById('transactions-list');
+                    txList.innerHTML = '';
+                    
+                    if (data.transactions && data.transactions.length > 0) {
+                        data.transactions.forEach(tx => {
+                            const isReceived = tx.to_id == data.account.id;
+                            const amountClass = isReceived ? 'tx-received' : 'tx-sent';
+                            const icon = isReceived ? 'fa-arrow-down' : 'fa-arrow-up';
+                            const sign = isReceived ? '+' : '-';
+                            
+                            const div = document.createElement('div');
+                            div.className = 'transaction-item';
+                            div.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <span class="${amountClass} me-2"><i class="fas ${icon}"></i></span>
+                                        <span class="fw-bold">${isReceived ? 'Received from' : 'Sent to'} ID: ${isReceived ? tx.from_id : tx.to_id}</span>
+                                        <div class="small text-secondary">${tx.completed_at || tx.created_at}</div>
+                                    </div>
+                                    <div class="tx-amount ${amountClass}">
+                                        ${sign}${parseFloat(tx.amount).toFixed(2)}
+                                    </div>
+                                </div>
+                            `;
+                            txList.appendChild(div);
+                        });
+                    } else {
+                        txList.innerHTML = '<p class="text-center text-secondary">No recent transactions.</p>';
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        async function transferFunds() {
+            const wallet = JSON.parse(localStorage.getItem('cloud_crypto_wallet'));
+            if (!wallet) return;
+
+            const toId = document.getElementById('transfer-to-id').value;
+            const amount = document.getElementById('transfer-amount').value;
+            const msgDiv = document.getElementById('transfer-msg');
+
+            if (!toId || !amount) return;
+
+            showLoading(true);
+            msgDiv.innerHTML = '';
+
+            try {
+                const response = await fetch(API_BASE + 'transfer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        serialNumber: wallet.serialNumber,
+                        publicKey: wallet.publicKey,
+                        attestationBlob: wallet.attestationBlob,
+                        toAccountId: toId,
+                        amount: amount
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    msgDiv.innerHTML = '<div class="alert alert-success">Transfer successful!</div>';
+                    document.getElementById('transfer-to-id').value = '';
+                    document.getElementById('transfer-amount').value = '';
+                    refreshData();
+                } else {
+                    msgDiv.innerHTML = `<div class="alert alert-danger">Transfer failed: ${result.message}</div>`;
+                }
+            } catch (error) {
+                msgDiv.innerHTML = '<div class="alert alert-danger">Error processing transfer.</div>';
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to clear your wallet from this browser? Make sure you have backed up your details if you wish to access it later.')) {
+                localStorage.removeItem('cloud_crypto_wallet');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
