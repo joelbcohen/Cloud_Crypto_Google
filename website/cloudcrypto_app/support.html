@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Support & FAQ - Cloud Crypto</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-cyan: #00d4ff;
+            --primary-purple: #8b5cf6;
+            --dark-bg: #f0f4f8;
+            --darker-bg: #e5eaf0;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-purple: 0 0 20px rgba(139, 92, 246, 0.3);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--darker-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+        
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(153, 69, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+        }
+        
+        .navbar-brand img {
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-cyan) !important;
+            text-shadow: var(--glow-cyan);
+        }
+        
+        /* Support Content */
+        .support-container {
+            min-height: 100vh;
+            padding: 120px 0 80px;
+        }
+        
+        .support-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .support-title {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .support-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 40px;
+        }
+        
+        /* Contact Support Box */
+        .contact-support-box {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(139, 92, 246, 0.1));
+            border: 2px solid var(--primary-cyan);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+        
+        .contact-support-box h3 {
+            color: var(--primary-cyan);
+            margin-bottom: 15px;
+        }
+        
+        .contact-support-box p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        
+        .contact-support-box .email-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--glow-cyan);
+        }
+        
+        .contact-support-box .email-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.8), 0 0 40px rgba(153, 69, 255, 0.8);
+            color: white;
+        }
+        
+        .response-time {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 15px;
+            font-style: italic;
+        }
+        
+        /* FAQ Section */
+        .faq-section {
+            margin-bottom: 40px;
+        }
+        
+        .faq-category {
+            margin-bottom: 30px;
+        }
+        
+        .faq-category h3 {
+            font-size: 1.8rem;
+            color: var(--primary-purple);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .faq-category h3 i {
+            font-size: 1.5rem;
+        }
+        
+        .faq-item {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-cyan);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.2);
+        }
+        
+        .faq-question {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        
+        .faq-answer {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        
+        .faq-answer ul {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+        
+        .faq-answer li {
+            margin-bottom: 5px;
+        }
+        
+        .faq-answer strong {
+            color: var(--text-primary);
+        }
+        
+        .btn-back {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            color: #fff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--glow-cyan);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-back:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.8), 0 0 40px rgba(153, 69, 255, 0.8);
+            color: #fff;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 30px 0;
+        }
+        
+        footer p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .support-card {
+                padding: 30px 20px;
+            }
+            
+            .support-title {
+                font-size: 2rem;
+            }
+            
+            .faq-category h3 {
+                font-size: 1.4rem;
+            }
+            
+            .contact-support-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="MobileCloudCrypto_1024.png" alt="Cloud Crypto Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                <span style="background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cloud Crypto</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#stats">Stats</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#devices">Devices</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="privacy_policy.html">Privacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="support.html">Support</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Support Content -->
+    <div class="support-container">
+        <div class="container">
+            <div class="support-card">
+                <h1 class="support-title">Help & Support</h1>
+                <p class="support-subtitle">Last updated: Dec 10, 2025</p>
+                
+                <!-- Contact Support Box -->
+                <div class="contact-support-box">
+                    <h3><i class="fas fa-headset"></i> Contact Customer Support</h3>
+                    <p>Have a question or need assistance? We're here to help!</p>
+                    <a href="mailto:support@cloudcrypto.app" class="email-link">
+                        <i class="fas fa-envelope"></i>
+                        support@cloudcrypto.app
+                    </a>
+                    <p class="response-time">Response time: Typically 1–2 business days</p>
+                </div>
+                
+                <!-- FAQ Section -->
+                <div class="faq-section">
+                    <h2 style="text-align: center; color: var(--primary-cyan); margin-bottom: 40px;">
+                        <i class="fas fa-question-circle"></i> Frequently Asked Questions
+                    </h2>
+                    
+                    <!-- About the App -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-info-circle"></i> About the App</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: What is Cloud Crypto?</div>
+                            <div class="faq-answer">A: Cloud Crypto is a native watchOS app that lets you register your Apple Watch as a crypto device, view your account balance and stats, and initiate transfers. It supports push notifications.</div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: What devices and OS versions are supported?</div>
+                            <div class="faq-answer">A: Apple Watch Series 4 or later running watchOS 9.0 or later.</div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: Do I need an iPhone app?</div>
+                            <div class="faq-answer">A: Cloud Crypto is an independent watchOS app. You can install it via the App Store on Apple Watch or from the Watch app on iPhone. It does not have a supporting Apple iPhone app.</div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: What Crypto currency is supported?</div>
+                            <div class="faq-answer">A: The only currency supported is c3. c3 stands for Cloud Crypto Currency. c3 is only ever transacted on the CloudCrypto.app. It has 0 monetary value. It is designed as a learning tool to better understand crypto currency.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Getting Started -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-rocket"></i> Getting Started</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: How do I register my watch?</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>Open Cloud Crypto on Apple Watch</li>
+                                    <li>Tap REGISTER</li>
+                                    <li>Enter a serial number or tap Generate</li>
+                                    <li>Confirm to complete registration</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: Where can I see my serial number later?</div>
+                            <div class="faq-answer">A: It's shown on the main screen after registration.</div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: Can I use the app offline?</div>
+                            <div class="faq-answer">A: You can open the app and see the last known state, but registration, account refresh, and transfers require internet connectivity.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Account and Transfers -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-exchange-alt"></i> Account and Transfers</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: How do I view my account balance and statistics?</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>From the main screen, tap ACCOUNT</li>
+                                    <li>The app fetches your current balance and totals sent/received from the server</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: How do I send Cloud Crypto Currency (c3)?</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>Tap TRANSFER</li>
+                                    <li>Enter the destination account ID and amount (memo optional if shown)</li>
+                                    <li>Tap SEND and wait for confirmation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Registration Lifecycle -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-sync-alt"></i> Registration Lifecycle</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: How do I deregister my watch?</div>
+                            <div class="faq-answer">A: Uninstall the application from your watch.</div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: I replaced or reset my watch—what now?</div>
+                            <div class="faq-answer">A: If possible, uninstall on the old watch first. If not, contact support with your previous serial number so we can revoke the old registration, then install Cloud Crypto on the new watch and register again.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Notifications -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-bell"></i> Notifications</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: What notifications can I receive?</div>
+                            <div class="faq-answer">A: Registration updates, configuration changes, and account status updates.</div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: I'm not receiving notifications—how do I fix it?</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>On Apple Watch: Settings > Notifications > Cloud Crypto > Allow Notifications</li>
+                                    <li>Ensure the watch has internet access</li>
+                                    <li>Open the app once after installing or updating to refresh the device token</li>
+                                    <li>Restart Apple Watch if needed</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Network & Status -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-network-wired"></i> Network & Status</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: What does the NETWORK screen show?</div>
+                            <div class="faq-answer">A: High-level ledger stats (accounts, transactions, totals) and device counts by platform (iOS vs Android), pulled from the backend.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Privacy and Security -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-shield-alt"></i> Privacy and Security</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: What data is stored on my watch?</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>A secure RSA 2048-bit key pair in the Keychain (private key never leaves the device)</li>
+                                    <li>Non-sensitive registration metadata (serial number, timestamps, account ID) in UserDefaults</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: What data is sent to the server?</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>Your public key (not the private key)</li>
+                                    <li>The serial number you enter or generate</li>
+                                    <li>A device attestation blob</li>
+                                    <li>Your device token (for notifications), if available</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: Is my data encrypted?</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>Yes. All network traffic uses HTTPS</li>
+                                    <li>Your private key is stored securely in the Keychain using system encryption</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Troubleshooting -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-wrench"></i> Troubleshooting</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: Registration failed—what can I try?</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>Check internet connectivity</li>
+                                    <li>If you denied notifications, registration can still work, but you won't receive alerts</li>
+                                    <li>Try again; if it persists, contact support with the error shown on the watch</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: The app won't open or crashes.</div>
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>Update to the latest version</li>
+                                    <li>Restart your Apple Watch</li>
+                                    <li>Reinstall the app (you'll need to register again)</li>
+                                    <li>If it continues, contact support with your watch model and watchOS version</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: Do you support multiple accounts?</div>
+                            <div class="faq-answer">A: No. One watch = One Account.</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Legal -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-gavel"></i> Legal</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-question">Q: Where can I find your Privacy Policy?</div>
+                            <div class="faq-answer">A: Privacy Policy: <a href="privacy_policy.html" style="color: var(--primary-cyan); text-decoration: none;">https://cloudcrypto.app/privacy_policy.html</a></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Best Practices -->
+                    <div class="faq-category">
+                        <h3><i class="fas fa-star"></i> Best Practices</h3>
+                        
+                        <div class="faq-item">
+                            <div class="faq-answer">
+                                <ul>
+                                    <li>Keep your watch updated to the latest watchOS</li>
+                                    <li>Let the app generate a serial number to avoid typos</li>
+                                    <li>Double-check destination account IDs before sending transfers</li>
+                                    <li>Open the app after installing or updating to ensure notifications and complications refresh</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-5">
+                    <a href="index.html" class="btn-back">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2025 Cloud Crypto. All rights reserved. | <a href="privacy_policy.html" style="color: var(--primary-cyan); text-decoration: none;">Privacy Policy</a> | <a href="support.html" style="color: var(--primary-cyan); text-decoration: none;">Support</a></p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+    </script>
+</body>
+</html>

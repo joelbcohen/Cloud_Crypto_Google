@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+<script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "ueg1ovxmre");
+</script>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Crypto. Apple and Google watch based cryptocurrency</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-cyan: #00d4ff;
+            --primary-purple: #8b5cf6;
+            --dark-bg: #f0f4f8;
+            --darker-bg: #e5eaf0;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --glow-cyan: 0 0 20px rgba(0, 212, 255, 0.3);
+            --glow-purple: 0 0 20px rgba(139, 92, 246, 0.3);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--darker-bg);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+        }
+        
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(153, 69, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Navbar */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .navbar-brand {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.5rem;
+        }
+        
+        .navbar-brand img {
+            transition: transform 0.3s ease;
+        }
+        
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+        
+        .nav-link {
+            color: var(--text-secondary) !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-cyan) !important;
+            text-shadow: var(--glow-cyan);
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            padding: 100px 0 50px;
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            text-shadow: var(--glow-cyan);
+        }
+        
+        .hero .lead {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+        }
+        
+        .btn-futuristic {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 50px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: var(--glow-cyan);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-futuristic:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.8), 0 0 40px rgba(153, 69, 255, 0.8);
+        }
+        
+        .btn-futuristic::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .btn-futuristic:hover::before {
+            left: 100%;
+        }
+        
+        /* Watch Images */
+        .watch-showcase {
+            position: relative;
+            height: 500px;
+        }
+        
+        .watch-container {
+            position: absolute;
+            transition: all 0.5s ease;
+        }
+        
+        .watch-container:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 30px rgba(0, 243, 255, 0.6));
+        }
+        
+        .watch-container-1 {
+            top: 50px;
+            left: 50px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .watch-container-2 {
+            top: 100px;
+            right: 80px;
+            animation: float 6s ease-in-out infinite 2s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Google Pixel Watch */
+        .pixel-watch {
+            width: 200px;
+            height: 200px;
+            position: relative;
+        }
+        
+        .pixel-watch-body {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                inset 0 2px 5px rgba(255, 255, 255, 0.1),
+                0 0 0 3px #0a0a0a,
+                0 0 20px rgba(0, 243, 255, 0.3);
+            z-index: 2;
+        }
+        
+        .pixel-watch-screen {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: #000000;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .pixel-watch-display {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+        }
+        
+        .pixel-watch-time {
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px var(--primary-cyan);
+        }
+        
+        .pixel-watch-crypto {
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: #4ade80;
+        }
+        
+        .pixel-watch-button {
+            width: 8px;
+            height: 40px;
+            background: linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%);
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 2px;
+            box-shadow: 
+                inset 0 1px 2px rgba(255, 255, 255, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pixel-watch-band {
+            width: 50px;
+            height: 100px;
+            background: linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 50%, #3a3a3a 100%);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 8px;
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+                0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .pixel-watch-band::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.3);
+            left: 0;
+        }
+        
+        .pixel-watch-band::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background: rgba(0, 0, 0, 0.3);
+            left: 0;
+            bottom: 0;
+        }
+        
+        .pixel-watch-band.top {
+            top: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .pixel-watch-band.bottom {
+            bottom: 0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+        
+        /* Apple Watch */
+        .apple-watch {
+            width: 200px;
+            height: 240px;
+            position: relative;
+        }
+        
+        .apple-watch-body {
+            width: 160px;
+            height: 200px;
+            border-radius: 40px;
+            background: linear-gradient(135deg, #c0c0c0 0%, #8a8a8a 50%, #b5b5b5 100%);
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.5),
+                inset 0 2px 5px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.3),
+                0 0 0 3px #999999,
+                0 0 20px rgba(153, 69, 255, 0.3);
+            z-index: 2;
+        }
+        
+        .apple-watch-screen {
+            width: 145px;
+            height: 185px;
+            border-radius: 35px;
+            background: #000000;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .apple-watch-display {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            padding: 12px;
+            font-size: 0.65rem;
+            overflow-y: auto;
+        }
+        
+        .apple-watch-icon {
+            font-size: 2.5rem;
+            color: var(--primary-cyan);
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px var(--primary-cyan);
+        }
+        
+        .apple-watch-text {
+            font-size: 0.9rem;
+            text-align: center;
+            color: #a78bfa;
+        }
+        
+        .apple-watch-crown {
+            width: 10px;
+            height: 50px;
+            background: linear-gradient(180deg, #4a4a4a 0%, #2a2a2a 100%);
+            position: absolute;
+            right: -5px;
+            top: 50px;
+            border-radius: 5px;
+            box-shadow: 
+                inset 0 1px 2px rgba(255, 255, 255, 0.3),
+                0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .apple-watch-crown::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #5a5a5a 0%, #2a2a2a 100%);
+            position: absolute;
+            top: -6px;
+            left: -1px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .apple-watch-button {
+            width: 8px;
+            height: 30px;
+            background: linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%);
+            position: absolute;
+            right: -4px;
+            top: 110px;
+            border-radius: 2px;
+            box-shadow: 
+                inset 0 1px 2px rgba(255, 255, 255, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .apple-watch-band {
+            width: 55px;
+            height: 120px;
+            background: linear-gradient(180deg, #f5f5f5 0%, #e8e8e8 50%, #f5f5f5 100%);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            box-shadow: 
+                inset 0 2px 4px rgba(255, 255, 255, 0.8),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.1),
+                0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .apple-watch-band::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.08);
+            left: 0;
+        }
+        
+        .apple-watch-band::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            background: rgba(0, 0, 0, 0.08);
+            left: 0;
+            bottom: 0;
+        }
+        
+        .apple-watch-band.top {
+            top: 0;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        
+        .apple-watch-band.bottom {
+            bottom: 0;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 0;
+            background: linear-gradient(180deg, transparent, rgba(0, 212, 255, 0.03));
+        }
+        
+        .feature-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            height: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 4rem;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-cyan);
+        }
+        
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        
+        /* Stats Section */
+        .stats {
+            padding: 80px 0;
+            background: rgba(139, 92, 246, 0.03);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .stat-number {
+            font-size: 3.0rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .stat-label {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Supported Devices */
+        .devices {
+            padding: 100px 0;
+        }
+        
+        .device-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .device-card:hover {
+            border-color: var(--primary-purple);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .device-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .device-card:hover .device-icon {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 15px var(--primary-cyan));
+        }
+        
+        /* GitHub Section */
+        .github-section {
+            padding: 80px 0;
+            background: var(--dark-bg);
+        }
+        
+        .github-section h2 {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .github-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .github-card:hover {
+            border-color: var(--primary-purple);
+            box-shadow: 0 8px 30px rgba(139, 92, 246, 0.2);
+            transform: translateY(-5px);
+        }
+        
+        .github-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        .github-card:hover .github-icon {
+            transform: scale(1.1);
+            color: var(--primary-purple);
+        }
+        
+        .github-card h4 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        
+        .github-card p {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+        
+        .btn-github {
+            background: linear-gradient(135deg, #333, #24292e);
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            color: #fff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-github:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+            color: #fff;
+            background: linear-gradient(135deg, #24292e, #000);
+        }
+        
+        .platform-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        .badge-apple {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.1));
+            color: #333;
+        }
+        
+        .badge-google {
+            background: linear-gradient(135deg, rgba(66, 133, 244, 0.1), rgba(52, 168, 83, 0.1));
+            color: #1a73e8;
+        }
+        
+        /* Support Section */
+        .support-section {
+            padding: 100px 0;
+            background: var(--dark-bg);
+        }
+        
+        .support-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .support-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 212, 255, 0.2);
+        }
+        
+        .support-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--glow-cyan);
+        }
+        
+        .support-icon i {
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .support-card h4 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+        
+        .support-card p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .btn-support {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            color: #fff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--glow-cyan);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-support:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.8), 0 0 40px rgba(153, 69, 255, 0.8);
+            color: #fff;
+        }
+        
+        /* CTA Section */
+        .cta {
+            padding: 100px 0;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.08), rgba(139, 92, 246, 0.08));
+            text-align: center;
+        }
+        
+        .cta h2 {
+            /* font-size: 3rem; */
+            font-size: calc(1.475rem + 2.7vw);
+            margin-bottom: 30px;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+            padding: 30px 0;
+        }
+        
+        footer p {
+            margin: 0;
+            color: var(--text-secondary);
+        }
+        
+        /* Particles */
+        .particle {
+            position: fixed;
+            width: 3px;
+            height: 3px;
+            background: var(--primary-cyan);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rise 15s linear infinite;
+            opacity: 0;
+        }
+        
+        @keyframes rise {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh);
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero .lead {
+                font-size: 1.2rem;
+            }
+            
+            .watch-showcase {
+                height: 400px;
+            }
+            
+            .watch-container-1 {
+                top: 20px;
+                left: 10px;
+                transform: scale(0.8);
+            }
+            
+            .watch-container-2 {
+                top: 180px;
+                right: 10px;
+                transform: scale(0.8);
+            }
+            
+            .stat-number {
+                font-size: 2.2rem;
+            }
+        }
+        
+        /* Screenshots Gallery Section */
+        .screenshots-section {
+            padding: 80px 0;
+            background: var(--dark-bg);
+        }
+        
+        .screenshots-section h2 {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Platform Tabs */
+        .platform-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+        
+        .platform-tab {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent;
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .platform-tab:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-cyan);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+        }
+        
+        .platform-tab.active {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        /* Screenshot Grid */
+        .screenshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .screenshot-card {
+            transition: all 0.3s ease;
+        }
+        
+        .screenshot-card.hidden {
+            display: none;
+        }
+        
+        .screenshot-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .screenshot-image:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 40px rgba(0, 212, 255, 0.4), 0 0 60px rgba(139, 92, 246, 0.3);
+        }
+        
+        .screenshot-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .screenshot-image:hover img {
+            transform: scale(1.05);
+        }
+        
+        .screenshot-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            padding: 30px 20px 20px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .screenshot-image:hover .screenshot-overlay {
+            transform: translateY(0);
+        }
+        
+        .screenshot-info h5 {
+            color: white;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+        
+        .screenshot-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+        
+        .view-btn {
+            background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple));
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .view-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.8);
+        }
+        
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        .lightbox.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            animation: zoomIn 0.3s ease;
+        }
+        
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .lightbox-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0, 212, 255, 0.5);
+            display: block;
+            transition: opacity 0.15s ease;
+        }
+        
+        .lightbox-caption {
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            padding: 0 20px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 50px;
+            font-size: 50px;
+            color: white;
+            cursor: pointer;
+            z-index: 10000;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox-close:hover {
+            color: var(--primary-cyan);
+            transform: rotate(90deg);
+        }
+        
+        .lightbox-prev,
+        .lightbox-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 212, 255, 0.3);
+            border: 2px solid var(--primary-cyan);
+            color: white;
+            font-size: 30px;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            z-index: 10000;
+        }
+        
+        .lightbox-prev:hover,
+        .lightbox-next:hover {
+            background: var(--primary-cyan);
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+        
+        .lightbox-prev {
+            left: 30px;
+        }
+        
+        .lightbox-next {
+            right: 30px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .screenshot-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+            }
+            
+            .lightbox-prev,
+            .lightbox-next {
+                padding: 10px 15px;
+                font-size: 20px;
+            }
+            
+            .lightbox-prev {
+                left: 10px;
+            }
+            
+            .lightbox-next {
+                right: 10px;
+            }
+            
+            .lightbox-close {
+                top: 15px;
+                right: 20px;
+                font-size: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="MobileCloudCrypto_1024.png" alt="Cloud Crypto Logo" style="height: 40px; width: auto; margin-right: 10px;">
+                <span style="background: linear-gradient(135deg, var(--primary-cyan), var(--primary-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Cloud Crypto</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#stats">Stats</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#devices">Devices</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#github">GitHub</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="privacy_policy.html">Privacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="support.html">Support</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <p class="text-uppercase" style="color: var(--primary-cyan); font-weight: 700; letter-spacing: 3px; margin-bottom: 20px;">
+                        <!-- i class="fas fa-star"></i --> World's First Wearable Cryptocurrency
+                    </p>
+                    <h1><i class="fas fa-clock"></i> Crypto on Your Wrist</h1>
+                    <p class="lead">Turn your Apple/Google watch into a powerful cloud mining device.  Features include Account Balance, Real Time Transfers, and 24 Hour Off Watch Cloud Mining.</p>
+                    <!-- p style="font-size: 1.2rem; color: var(--text-primary); margin-bottom: 30px; line-height: 1.8;">
+                        The world's first wearable crypto. Send and receive directly from your Google Watch or your Apple Watch. <strong style="color: var(--primary-purple);">Reward on registration.</strong>
+                    </p -->
+                    <!-- button class="btn btn-futuristic"><i class="fas fa-rocket"></i> Start Mining Now</button -->
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="watch-showcase">
+                        <!-- Google Pixel Watch -->
+                        <div class="watch-container watch-container-1">
+                            <div class="pixel-watch">
+                                <div class="pixel-watch-band top"></div>
+                                <div class="pixel-watch-body">
+                                    <div class="pixel-watch-screen">
+                                        <div class="pixel-watch-display">
+                                            <div style="font-size: 0.75rem; margin-bottom: 8px; color: #ffffff; font-weight: 600;">Account Summary</div>
+                                            <div style="font-size: 0.65rem; margin-bottom: 3px; color: #ffffff;">Current Balance</div>
+                                            <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px; color: #ffffff;">549,212.00</div>
+                                            <div style="font-size: 0.75rem; margin-bottom: 5px; color: #ffffff; font-weight: 600;">Transaction Stats</div>
+                                            <div style="font-size: 0.6rem; color: #ffffff;">
+                                                <div style="margin-bottom: 2px;">Total Sent</div>
+                                                <div style="font-weight: 600;">24 txns</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="pixel-watch-button"></div>
+                                </div>
+                                <div class="pixel-watch-band bottom"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Apple Watch -->
+                        <div class="watch-container watch-container-2">
+                            <div class="apple-watch">
+                                <div class="apple-watch-band top"></div>
+                                <div class="apple-watch-body">
+                                    <div class="apple-watch-screen">
+                                        <div class="apple-watch-display">
+                                            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 3px;">
+                                                <span style="font-size: 0.5rem;">8:00</span>
+                                            </div>
+                                            
+                                            <div style="width: 100%; margin-bottom: 8px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                                                    <strong style="font-size: 0.75rem; color: #ffffff;">Mint</strong>
+                                                    <strong style="font-size: 0.75rem; color: #00d4ff;">4,234.00</strong>
+                                                </div>
+                                                <div style="font-size: 0.55rem; color: #00d4ff; line-height: 1.3;">
+                                                    From: 1 → To: 42<br>
+                                                    Completed: 2025-11-15 8:00:03
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="width: 100%; border-top: 1px solid #00d4ff; padding-top: 6px;">
+                                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+                                                    <strong style="font-size: 0.75rem; color: #ffffff;">Transfer</strong>
+                                                    <strong style="font-size: 0.75rem; color: #ff6b6b;">24.00</strong>
+                                                </div>
+                                                <div style="font-size: 0.55rem; color: #00d4ff; line-height: 1.3;">
+                                                    From: 42 → To: 24<br>
+                                                    Completed: 2025-11-14 14:50:44
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="apple-watch-crown"></div>
+                                    <div class="apple-watch-button"></div>
+                                </div>
+                                <div class="apple-watch-band bottom"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Screenshots Gallery Section -->
+    <section class="screenshots-section" id="screenshots">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-4 mb-3">On Your Wrist</h2>
+                <p class="lead">Screenshots from Apple Watch and Google Watch</p>
+            </div>
+            
+            <!-- Platform Tabs -->
+            <div class="platform-tabs" data-aos="fade-up">
+                <button class="platform-tab active" data-platform="all">
+                    <i class="fas fa-th"></i> All
+                </button>
+                <button class="platform-tab" data-platform="apple">
+                    <i class="fab fa-apple"></i> Apple Watch
+                </button>
+                <button class="platform-tab" data-platform="wearos">
+                    <i class="fab fa-google"></i> Google Watch
+                </button>
+            </div>
+            
+            <!-- Image Grid -->
+            <div class="screenshot-grid">
+                <div class="screenshot-card" data-platform="apple" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="screenshot-image">
+                        <img src="apple_watch_1.png" alt="Apple Watch - Device Registration">
+                        <div class="screenshot-overlay">
+                            <div class="screenshot-info">
+                                <h5>Home Screen</h5>
+                                <p>Account Serial Number and Registration Date</p>
+                            </div>
+                            <button class="view-btn" onclick="openLightbox('apple_watch_1.png')">
+                                <i class="fas fa-search-plus"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="screenshot-card" data-platform="apple" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="screenshot-image">
+                        <img src="apple_watch_2.png" alt="Apple Watch - Transaction History">
+                        <div class="screenshot-overlay">
+                            <div class="screenshot-info">
+                                <h5>Transaction History</h5>
+                                <p>View all transfers in real-time</p>
+                            </div>
+                            <button class="view-btn" onclick="openLightbox('apple_watch_2.png')">
+                                <i class="fas fa-search-plus"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="screenshot-card" data-platform="apple" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="screenshot-image">
+                        <img src="apple_watch_3.png" alt="Apple Watch - Transfer Funds">
+                        <div class="screenshot-overlay">
+                            <div class="screenshot-info">
+                                <h5>Transfer Funds</h5>
+                                <p>Send crypto from your wrist</p>
+                            </div>
+                            <button class="view-btn" onclick="openLightbox('apple_watch_3.png')">
+                                <i class="fas fa-search-plus"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="screenshot-card" data-platform="wearos" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="screenshot-image">
+                        <img src="wear_os_1.png" alt="Google Watch - Device Registration">
+                        <div class="screenshot-overlay">
+                            <div class="screenshot-info">
+                                <h5>Home Screen</h5>
+                                <p>Account Serial Number and Registration Date</p>
+                            </div>
+                            <button class="view-btn" onclick="openLightbox('wear_os_1.png')">
+                                <i class="fas fa-search-plus"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="screenshot-card" data-platform="wearos" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="screenshot-image">
+                        <img src="wear_os_2.png" alt="Google Watch - Transaction History">
+                        <div class="screenshot-overlay">
+                            <div class="screenshot-info">
+                                <h5>Transaction History</h5>
+                                <p>Track minting and transfers</p>
+                            </div>
+                            <button class="view-btn" onclick="openLightbox('wear_os_2.png')">
+                                <i class="fas fa-search-plus"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="screenshot-card" data-platform="wearos" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="screenshot-image">
+                        <img src="wear_os_3.png" alt="Google Watch - Network Status">
+                        <div class="screenshot-overlay">
+                            <div class="screenshot-info">
+                                <h5>Network Status</h5>
+                                <p>Monitor ledger stats & totals</p>
+                            </div>
+                            <button class="view-btn" onclick="openLightbox('wear_os_3.png')">
+                                <i class="fas fa-search-plus"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+        <button class="lightbox-prev" onclick="changeImage(-1)">&#10094;</button>
+        <button class="lightbox-next" onclick="changeImage(1)">&#10095;</button>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+    </div>
+    
+    <!-- Stats Section -->
+    <section class="stats" id="stats">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-4 mb-3">Network Stats</h2>
+                <p class="lead">Real-time blockchain activity across all devices</p>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-accounts">-</div>
+                        <div class="stat-label">Accounts</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-transactions">-</div>
+                        <div class="stat-label">Transactions</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-mints">-</div>
+                        <div class="stat-label">Mints</div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-6" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-transfers">-</div>
+                        <div class="stat-label">Transfers</div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-4 col-6" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-minted">-</div>
+                        <div class="stat-label">Minted</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-ios">-</div>
+                        <div class="stat-label">Apple Watch</div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="stat-card">
+                        <div class="stat-number" id="stat-android">-</div>
+                        <div class="stat-label">Google Wear OS</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-4 mb-3">Features</h2>
+                <!-- p class="lead">Experience wearable cryptocurrency mining</p -->
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="0">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                        <h3>Ultra Fast</h3>
+                        <p>All mining occurs off watch in the cloud.  No performance lag.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-battery-full"></i></div>
+                        <h3>Watch Battery Optimized</h3>
+                        <p>No power degradation.  No slowness. No shutdowns.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-rocket"></i></div>
+                        <h3>New Security Features</h3>
+                        <p>Block chain will improve over time.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                        <h3>Account Balances</h3>
+                        <p>Real-time updates and tracking on your wrist.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-exchange"></i></div>
+                        <h3>Instant Transfers</h3>
+                        <p>Watch to watch transfer with zero fees, zero gas.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-cloud"></i></div>
+                        <h3>Cloud Based Centralized Ledger</h3>
+                        <p>Ultrafast settlement and centralized ledger.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Supported Devices -->
+    <section class="devices" id="devices">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-4 mb-3">Supported Devices</h2>
+                <p class="lead">Compatible with watch platforms from Google and Apple</p>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-4 col-6" data-aos="flip-left" data-aos-delay="0">
+                    <div class="device-card">
+                        <div class="device-icon"><i class="fab fa-google"></i></div>
+                        <h4>Google Watch</h4>
+                        <p>WearOS</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-6" data-aos="flip-left" data-aos-delay="100">
+                    <div class="device-card">
+                        <div class="device-icon"><i class="fab fa-apple"></i></div>
+                        <h4>Apple Watch</h4>
+                        <p>watchOS</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- GitHub Repositories Section -->
+    <!-- Support Section -->
+    <section class="support-section" id="support">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-4 mb-3">Need Help?</h2>
+                <p class="lead">Get answers to your questions or reach out to our support team</p>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8" data-aos="fade-up" data-aos-delay="100">
+                    <div class="support-card">
+                        <div class="support-icon">
+                            <i class="fas fa-headset"></i>
+                        </div>
+                        <h4>Help & Support Center</h4>
+                        <p>Browse our comprehensive FAQ covering everything from getting started to troubleshooting. Can't find what you're looking for? Contact our support team directly.</p>
+                        <a href="support.html" class="btn-support">
+                            <i class="fas fa-life-ring"></i> Visit Support Center
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="github-section" id="github">
+        <div class="container">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="display-4 mb-3">Open Source</h2>
+                <p class="lead">Explore the code behind Cloud Crypto on GitHub</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="0">
+                    <div class="github-card">
+                        <div class="github-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="platform-badge badge-google">
+                            <i class="fab fa-google"></i> Wear OS
+                        </div>
+                        <h4>Cloud Crypto Google</h4>
+                        <p>The official Wear OS application for Google Pixel Watch and compatible devices. Built with modern Android development practices.</p>
+                        <a href="https://github.com/joelbcohen/Cloud_Crypto_Google" target="_blank" rel="noopener noreferrer" class="btn-github">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6" data-aos="fade-up" data-aos-delay="100">
+                    <div class="github-card">
+                        <div class="github-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div class="platform-badge badge-apple">
+                            <i class="fab fa-apple"></i> watchOS
+                        </div>
+                        <h4>Cloud Crypto Apple</h4>
+                        <p>The official watchOS application for Apple Watch. Developed with Swift and WatchKit for seamless iOS integration.</p>
+                        <a href="https://github.com/joelbcohen/Cloud_Crypto_Apple" target="_blank" rel="noopener noreferrer" class="btn-github">
+                            <i class="fab fa-github"></i> View Repository
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="cta" id="start">
+        <div class="container" data-aos="zoom-in">
+            <h2>Available Now</h2>
+            <!-- p class="lead mb-4">Join thousands of miners earning crypto on their smartwatches</p -->
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="https://play.google.com/store/apps/details?id=io.callista.cloudcrypto" target="_blank" class="btn btn-futuristic btn-lg">
+                    <i class="fab fa-google-play"></i> Google Play Store
+                </a>
+                <a href="https://testflight.apple.com/join/dejHXa1d" target="_blank" class="btn btn-futuristic btn-lg">
+                    <i class="fab fa-app-store-ios"></i> Apple App Store
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container text-center">
+            <p>&copy; 2025 Cloud Crypto. All rights reserved. | <a href="privacy_policy.html" style="color: var(--primary-cyan); text-decoration: none;">Privacy Policy</a> | <a href="support.html" style="color: var(--primary-cyan); text-decoration: none;">Support</a></p>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+        
+        // Create floating particles
+        function createParticles() {
+            const particleCount = 50;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                document.body.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+        
+        // Fetch Network Statistics
+        async function fetchNetworkStats() {
+            try {
+                const response = await fetch('https://fusio.callista.io/public/index.php/crypto/network_status');
+                const data = await response.json();
+                
+                // Helper function to format numbers with commas or abbreviated for mobile
+                function formatNumber(num) {
+                    // Check if mobile device (screen width < 768px)
+                    const isMobile = window.innerWidth < 768;
+                    
+                    if (isMobile && num >= 1000) {
+                        // Format large numbers with K, M, B suffixes on mobile
+                        if (num >= 1000000000) {
+                            return (num / 1000000000).toFixed(1) + 'B';
+                        } else if (num >= 1000000) {
+                            return (num / 1000000).toFixed(1) + 'M';
+                        } else if (num >= 1000) {
+                            return (num / 1000).toFixed(1) + 'K';
+                        }
+                    }
+                    
+                    // Desktop: use comma formatting
+                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+                
+                // Update statistics with API data from ledger_stats
+                if (data.ledger_stats) {
+                    const ledger = data.ledger_stats;
+                    
+                    if (ledger.total_accounts !== undefined) {
+                        document.getElementById('stat-accounts').textContent = formatNumber(ledger.total_accounts);
+                    }
+                    if (ledger.total_transactions !== undefined) {
+                        document.getElementById('stat-transactions').textContent = formatNumber(ledger.total_transactions);
+                    }
+                    if (ledger.total_mints !== undefined) {
+                        document.getElementById('stat-mints').textContent = formatNumber(ledger.total_mints);
+                    }
+                    if (ledger.total_transfers !== undefined) {
+                        document.getElementById('stat-transfers').textContent = formatNumber(ledger.total_transfers);
+                    }
+                    if (ledger.total_minted !== undefined) {
+                        document.getElementById('stat-minted').textContent = formatNumber(ledger.total_minted);
+                    }
+                }
+                
+                // Update device statistics from device_stats
+                if (data.device_stats) {
+                    if (data.device_stats.ios && data.device_stats.ios.count !== undefined) {
+                        document.getElementById('stat-ios').textContent = formatNumber(data.device_stats.ios.count);
+                    }
+                    if (data.device_stats.android && data.device_stats.android.count !== undefined) {
+                        document.getElementById('stat-android').textContent = formatNumber(data.device_stats.android.count);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching network stats:', error);
+                // Keep the "-" placeholder if fetch fails
+            }
+        }
+        
+        // Fetch stats on page load
+        fetchNetworkStats();
+        
+        // Optionally refresh stats every 30 seconds
+        setInterval(fetchNetworkStats, 30000);
+        
+        // Refresh stats on window resize (to handle mobile/desktop format changes)
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(fetchNetworkStats, 250);
+        });
+        
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Navbar background on scroll
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+        
+        // Device Detection
+        function detectDevice() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            
+            // Check for iOS devices
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                return 'ios';
+            }
+            
+            // Check for Android devices
+            if (/android/i.test(userAgent)) {
+                return 'android';
+            }
+            
+            // Desktop or unable to detect
+            return 'desktop';
+        }
+        
+        // Check if mobile device
+        function isMobile() {
+            return window.innerWidth < 768;
+        }
+        
+        // Screenshot Gallery Data
+        const allScreenshots = [
+            {
+                src: 'apple_watch_1.png',
+                title: 'Device Registration - Apple Watch',
+                description: 'Secure device attestation with unique serial number',
+                platform: 'ios'
+            },
+            {
+                src: 'apple_watch_2.png',
+                title: 'Transaction History - Apple Watch',
+                description: 'View all your transfers in real-time',
+                platform: 'ios'
+            },
+            {
+                src: 'apple_watch_3.png',
+                title: 'Transfer Funds - Apple Watch',
+                description: 'Send crypto directly from your wrist',
+                platform: 'ios'
+            },
+            {
+                src: 'wear_os_1.png',
+                title: 'Device Registration - Wear OS',
+                description: 'Secure attestation on Google Pixel Watch',
+                platform: 'android'
+            },
+            {
+                src: 'wear_os_2.png',
+                title: 'Transaction History - Wear OS',
+                description: 'Track minting and transfers on Wear OS',
+                platform: 'android'
+            },
+            {
+                src: 'wear_os_3.png',
+                title: 'Network Status - Wear OS',
+                description: 'Monitor ledger stats and account totals',
+                platform: 'android'
+            }
+        ];
+        
+        // Get filtered screenshots based on device
+        function getFilteredScreenshots() {
+            if (!isMobile()) {
+                // Desktop - show all screenshots
+                return allScreenshots;
+            }
+            
+            const deviceType = detectDevice();
+            
+            if (deviceType === 'ios') {
+                // iPhone - show only Apple Watch screenshots
+                return allScreenshots.filter(s => s.platform === 'ios');
+            } else if (deviceType === 'android') {
+                // Android - show only Wear OS screenshots
+                return allScreenshots.filter(s => s.platform === 'android');
+            }
+            
+            // Unable to detect or other - show all
+            return allScreenshots;
+        }
+        
+        let screenshots = getFilteredScreenshots();
+        let currentImageIndex = 0;
+        
+        // Filter screenshot cards on mobile
+        function filterScreenshotCards() {
+            const deviceType = detectDevice();
+            const mobile = isMobile();
+            
+            if (!mobile) {
+                // Desktop - show all cards and set "All" tab as active
+                document.querySelectorAll('.screenshot-card').forEach(card => {
+                    card.style.display = '';
+                    card.classList.remove('hidden');
+                });
+                
+                // Set "All" tab as active
+                document.querySelectorAll('.platform-tab').forEach(tab => {
+                    tab.classList.remove('active');
+                    if (tab.getAttribute('data-platform') === 'all') {
+                        tab.classList.add('active');
+                    }
+                });
+                
+                screenshots = allScreenshots;
+                return;
+            }
+            
+            // Mobile device detected
+            let selectedPlatform = 'all';
+            
+            if (deviceType === 'ios') {
+                // iPhone - show only Apple Watch cards and activate Apple Watch tab
+                selectedPlatform = 'apple';
+                document.querySelectorAll('.screenshot-card').forEach(card => {
+                    const platform = card.getAttribute('data-platform');
+                    if (platform === 'apple') {
+                        card.style.display = '';
+                        card.classList.remove('hidden');
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.add('hidden');
+                    }
+                });
+                screenshots = allScreenshots.filter(s => s.platform === 'ios');
+            } else if (deviceType === 'android') {
+                // Android - show only Wear OS cards and activate Wear OS tab
+                selectedPlatform = 'wearos';
+                document.querySelectorAll('.screenshot-card').forEach(card => {
+                    const platform = card.getAttribute('data-platform');
+                    if (platform === 'wearos') {
+                        card.style.display = '';
+                        card.classList.remove('hidden');
+                    } else {
+                        card.style.display = 'none';
+                        card.classList.add('hidden');
+                    }
+                });
+                screenshots = allScreenshots.filter(s => s.platform === 'android');
+            } else {
+                // Unable to detect - show all
+                document.querySelectorAll('.screenshot-card').forEach(card => {
+                    card.style.display = '';
+                    card.classList.remove('hidden');
+                });
+                screenshots = allScreenshots;
+            }
+            
+            // Update active tab
+            document.querySelectorAll('.platform-tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-platform') === selectedPlatform) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+        
+        // Run on page load
+        filterScreenshotCards();
+        
+        // Platform Filter - Updated to work with device detection
+        document.querySelectorAll('.platform-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab
+                document.querySelectorAll('.platform-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Get selected platform
+                const platform = this.getAttribute('data-platform');
+                
+                // Filter cards based on selection
+                document.querySelectorAll('.screenshot-card').forEach(card => {
+                    const cardPlatform = card.getAttribute('data-platform');
+                    
+                    if (platform === 'all') {
+                        // Show all cards
+                        card.classList.remove('hidden');
+                        card.style.display = '';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'scale(1)';
+                        }, 10);
+                    } else if (platform === cardPlatform) {
+                        // Show matching platform
+                        card.classList.remove('hidden');
+                        card.style.display = '';
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'scale(1)';
+                        }, 10);
+                    } else {
+                        // Hide non-matching platform
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            card.classList.add('hidden');
+                            card.style.display = 'none';
+                        }, 300);
+                    }
+                });
+                
+                // Update screenshots array based on selection
+                if (platform === 'all') {
+                    screenshots = allScreenshots;
+                } else if (platform === 'apple') {
+                    screenshots = allScreenshots.filter(s => s.platform === 'ios');
+                } else if (platform === 'wearos') {
+                    screenshots = allScreenshots.filter(s => s.platform === 'android');
+                }
+            });
+        });
+        
+        // Lightbox Functions
+        function openLightbox(imageSrc) {
+            // Find the index of the image in the filtered array
+            const index = screenshots.findIndex(s => s.src === imageSrc);
+            
+            // If image not found in filtered array (shouldn't happen), default to 0
+            if (index === -1) {
+                console.warn('Image not found in filtered screenshots:', imageSrc);
+                return;
+            }
+            
+            currentImageIndex = index;
+            const lightbox = document.getElementById('lightbox');
+            const img = document.getElementById('lightbox-img');
+            const caption = document.getElementById('lightbox-caption');
+            
+            img.style.opacity = '1';
+            img.src = screenshots[index].src;
+            caption.innerHTML = `<strong>${screenshots[index].title}</strong><br>${screenshots[index].description}`;
+            
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function changeImage(direction) {
+            currentImageIndex += direction;
+            
+            if (currentImageIndex < 0) {
+                currentImageIndex = screenshots.length - 1;
+            } else if (currentImageIndex >= screenshots.length) {
+                currentImageIndex = 0;
+            }
+            
+            const img = document.getElementById('lightbox-img');
+            const caption = document.getElementById('lightbox-caption');
+            
+            img.style.opacity = '0';
+            setTimeout(() => {
+                img.src = screenshots[currentImageIndex].src;
+                caption.innerHTML = `<strong>${screenshots[currentImageIndex].title}</strong><br>${screenshots[currentImageIndex].description}`;
+                img.style.opacity = '1';
+            }, 150);
+        }
+        
+        // Close lightbox on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            } else if (e.key === 'ArrowLeft') {
+                changeImage(-1);
+            } else if (e.key === 'ArrowRight') {
+                changeImage(1);
+            }
+        });
+        
+        // Close lightbox when clicking outside image
+        document.getElementById('lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+        
+        // Update screenshot cards on window resize (mobile/desktop switch)
+        let resizeTimeoutLightbox;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeoutLightbox);
+            resizeTimeoutLightbox = setTimeout(() => {
+                filterScreenshotCards();
+            }, 250);
+        });
+    </script>
+</body>
+</html>
