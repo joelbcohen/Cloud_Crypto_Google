@@ -32,6 +32,7 @@ import io.callista.cloudcrypto.data.AccountSummaryData
 import io.callista.cloudcrypto.data.NetworkStatusResponse
 import io.callista.cloudcrypto.data.Transaction
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
+import io.callista.cloudcrypto.presentation.theme.CryptoBackground
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationUiState
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationViewModel
 import java.text.DecimalFormat
@@ -61,10 +62,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CloudCryptoTheme(darkTheme = true, dynamicColor = false) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+                CryptoBackground {
                     RegistrationScreen(viewModel)
                 }
             }
@@ -194,11 +192,12 @@ fun MainScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Cloud Crypto") },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = Color.Transparent
                 )
             )
         }
@@ -337,8 +336,14 @@ fun RegistrationInputScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
-            CenterAlignedTopAppBar(title = { Text("Device Registration") })
+            CenterAlignedTopAppBar(
+                title = { Text("Device Registration") },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
+            )
         }
     ) { innerPadding ->
         Column(
@@ -483,14 +488,18 @@ fun AccountSummaryScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Account Summary") },
                 navigationIcon = {
                     IconButton(onClick = onBackClicked) {
-                        Text("←") // Use icon in real app
+                        Text("←")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
         }
     ) { innerPadding ->
@@ -670,6 +679,7 @@ fun TransferScreen(
     BackHandler(enabled = !isTransferring, onBack = onCancelClicked)
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Transfer Funds") },
@@ -677,7 +687,10 @@ fun TransferScreen(
                     IconButton(onClick = onCancelClicked, enabled = !isTransferring) {
                         Text("←")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
         }
     ) { innerPadding ->
@@ -748,6 +761,7 @@ fun NetworkStatusScreen(
     val decimalFormat = remember { DecimalFormat("#,###") }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Network Status") },
@@ -755,7 +769,10 @@ fun NetworkStatusScreen(
                     IconButton(onClick = onBackClicked) {
                         Text("←")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
         }
     ) { innerPadding ->

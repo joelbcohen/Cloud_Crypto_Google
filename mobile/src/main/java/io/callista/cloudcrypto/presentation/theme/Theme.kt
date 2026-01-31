@@ -17,16 +17,21 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFBB86FC),
-    secondary = Color(0xFF03DAC6),
-    tertiary = Color(0xFF3700B3),
-    background = Color(0xFF121212),
-    surface = Color(0xFF121212),
+    primary = Color(0xFF00D4AA),       // Teal/crypto green
+    secondary = Color(0xFF7C4DFF),     // Purple accent
+    tertiary = Color(0xFF3B82F6),      // Blue accent
+    background = Color(0xFF0D1B2A),    // Deep navy (matches CryptoBackground)
+    surface = Color(0xFF1B2838),       // Dark blue-grey
+    surfaceVariant = Color(0xFF1E3048), // Slightly lighter surface
+    primaryContainer = Color(0xFF003D33),
+    secondaryContainer = Color(0xFF2D1B69),
     onPrimary = Color.Black,
-    onSecondary = Color.Black,
+    onSecondary = Color.White,
     onTertiary = Color.White,
-    onBackground = Color.White,
-    onSurface = Color.White,
+    onBackground = Color(0xFFE0E6ED),
+    onSurface = Color(0xFFE0E6ED),
+    onSurfaceVariant = Color(0xFFA0B0C0),
+    outline = Color(0xFF3A4F65),
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -61,7 +66,7 @@ fun CloudCryptoTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = colorScheme.background.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }
