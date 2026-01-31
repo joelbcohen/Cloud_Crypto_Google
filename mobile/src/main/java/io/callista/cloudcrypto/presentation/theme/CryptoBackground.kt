@@ -46,64 +46,64 @@ fun CryptoBackground(
         Canvas(modifier = Modifier.fillMaxSize()) {
             val w = size.width
             val h = size.height
-            val wireColor = Color(0x1200D4AA)
-            val wireColorAlt = Color(0x0E7C4DFF)
-            val wireColorBlue = Color(0x0C3B82F6)
-            val nodeGlow = Color(0x1800D4AA)
-            val nodeGlowPurple = Color(0x147C4DFF)
+
+            // Wire colors - visible but not overpowering
+            val wireColor = Color(0x4000D4AA)       // Teal ~25%
+            val wireColorAlt = Color(0x357C4DFF)     // Purple ~21%
+            val wireColorBlue = Color(0x303B82F6)    // Blue ~19%
 
             // --- Ambient glow spots ---
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(Color(0x1200D4AA), Color.Transparent),
+                    colors = listOf(Color(0x2800D4AA), Color.Transparent),
                     center = Offset(w * 0.12f, h * 0.18f),
-                    radius = w * 0.3f
-                ),
-                center = Offset(w * 0.12f, h * 0.18f),
-                radius = w * 0.3f
-            )
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(Color(0x0E7C4DFF), Color.Transparent),
-                    center = Offset(w * 0.88f, h * 0.75f),
                     radius = w * 0.35f
                 ),
-                center = Offset(w * 0.88f, h * 0.75f),
+                center = Offset(w * 0.12f, h * 0.18f),
                 radius = w * 0.35f
             )
             drawCircle(
                 brush = Brush.radialGradient(
-                    colors = listOf(Color(0x083B82F6), Color.Transparent),
-                    center = Offset(w * 0.5f, h * 0.45f),
+                    colors = listOf(Color(0x207C4DFF), Color.Transparent),
+                    center = Offset(w * 0.88f, h * 0.75f),
                     radius = w * 0.4f
                 ),
-                center = Offset(w * 0.5f, h * 0.45f),
+                center = Offset(w * 0.88f, h * 0.75f),
                 radius = w * 0.4f
+            )
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0x183B82F6), Color.Transparent),
+                    center = Offset(w * 0.5f, h * 0.45f),
+                    radius = w * 0.45f
+                ),
+                center = Offset(w * 0.5f, h * 0.45f),
+                radius = w * 0.45f
             )
 
             // --- Circuit board trace network ---
             // Horizontal bus lines
-            drawCircuitWire(Offset(0f, h * 0.12f), Offset(w, h * 0.12f), wireColor, 0.7f)
-            drawCircuitWire(Offset(0f, h * 0.35f), Offset(w * 0.6f, h * 0.35f), wireColorAlt, 0.5f)
-            drawCircuitWire(Offset(w * 0.3f, h * 0.58f), Offset(w, h * 0.58f), wireColor, 0.5f)
-            drawCircuitWire(Offset(0f, h * 0.78f), Offset(w * 0.75f, h * 0.78f), wireColorBlue, 0.6f)
-            drawCircuitWire(Offset(w * 0.15f, h * 0.92f), Offset(w, h * 0.92f), wireColor, 0.4f)
+            drawCircuitWire(Offset(0f, h * 0.12f), Offset(w, h * 0.12f), wireColor, 1.5f)
+            drawCircuitWire(Offset(0f, h * 0.35f), Offset(w * 0.6f, h * 0.35f), wireColorAlt, 1.2f)
+            drawCircuitWire(Offset(w * 0.3f, h * 0.58f), Offset(w, h * 0.58f), wireColor, 1.2f)
+            drawCircuitWire(Offset(0f, h * 0.78f), Offset(w * 0.75f, h * 0.78f), wireColorBlue, 1.5f)
+            drawCircuitWire(Offset(w * 0.15f, h * 0.92f), Offset(w, h * 0.92f), wireColor, 1f)
 
             // Vertical bus lines
-            drawCircuitWire(Offset(w * 0.08f, 0f), Offset(w * 0.08f, h * 0.65f), wireColor, 0.5f)
-            drawCircuitWire(Offset(w * 0.3f, h * 0.2f), Offset(w * 0.3f, h), wireColorAlt, 0.5f)
-            drawCircuitWire(Offset(w * 0.55f, 0f), Offset(w * 0.55f, h * 0.45f), wireColorBlue, 0.4f)
-            drawCircuitWire(Offset(w * 0.75f, h * 0.1f), Offset(w * 0.75f, h * 0.85f), wireColor, 0.6f)
-            drawCircuitWire(Offset(w * 0.92f, h * 0.3f), Offset(w * 0.92f, h), wireColorAlt, 0.4f)
+            drawCircuitWire(Offset(w * 0.08f, 0f), Offset(w * 0.08f, h * 0.65f), wireColor, 1.2f)
+            drawCircuitWire(Offset(w * 0.3f, h * 0.2f), Offset(w * 0.3f, h), wireColorAlt, 1.2f)
+            drawCircuitWire(Offset(w * 0.55f, 0f), Offset(w * 0.55f, h * 0.45f), wireColorBlue, 1f)
+            drawCircuitWire(Offset(w * 0.75f, h * 0.1f), Offset(w * 0.75f, h * 0.85f), wireColor, 1.5f)
+            drawCircuitWire(Offset(w * 0.92f, h * 0.3f), Offset(w * 0.92f, h), wireColorAlt, 1f)
 
-            // Angled trace wires (circuit board routes)
-            drawAngledTrace(Offset(w * 0.08f, h * 0.12f), Offset(w * 0.3f, h * 0.35f), wireColor, 0.7f)
-            drawAngledTrace(Offset(w * 0.55f, h * 0.12f), Offset(w * 0.75f, h * 0.35f), wireColorAlt, 0.5f)
-            drawAngledTrace(Offset(w * 0.3f, h * 0.58f), Offset(w * 0.55f, h * 0.35f), wireColorBlue, 0.5f)
-            drawAngledTrace(Offset(w * 0.75f, h * 0.58f), Offset(w * 0.92f, h * 0.78f), wireColor, 0.5f)
-            drawAngledTrace(Offset(w * 0.08f, h * 0.58f), Offset(w * 0.3f, h * 0.78f), wireColorAlt, 0.6f)
-            drawAngledTrace(Offset(w * 0.55f, h * 0.78f), Offset(w * 0.75f, h * 0.58f), wireColor, 0.4f)
-            drawAngledTrace(Offset(w * 0.3f, h * 0.78f), Offset(w * 0.55f, h * 0.92f), wireColorBlue, 0.5f)
+            // Angled trace wires (circuit board routes with 90-degree bends)
+            drawAngledTrace(Offset(w * 0.08f, h * 0.12f), Offset(w * 0.3f, h * 0.35f), wireColor, 1.5f)
+            drawAngledTrace(Offset(w * 0.55f, h * 0.12f), Offset(w * 0.75f, h * 0.35f), wireColorAlt, 1.2f)
+            drawAngledTrace(Offset(w * 0.3f, h * 0.58f), Offset(w * 0.55f, h * 0.35f), wireColorBlue, 1.2f)
+            drawAngledTrace(Offset(w * 0.75f, h * 0.58f), Offset(w * 0.92f, h * 0.78f), wireColor, 1.2f)
+            drawAngledTrace(Offset(w * 0.08f, h * 0.58f), Offset(w * 0.3f, h * 0.78f), wireColorAlt, 1.5f)
+            drawAngledTrace(Offset(w * 0.55f, h * 0.78f), Offset(w * 0.75f, h * 0.58f), wireColor, 1f)
+            drawAngledTrace(Offset(w * 0.3f, h * 0.78f), Offset(w * 0.55f, h * 0.92f), wireColorBlue, 1.2f)
 
             // --- Junction nodes (where wires cross) ---
             val junctions = listOf(
@@ -123,39 +123,40 @@ fun CryptoBackground(
             )
 
             junctions.forEachIndexed { i, pos ->
+                val isTeal = i % 3 == 0
                 // Outer glow
                 drawCircle(
-                    color = if (i % 3 == 0) nodeGlow else nodeGlowPurple,
-                    radius = 8f,
+                    color = if (isTeal) Color(0x3000D4AA) else Color(0x287C4DFF),
+                    radius = 12f,
                     center = pos
                 )
-                // Inner bright dot
+                // Mid ring
                 drawCircle(
-                    color = if (i % 3 == 0) Color(0x2500D4AA) else Color(0x207C4DFF),
-                    radius = 3f,
+                    color = if (isTeal) Color(0x5000D4AA) else Color(0x457C4DFF),
+                    radius = 5f,
                     center = pos
                 )
-                // Tiny solid core
+                // Bright core
                 drawCircle(
-                    color = if (i % 3 == 0) Color(0x3500D4AA) else Color(0x307C4DFF),
-                    radius = 1.5f,
+                    color = if (isTeal) Color(0x8000D4AA) else Color(0x707C4DFF),
+                    radius = 2.5f,
                     center = pos
                 )
             }
 
             // --- Crypto coin outlines scattered around edges ---
-            drawCoinOutline(Offset(w * 0.88f, h * 0.08f), 22f, Color(0x10F7931A)) // BTC orange
-            drawCoinOutline(Offset(w * 0.14f, h * 0.42f), 18f, Color(0x1000D4AA)) // Teal
-            drawCoinOutline(Offset(w * 0.85f, h * 0.52f), 15f, Color(0x107C4DFF)) // Purple
-            drawCoinOutline(Offset(w * 0.18f, h * 0.88f), 20f, Color(0x103B82F6)) // Blue
-            drawCoinOutline(Offset(w * 0.65f, h * 0.95f), 14f, Color(0x10F7931A)) // BTC orange
-            drawCoinOutline(Offset(w * 0.42f, h * 0.05f), 16f, Color(0x1000D4AA)) // Teal
+            drawCoinOutline(Offset(w * 0.88f, h * 0.08f), 28f, Color(0x40F7931A))  // BTC orange
+            drawCoinOutline(Offset(w * 0.14f, h * 0.42f), 22f, Color(0x3800D4AA))  // Teal
+            drawCoinOutline(Offset(w * 0.85f, h * 0.52f), 18f, Color(0x387C4DFF))  // Purple
+            drawCoinOutline(Offset(w * 0.18f, h * 0.88f), 25f, Color(0x353B82F6))  // Blue
+            drawCoinOutline(Offset(w * 0.65f, h * 0.95f), 20f, Color(0x38F7931A))  // BTC orange
+            drawCoinOutline(Offset(w * 0.42f, h * 0.05f), 20f, Color(0x3500D4AA))  // Teal
 
-            // --- Tiny hash/data ticks along some wires ---
-            drawDataTicks(Offset(0f, h * 0.12f), Offset(w, h * 0.12f), wireColor, 18)
-            drawDataTicks(Offset(w * 0.3f, h * 0.58f), Offset(w, h * 0.58f), wireColorAlt, 14)
-            drawDataTicks(Offset(w * 0.75f, h * 0.1f), Offset(w * 0.75f, h * 0.85f), wireColor, 16)
-            drawDataTicks(Offset(0f, h * 0.78f), Offset(w * 0.75f, h * 0.78f), wireColorBlue, 12)
+            // --- Data ticks along some wires ---
+            drawDataTicks(Offset(0f, h * 0.12f), Offset(w, h * 0.12f), wireColor, 22)
+            drawDataTicks(Offset(w * 0.3f, h * 0.58f), Offset(w, h * 0.58f), wireColorAlt, 16)
+            drawDataTicks(Offset(w * 0.75f, h * 0.1f), Offset(w * 0.75f, h * 0.85f), wireColor, 20)
+            drawDataTicks(Offset(0f, h * 0.78f), Offset(w * 0.75f, h * 0.78f), wireColorBlue, 14)
         }
 
         content()
@@ -184,42 +185,41 @@ private fun DrawScope.drawAngledTrace(
     drawLine(color, mid, end, strokeWidth = strokeWidth, cap = StrokeCap.Round)
 }
 
-/** Draws a coin outline with a currency symbol inside. */
+/** Draws a coin outline with double ring and center dot. */
 private fun DrawScope.drawCoinOutline(
     center: Offset,
     radius: Float,
     color: Color
 ) {
     // Outer ring
-    drawCircle(color, radius = radius, center = center, style = Stroke(width = 1f))
+    drawCircle(color, radius = radius, center = center, style = Stroke(width = 1.5f))
     // Inner ring
-    drawCircle(color, radius = radius * 0.7f, center = center, style = Stroke(width = 0.5f))
+    drawCircle(color, radius = radius * 0.65f, center = center, style = Stroke(width = 1f))
     // Center dot
-    drawCircle(color, radius = 2f, center = center)
+    drawCircle(color, radius = 3f, center = center)
 }
 
-/** Draws tiny perpendicular tick marks along a wire to simulate data flow. */
+/** Draws perpendicular tick marks along a wire to simulate data flow. */
 private fun DrawScope.drawDataTicks(
     start: Offset,
     end: Offset,
     color: Color,
     count: Int
 ) {
-    val tickColor = color.copy(alpha = color.alpha * 0.7f)
     val dx = end.x - start.x
     val dy = end.y - start.y
     val isHorizontal = kotlin.math.abs(dx) > kotlin.math.abs(dy)
-    val tickLen = 3f
+    val tickLen = 5f
 
     for (i in 1 until count) {
         val t = i.toFloat() / count
         val px = start.x + dx * t
         val py = start.y + dy * t
-        if (i % 3 == 0) {
+        if (i % 2 == 0) {
             if (isHorizontal) {
-                drawLine(tickColor, Offset(px, py - tickLen), Offset(px, py + tickLen), strokeWidth = 0.4f)
+                drawLine(color, Offset(px, py - tickLen), Offset(px, py + tickLen), strokeWidth = 0.8f)
             } else {
-                drawLine(tickColor, Offset(px - tickLen, py), Offset(px + tickLen, py), strokeWidth = 0.4f)
+                drawLine(color, Offset(px - tickLen, py), Offset(px + tickLen, py), strokeWidth = 0.8f)
             }
         }
     }
