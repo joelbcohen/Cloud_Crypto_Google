@@ -32,6 +32,7 @@ import io.callista.cloudcrypto.data.AccountSummaryData
 import io.callista.cloudcrypto.data.NetworkStatusResponse
 import io.callista.cloudcrypto.data.Transaction
 import io.callista.cloudcrypto.presentation.theme.CloudCryptoTheme
+import io.callista.cloudcrypto.presentation.theme.CryptoBackground
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationUiState
 import io.callista.cloudcrypto.presentation.viewmodel.RegistrationViewModel
 import java.text.DecimalFormat
@@ -61,10 +62,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CloudCryptoTheme(darkTheme = true, dynamicColor = false) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
+                CryptoBackground {
                     RegistrationScreen(viewModel)
                 }
             }
@@ -194,11 +192,12 @@ fun MainScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Cloud Crypto") },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = Color.Transparent
                 )
             )
         }
@@ -238,40 +237,43 @@ fun MainScreen(
                     Text(
                         text = "Serial Number",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color(0xFF00D4AA)  // Teal
                     )
                     Text(
                         text = serialNumber ?: "---",
                         style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFFE0E6ED),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(top = 4.dp)
                     )
-                    
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     Text(
                         text = "Date Registered",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color(0xFF00D4AA)  // Teal
                     )
                     Text(
                         text = dateFormatted,
                         style = MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFFE0E6ED),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(top = 4.dp)
                     )
-                    
+
                     if (isRegistered) {
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Text(
                             text = "Account ID",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = Color(0xFF00D4AA)  // Teal
                         )
                         Text(
                             text = accountId ?: "---",
                             style = MaterialTheme.typography.bodyMedium,
+                            color = Color(0xFFE0E6ED),
                             textAlign = TextAlign.Center,
                             modifier = Modifier.padding(top = 4.dp)
                         )
@@ -337,8 +339,14 @@ fun RegistrationInputScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
-            CenterAlignedTopAppBar(title = { Text("Device Registration") })
+            CenterAlignedTopAppBar(
+                title = { Text("Device Registration") },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
+            )
         }
     ) { innerPadding ->
         Column(
@@ -483,14 +491,18 @@ fun AccountSummaryScreen(
     }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Account Summary") },
                 navigationIcon = {
                     IconButton(onClick = onBackClicked) {
-                        Text("←") // Use icon in real app
+                        Text("←")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
         }
     ) { innerPadding ->
@@ -518,12 +530,12 @@ fun AccountSummaryScreen(
                         Text(
                             text = "Current Balance",
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color(0xFF00D4AA)
                         )
                         Text(
                             text = formattedBalance,
                             style = MaterialTheme.typography.displayMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color(0xFFE0E6ED)
                         )
                     }
                 }
@@ -568,11 +580,12 @@ fun AccountSummaryScreen(
                             Text(
                                 text = "Account ID",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = Color(0xFF00D4AA)
                             )
                             Text(
                                 text = accountData.id,
                                 style = MaterialTheme.typography.bodyMedium,
+                                color = Color(0xFFE0E6ED),
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier.padding(top = 4.dp)
                             )
@@ -585,6 +598,7 @@ fun AccountSummaryScreen(
                 Text(
                     text = "Transaction History",
                     style = MaterialTheme.typography.titleMedium,
+                    color = Color(0xFF00D4AA),
                     modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
                 )
             }
@@ -638,17 +652,17 @@ fun StatCard(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color(0xFF00D4AA)
             )
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                color = Color(0xFFE0E6ED)
             )
             Text(
                 text = subtext,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = Color(0xFFA0B0C0)
             )
         }
     }
@@ -670,6 +684,7 @@ fun TransferScreen(
     BackHandler(enabled = !isTransferring, onBack = onCancelClicked)
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Transfer Funds") },
@@ -677,7 +692,10 @@ fun TransferScreen(
                     IconButton(onClick = onCancelClicked, enabled = !isTransferring) {
                         Text("←")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
         }
     ) { innerPadding ->
@@ -748,6 +766,7 @@ fun NetworkStatusScreen(
     val decimalFormat = remember { DecimalFormat("#,###") }
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Network Status") },
@@ -755,7 +774,10 @@ fun NetworkStatusScreen(
                     IconButton(onClick = onBackClicked) {
                         Text("←")
                     }
-                }
+                },
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = Color.Transparent
+                )
             )
         }
     ) { innerPadding ->
