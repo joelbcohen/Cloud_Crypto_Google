@@ -13,8 +13,8 @@ android {
         applicationId = "io.callista.cloudcrypto"
         minSdk = 30
         targetSdk = 35
-        versionCode = 8
-        versionName = "8.0"
+        versionCode = 9
+        versionName = "9.0"
     }
 
     buildTypes {
