@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
-    android:src="@mipmap/ic_launcher_foreground"
-    android:gravity="center" />
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The Icon Image (36dp square) -->
+    <item
+        android:width="42dp"
+        android:height="42dp"
+        android:drawable="@mipmap/ic_launcher_foreground"
+        android:gravity="center" />
+
+    <!-- The Mask: A Black Ring to cover the square corners -->
+    <item android:gravity="center">
+        <shape
+            android:shape="ring"
+            android:innerRadius="18dp"
+            android:thickness="24dp"
+            android:useLevel="false">
+            <solid android:color="@android:color/black" />
+        </shape>
+    </item>
+</layer-list>
