@@ -13,8 +13,8 @@ android {
         applicationId = "io.callista.cloudcrypto"
         minSdk = 30
         targetSdk = 36
-        versionCode = 3
-        versionName = "3.0"
+        versionCode = 71
+        versionName = "5.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
