@@ -8,30 +8,37 @@ import androidx.wear.watchface.complications.data.ShortTextComplicationData
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingComplicationDataSourceService
 import io.callista.cloudcrypto.data.RegistrationRepository
+import java.text.DecimalFormat
 
 /**
- * Complication data source that displays device registration status.
- * Shows "REG" when registered, "---" when not registered.
- * Can be updated when FCM messages are received.
+ * Complication data source that displays account balance.
+ * Shows "0" when not registered, or the current balance when registered.
  */
 class MainComplicationService : SuspendingComplicationDataSourceService() {
 
     private val repository by lazy { RegistrationRepository(applicationContext) }
+    private val decimalFormat = DecimalFormat("#,##0.##")
 
     override fun getPreviewData(type: ComplicationType): ComplicationData? {
         if (type != ComplicationType.SHORT_TEXT) {
             return null
         }
-        return createComplicationData("REG", "Registered")
+        return createComplicationData("1,000", "Balance: 1,000")
     }
 
     override suspend fun onComplicationRequest(request: ComplicationRequest): ComplicationData {
         val status = repository.getRegistrationStatus()
 
         return if (status.isRegistered) {
-            createComplicationData("REG", "Device Registered")
+            val balance = repository.getBalance()
+            val formatted = try {
+                decimalFormat.format(balance.toDouble())
+            } catch (e: NumberFormatException) {
+                balance
+            }
+            createComplicationData(formatted, "Balance: $formatted")
         } else {
-            createComplicationData("---", "Not Registered")
+            createComplicationData("0", "Balance: 0")
         }
     }
 

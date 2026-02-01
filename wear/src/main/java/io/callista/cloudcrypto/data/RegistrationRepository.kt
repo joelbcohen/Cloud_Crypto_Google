@@ -282,6 +282,22 @@ class RegistrationRepository(private val context: Context) {
     }
     
     /**
+     * Saves the current balance to SharedPreferences.
+     */
+    fun saveBalance(balance: String) {
+        val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
+        prefs.edit().putString("balance", balance).apply()
+    }
+
+    /**
+     * Gets the cached balance from SharedPreferences.
+     */
+    fun getBalance(): String {
+        val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
+        return prefs.getString("balance", "0") ?: "0"
+    }
+
+    /**
      * Saves the public and private keys to SharedPreferences.
      */
     private fun saveKeys(publicKey: String, privateKey: PrivateKey?) {

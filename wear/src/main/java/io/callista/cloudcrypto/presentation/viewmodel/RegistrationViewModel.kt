@@ -135,8 +135,9 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
                 result.fold(
                     onSuccess = { response ->
-                        // Clear registration status
+                        // Clear registration status and cached balance
                         repository.saveRegistrationStatus("", false)
+                        repository.saveBalance("0")
                         // Show toast message
                         _toastMessage.value = "Device deregistered successfully"
                         // Return to main screen
@@ -169,6 +170,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         if (response.data != null) {
+                            // Cache balance for complication display
+                            response.data.balance?.let { repository.saveBalance(it) }
                             _uiState.value = RegistrationUiState.AccountSummary(
                                 response.data,
                                 response.transactions ?: emptyList()
@@ -306,6 +309,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         _isTransferring.value = false
+                        // Update cached balance for complication
+                        response.newBalance?.let { repository.saveBalance(it) }
                         // Show success message
                         _toastMessage.value = response.message ?: "Transfer successful"
                         // Return to main screen
