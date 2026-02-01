@@ -3,6 +3,7 @@ package io.callista.cloudcrypto.presentation.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import io.callista.cloudcrypto.complication.MainComplicationService
 import io.callista.cloudcrypto.data.AccountSummaryData
 import io.callista.cloudcrypto.data.NetworkStatusResponse
 import io.callista.cloudcrypto.data.RegistrationRepository
@@ -106,6 +107,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         repository.saveRegistrationStatus(currentSerialNumber, true)
+                        MainComplicationService.requestUpdate(getApplication())
                         // Return to main screen after successful registration
                         loadMainScreen()
                     },
@@ -135,8 +137,10 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
                 result.fold(
                     onSuccess = { response ->
-                        // Clear registration status
+                        // Clear registration status and cached balance
                         repository.saveRegistrationStatus("", false)
+                        repository.saveBalance("0")
+                        MainComplicationService.requestUpdate(getApplication())
                         // Show toast message
                         _toastMessage.value = "Device deregistered successfully"
                         // Return to main screen
@@ -169,6 +173,11 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         if (response.data != null) {
+                            // Cache balance for complication display
+                            response.data.balance?.let {
+                                repository.saveBalance(it)
+                                MainComplicationService.requestUpdate(getApplication())
+                            }
                             _uiState.value = RegistrationUiState.AccountSummary(
                                 response.data,
                                 response.transactions ?: emptyList()
@@ -306,6 +315,11 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
                 result.fold(
                     onSuccess = { response ->
                         _isTransferring.value = false
+                        // Update cached balance for complication
+                        response.newBalance?.let {
+                            repository.saveBalance(it)
+                            MainComplicationService.requestUpdate(getApplication())
+                        }
                         // Show success message
                         _toastMessage.value = response.message ?: "Transfer successful"
                         // Return to main screen

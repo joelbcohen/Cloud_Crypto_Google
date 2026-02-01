@@ -69,7 +69,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CloudCryptoTheme {
-                RegistrationScreen(viewModel = viewModel)
+                AppScaffold {
+                    RegistrationScreen(viewModel = viewModel)
+                }
             }
         }
     }
@@ -199,139 +201,141 @@ fun MainScreen(
         }
     }
 
-    ScalingLazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        item {
-            Text(
-                text = "Cloud Crypto",
-                style = MaterialTheme.typography.titleLarge,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-        }
-
-        // Serial Number Display
-        item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 8.dp)
-            ) {
+    ScreenScaffold(scrollState = listState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            item {
                 Text(
-                    text = "Serial Number",
-                    style = MaterialTheme.typography.labelSmall,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = serialNumber ?: "---",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = androidx.compose.ui.graphics.Color.White
-                    ),
+                    text = "Cloud Crypto",
+                    style = MaterialTheme.typography.titleLarge,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(bottom = 12.dp)
                 )
             }
-        }
 
-        // Date Registered
-        item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 4.dp)
-            ) {
-                Text(
-                    text = "Date Registered",
-                    style = MaterialTheme.typography.labelSmall,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = dateFormatted,
-                    style = MaterialTheme.typography.bodySmall,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        // REGISTER Button (only show when not registered)
-        if (!isRegistered) {
+            // Serial Number Display
             item {
-                FilledTonalButton(
-                    onClick = onRegisterClicked,
-                    modifier = Modifier.fillMaxWidth(0.85f)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 ) {
-                    Text("REGISTER")
+                    Text(
+                        text = "Serial Number",
+                        style = MaterialTheme.typography.labelSmall,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = serialNumber ?: "---",
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            color = androidx.compose.ui.graphics.Color.White
+                        ),
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
                 }
             }
-        }
 
-        // DE-REGISTER Button (hidden/commented out)
-        // item {
-        //     if (isRegistered) {
-        //         FilledTonalButton(
-        //             onClick = onDeregisterClicked,
-        //             modifier = Modifier.fillMaxWidth(0.85f)
-        //         ) {
-        //             Text("DE-REGISTER")
-        //         }
-        //     }
-        // }
-
-        // ACCOUNT Button (only show when registered)
-        if (isRegistered) {
+            // Date Registered
             item {
-                FilledTonalButton(
-                    onClick = onAccountClicked,
-                    modifier = Modifier.fillMaxWidth(0.85f)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(vertical = 4.dp)
                 ) {
-                    Text("ACCOUNT")
+                    Text(
+                        text = "Date Registered",
+                        style = MaterialTheme.typography.labelSmall,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = dateFormatted,
+                        style = MaterialTheme.typography.bodySmall,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
                 }
             }
-        }
 
-        // TRANSFER Button (only show when registered)
-        if (isRegistered) {
             item {
-                FilledTonalButton(
-                    onClick = onTransferClicked,
-                    modifier = Modifier.fillMaxWidth(0.85f)
-                ) {
-                    Text("TRANSFER")
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // REGISTER Button (only show when not registered)
+            if (!isRegistered) {
+                item {
+                    FilledTonalButton(
+                        onClick = onRegisterClicked,
+                        modifier = Modifier.fillMaxWidth(0.85f)
+                    ) {
+                        Text("REGISTER")
+                    }
                 }
             }
-        }
 
-        // NETWORK Button (only show when registered)
-        if (isRegistered) {
-            item {
-                FilledTonalButton(
-                    onClick = onNetworkClicked,
-                    modifier = Modifier.fillMaxWidth(0.85f)
-                ) {
-                    Text("NETWORK")
+            // DE-REGISTER Button (hidden/commented out)
+            // item {
+            //     if (isRegistered) {
+            //         FilledTonalButton(
+            //             onClick = onDeregisterClicked,
+            //             modifier = Modifier.fillMaxWidth(0.85f)
+            //         ) {
+            //             Text("DE-REGISTER")
+            //         }
+            //     }
+            // }
+
+            // ACCOUNT Button (only show when registered)
+            if (isRegistered) {
+                item {
+                    FilledTonalButton(
+                        onClick = onAccountClicked,
+                        modifier = Modifier.fillMaxWidth(0.85f)
+                    ) {
+                        Text("ACCOUNT")
+                    }
                 }
             }
-        }
 
-        // SETTINGS Button (only show when registered)
-        // if (isRegistered) {
-        //     item {
-        //         FilledTonalButton(
-        //             onClick = onSettingsClicked,
-        //             modifier = Modifier.fillMaxWidth(0.85f)
-        //         ) {
-        //             Text("SETTINGS")
-        //         }
-        //     }
-        // }
+            // TRANSFER Button (only show when registered)
+            if (isRegistered) {
+                item {
+                    FilledTonalButton(
+                        onClick = onTransferClicked,
+                        modifier = Modifier.fillMaxWidth(0.85f)
+                    ) {
+                        Text("TRANSFER")
+                    }
+                }
+            }
+
+            // NETWORK Button (only show when registered)
+            if (isRegistered) {
+                item {
+                    FilledTonalButton(
+                        onClick = onNetworkClicked,
+                        modifier = Modifier.fillMaxWidth(0.85f)
+                    ) {
+                        Text("NETWORK")
+                    }
+                }
+            }
+
+            // SETTINGS Button (only show when registered)
+            // if (isRegistered) {
+            //     item {
+            //         FilledTonalButton(
+            //             onClick = onSettingsClicked,
+            //             modifier = Modifier.fillMaxWidth(0.85f)
+            //         ) {
+            //             Text("SETTINGS")
+            //         }
+            //     }
+            // }
+        }
     }
 }
 
@@ -354,84 +358,86 @@ fun RegistrationInputScreen(
         "WATCH-${uuid.substring(0, 8).uppercase()}"
     }
 
-    ScalingLazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        item {
-            Text(
-                text = "Device Registration",
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
-
-        // Serial Number Section
-        item {
-            Column(
-                modifier = Modifier.fillMaxWidth(0.9f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+    ScreenScaffold(scrollState = listState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            item {
                 Text(
-                    text = "Serial Number",
-                    style = MaterialTheme.typography.labelMedium,
+                    text = "Device Registration",
+                    style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
+            }
 
-                OutlinedTextField(
-                    value = serialNumber,
-                    onValueChange = onSerialNumberChanged,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = {
-                        Text("Enter Serial #", style = MaterialTheme.typography.bodySmall)
+            // Serial Number Section
+            item {
+                Column(
+                    modifier = Modifier.fillMaxWidth(0.9f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Serial Number",
+                        style = MaterialTheme.typography.labelMedium,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+
+                    OutlinedTextField(
+                        value = serialNumber,
+                        onValueChange = onSerialNumberChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = {
+                            Text("Enter Serial #", style = MaterialTheme.typography.bodySmall)
+                        },
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(
+                            color = androidx.compose.ui.graphics.Color.White
+                        ),
+                        singleLine = true
+                    )
+                }
+            }
+
+            // GENERATE Button
+            item {
+                FilledTonalButton(
+                    onClick = {
+                        onSerialNumberChanged(generateSerialNumber())
                     },
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
-                        color = androidx.compose.ui.graphics.Color.White
-                    ),
-                    singleLine = true
-                )
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("GENERATE")
+                }
             }
-        }
 
-        // GENERATE Button
-        item {
-            FilledTonalButton(
-                onClick = {
-                    onSerialNumberChanged(generateSerialNumber())
-                },
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("GENERATE")
+            item {
+                Spacer(modifier = Modifier.height(4.dp))
             }
-        }
 
-        item {
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        // SAVE Button
-        item {
-            FilledTonalButton(
-                onClick = onSaveClicked,
-                modifier = Modifier.fillMaxWidth(0.85f),
-                enabled = serialNumber.isNotBlank()
-            ) {
-                Text("SAVE")
+            // SAVE Button
+            item {
+                FilledTonalButton(
+                    onClick = onSaveClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f),
+                    enabled = serialNumber.isNotBlank()
+                ) {
+                    Text("SAVE")
+                }
             }
-        }
 
-        // CANCEL Button
-        item {
-            OutlinedButton(
-                onClick = onCancelClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("CANCEL")
+            // CANCEL Button
+            item {
+                OutlinedButton(
+                    onClick = onCancelClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("CANCEL")
+                }
             }
         }
     }
@@ -469,53 +475,55 @@ fun ErrorScreen(
     // Handle back gesture/button
     BackHandler(onBack = onCancelClicked)
 
-    ScalingLazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        item {
-            Text(
-                text = "⚠",
-                style = MaterialTheme.typography.displayMedium,
-                color = MaterialTheme.colorScheme.error
-            )
-        }
-
-        item {
-            Text(
-                text = "Registration Failed",
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center
-            )
-        }
-
-        item {
-            Text(
-                text = message,
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-
-        item {
-            FilledTonalButton(
-                onClick = onRetryClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("Retry")
+    ScreenScaffold(scrollState = listState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            item {
+                Text(
+                    text = "⚠",
+                    style = MaterialTheme.typography.displayMedium,
+                    color = MaterialTheme.colorScheme.error
+                )
             }
-        }
 
-        item {
-            OutlinedButton(
-                onClick = onCancelClicked,
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text("CANCEL")
+            item {
+                Text(
+                    text = "Registration Failed",
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            item {
+                Text(
+                    text = message,
+                    style = MaterialTheme.typography.bodySmall,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            item {
+                FilledTonalButton(
+                    onClick = onRetryClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("Retry")
+                }
+            }
+
+            item {
+                OutlinedButton(
+                    onClick = onCancelClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text("CANCEL")
+                }
             }
         }
     }
@@ -569,173 +577,175 @@ fun AccountSummaryScreen(
         } ?: "0.00"
     }
 
-    ScalingLazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        // Title
-        item {
-            Text(
-                text = "Account Summary",
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
-
-        // Balance Card
-        item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth(0.95f)
-                    .padding(vertical = 4.dp)
-            ) {
+    ScreenScaffold(scrollState = listState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Title
+            item {
                 Text(
-                    text = "Current Balance",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center
-                )
-                Text(
-                    text = formattedBalance,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.primary,
+                    text = "Account Summary",
+                    style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        // Transaction Statistics Title
-        item {
-            Text(
-                text = "Transaction Stats",
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
-
-        // Sent Transactions
-        item {
-            StatisticRow(
-                label = "Total Sent",
-                count = accountData.totalSentTransactions.toString() + " txns",
-                amount = formattedSentAmount
-            )
-        }
-
-        // Received Transactions
-        item {
-            StatisticRow(
-                label = "Total Received",
-                count = accountData.totalReceivedTransactions.toString() + " txns",
-                amount = formattedReceivedAmount
-            )
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        // Device Info Title
-        item {
-            Text(
-                text = "Device Info",
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
-
-        // Device Model
-        if (!accountData.model.isNullOrBlank() || !accountData.brand.isNullOrBlank()) {
-            item {
-                InfoRow(
-                    label = "Device",
-                    value = "${accountData.brand ?: ""} ${accountData.model ?: ""}".trim()
-                )
-            }
-        }
-
-        // Account ID
-        if (!accountData.id.isNullOrBlank()) {
-            item {
-                InfoRow(
-                    label = "Account ID",
-                    value = accountData.id.take(12) + "..."
-                )
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
-
-        // Transaction History Dropdown
-        item {
-            FilledTonalButton(
-                onClick = { showTransactions = !showTransactions },
-                modifier = Modifier.fillMaxWidth(0.85f)
-            ) {
-                Text(if (showTransactions) "HIDE HISTORY" else "SHOW HISTORY")
-            }
-        }
-
-        // Transaction List
-        if (showTransactions) {
-            item {
-                Text(
-                    text = "Transaction History",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
 
+            // Balance Card
             item {
-                HorizontalDivider(
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .padding(vertical = 4.dp),
-                    thickness = 1.dp,
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-                )
-            }
-
-            if (transactions.isEmpty()) {
-                item {
+                        .fillMaxWidth(0.95f)
+                        .padding(vertical = 4.dp)
+                ) {
                     Text(
-                        text = "No transactions",
-                        style = MaterialTheme.typography.bodySmall,
+                        text = "Current Balance",
+                        style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center
+                    )
+                    Text(
+                        text = formattedBalance,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
-            } else {
-                transactions.forEachIndexed { index, transaction ->
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            // Transaction Statistics Title
+            item {
+                Text(
+                    text = "Transaction Stats",
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            // Sent Transactions
+            item {
+                StatisticRow(
+                    label = "Total Sent",
+                    count = accountData.totalSentTransactions.toString() + " txns",
+                    amount = formattedSentAmount
+                )
+            }
+
+            // Received Transactions
+            item {
+                StatisticRow(
+                    label = "Total Received",
+                    count = accountData.totalReceivedTransactions.toString() + " txns",
+                    amount = formattedReceivedAmount
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            // Device Info Title
+            item {
+                Text(
+                    text = "Device Info",
+                    style = MaterialTheme.typography.labelMedium,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
+            // Device Model
+            if (!accountData.model.isNullOrBlank() || !accountData.brand.isNullOrBlank()) {
+                item {
+                    InfoRow(
+                        label = "Device",
+                        value = "${accountData.brand ?: ""} ${accountData.model ?: ""}".trim()
+                    )
+                }
+            }
+
+            // Account ID
+            if (!accountData.id.isNullOrBlank()) {
+                item {
+                    InfoRow(
+                        label = "Account ID",
+                        value = accountData.id.take(12) + "..."
+                    )
+                }
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // Transaction History Dropdown
+            item {
+                FilledTonalButton(
+                    onClick = { showTransactions = !showTransactions },
+                    modifier = Modifier.fillMaxWidth(0.85f)
+                ) {
+                    Text(if (showTransactions) "HIDE HISTORY" else "SHOW HISTORY")
+                }
+            }
+
+            // Transaction List
+            if (showTransactions) {
+                item {
+                    Text(
+                        text = "Transaction History",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+                    )
+                }
+
+                item {
+                    HorizontalDivider(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .padding(vertical = 4.dp),
+                        thickness = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    )
+                }
+
+                if (transactions.isEmpty()) {
                     item {
-                        TransactionItem(transaction = transaction, decimalFormat = decimalFormat)
+                        Text(
+                            text = "No transactions",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
                     }
-                    if (index < transactions.size - 1) {
+                } else {
+                    transactions.forEachIndexed { index, transaction ->
                         item {
-                            HorizontalDivider(
-                                modifier = Modifier
-                                    .fillMaxWidth(0.8f)
-                                    .padding(vertical = 4.dp),
-                                thickness = 0.5.dp,
-                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                            )
+                            TransactionItem(transaction = transaction, decimalFormat = decimalFormat)
+                        }
+                        if (index < transactions.size - 1) {
+                            item {
+                                HorizontalDivider(
+                                    modifier = Modifier
+                                        .fillMaxWidth(0.8f)
+                                        .padding(vertical = 4.dp),
+                                    thickness = 0.5.dp,
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                                )
+                            }
                         }
                     }
                 }
@@ -761,116 +771,118 @@ fun TransferScreen(
     // Handle back gesture/button (only when not transferring)
     BackHandler(enabled = !isTransferring, onBack = onCancelClicked)
 
-    ScalingLazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        // Title
-        item {
-            Text(
-                text = "Transfer",
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
-
-        // To Account Text Field
-        item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth(0.95f)
-            ) {
+    ScreenScaffold(scrollState = listState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Title
+            item {
                 Text(
-                    text = "To Account",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    text = "Transfer",
+                    style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                OutlinedTextField(
-                    value = toAccount,
-                    onValueChange = onToAccountChanged,
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
-                        textAlign = TextAlign.Center,
-                        color = androidx.compose.ui.graphics.Color.White
-                    ),
-                    singleLine = true,
-                    enabled = !isTransferring
+                    modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
-        }
 
-        // Amount Text Field
-        item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth(0.95f)
-            ) {
-                Text(
-                    text = "Amount",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                OutlinedTextField(
-                    value = amount,
-                    onValueChange = onAmountChanged,
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+            // To Account Text Field
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(0.95f)
+                ) {
+                    Text(
+                        text = "To Account",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
-                        color = androidx.compose.ui.graphics.Color.White
-                    ),
-                    singleLine = true,
-                    enabled = !isTransferring
-                )
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    OutlinedTextField(
+                        value = toAccount,
+                        onValueChange = onToAccountChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(
+                            textAlign = TextAlign.Center,
+                            color = androidx.compose.ui.graphics.Color.White
+                        ),
+                        singleLine = true,
+                        enabled = !isTransferring
+                    )
+                }
             }
-        }
 
-        // Memo Text Field (Optional)
-        item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth(0.95f)
-            ) {
-                Text(
-                    text = "Memo (Optional)",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                OutlinedTextField(
-                    value = memo,
-                    onValueChange = onMemoChanged,
-                    modifier = Modifier.fillMaxWidth(),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
+            // Amount Text Field
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(0.95f)
+                ) {
+                    Text(
+                        text = "Amount",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
-                        color = androidx.compose.ui.graphics.Color.White
-                    ),
-                    singleLine = true,
-                    enabled = !isTransferring
-                )
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    OutlinedTextField(
+                        value = amount,
+                        onValueChange = onAmountChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(
+                            textAlign = TextAlign.Center,
+                            color = androidx.compose.ui.graphics.Color.White
+                        ),
+                        singleLine = true,
+                        enabled = !isTransferring
+                    )
+                }
             }
-        }
 
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-        }
+            // Memo Text Field (Optional)
+            item {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth(0.95f)
+                ) {
+                    Text(
+                        text = "Memo (Optional)",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    OutlinedTextField(
+                        value = memo,
+                        onValueChange = onMemoChanged,
+                        modifier = Modifier.fillMaxWidth(),
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(
+                            textAlign = TextAlign.Center,
+                            color = androidx.compose.ui.graphics.Color.White
+                        ),
+                        singleLine = true,
+                        enabled = !isTransferring
+                    )
+                }
+            }
 
-        // Send Button
-        item {
-            FilledTonalButton(
-                onClick = onSendClicked,
-                modifier = Modifier.fillMaxWidth(0.85f),
-                enabled = !isTransferring
-            ) {
-                Text(if (isTransferring) "SENDING..." else "SEND")
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            // Send Button
+            item {
+                FilledTonalButton(
+                    onClick = onSendClicked,
+                    modifier = Modifier.fillMaxWidth(0.85f),
+                    enabled = !isTransferring
+                ) {
+                    Text(if (isTransferring) "SENDING..." else "SEND")
+                }
             }
         }
     }
@@ -889,83 +901,168 @@ fun NetworkStatusScreen(
     // Format large numbers with commas
     val decimalFormat = remember { DecimalFormat("#,###") }
 
-    ScalingLazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 20.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        // Title
-        item {
-            Text(
-                text = "Network Status",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-        }
+    ScreenScaffold(scrollState = listState) {
+        ScalingLazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            // Title
+            item {
+                Text(
+                    text = "Network Status",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+            }
 
-        // Status Card - Prominent Display
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.95f)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(
-                        if (networkStatus.status == "Online")
-                            MaterialTheme.colorScheme.primaryContainer
-                        else
-                            MaterialTheme.colorScheme.errorContainer
-                    )
-                    .padding(vertical = 12.dp, horizontal = 16.dp),
-                contentAlignment = Alignment.Center
-            ) {
+            // Status Card - Prominent Display
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(
+                            if (networkStatus.status == "Online")
+                                MaterialTheme.colorScheme.primaryContainer
+                            else
+                                MaterialTheme.colorScheme.errorContainer
+                        )
+                        .padding(vertical = 12.dp, horizontal = 16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            text = "● ${networkStatus.status ?: "Unknown"}",
+                            style = MaterialTheme.typography.titleMedium,
+                            color = if (networkStatus.status == "Online")
+                                MaterialTheme.colorScheme.onPrimaryContainer
+                            else
+                                MaterialTheme.colorScheme.onErrorContainer,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            // Ledger Statistics Section
+            item {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                    modifier = Modifier.fillMaxWidth(0.95f),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "● ${networkStatus.status ?: "Unknown"}",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = if (networkStatus.status == "Online")
-                            MaterialTheme.colorScheme.onPrimaryContainer
-                        else
-                            MaterialTheme.colorScheme.onErrorContainer,
-                        textAlign = TextAlign.Center
+                        text = "━━━━━━━━━━━",
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = "LEDGER STATS",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 6.dp)
                     )
                 }
             }
-        }
 
-        item {
-            Spacer(modifier = Modifier.height(4.dp))
-        }
-
-        // Ledger Statistics Section
-        item {
-            Column(
-                modifier = Modifier.fillMaxWidth(0.95f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "━━━━━━━━━━━",
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                    style = MaterialTheme.typography.bodySmall
-                )
-                Text(
-                    text = "LEDGER STATS",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 6.dp)
-                )
+            networkStatus.ledgerStats?.let { stats ->
+                // Ledger Stats Card
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(0.95f)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(Color.White.copy(alpha = 0.1f))
+                            .padding(vertical = 10.dp, horizontal = 12.dp)
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            NetworkStatItem(
+                                label = "Accounts",
+                                value = stats.totalAccounts?.let { decimalFormat.format(it) } ?: "0",
+                                color = Color(0xFF4CAF50)
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            )
+                            NetworkStatItem(
+                                label = "Transactions",
+                                value = stats.totalTransactions?.let { decimalFormat.format(it) } ?: "0",
+                                color = Color(0xFF2196F3)
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            )
+                            NetworkStatItem(
+                                label = "Mints",
+                                value = stats.totalMints?.let { decimalFormat.format(it) } ?: "0",
+                                color = Color(0xFFFF9800)
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            )
+                            NetworkStatItem(
+                                label = "Transfers",
+                                value = stats.totalTransfers?.let { decimalFormat.format(it) } ?: "0",
+                                color = Color(0xFF9C27B0)
+                            )
+                            HorizontalDivider(
+                                modifier = Modifier.fillMaxWidth(0.8f),
+                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                            )
+                            NetworkStatItem(
+                                label = "Minted",
+                                value = stats.totalMinted?.let { decimalFormat.format(it) } ?: "0",
+                                color = Color(0xFFFFEB3B)
+                            )
+                        }
+                    }
+                }
             }
-        }
 
-        networkStatus.ledgerStats?.let { stats ->
-            // Ledger Stats Card
+            item {
+                Spacer(modifier = Modifier.height(4.dp))
+            }
+
+            // Device Statistics Section
+            item {
+                Column(
+                    modifier = Modifier.fillMaxWidth(0.95f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "━━━━━━━━━━━",
+                        color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = "DEVICE STATS",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.secondary,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(vertical = 6.dp)
+                    )
+                }
+            }
+
+            // Device Stats Card
             item {
                 Box(
                     modifier = Modifier
@@ -978,118 +1075,35 @@ fun NetworkStatusScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        NetworkStatItem(
-                            label = "Accounts",
-                            value = stats.totalAccounts?.let { decimalFormat.format(it) } ?: "0",
-                            color = Color(0xFF4CAF50)
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.fillMaxWidth(0.8f),
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                        )
-                        NetworkStatItem(
-                            label = "Transactions",
-                            value = stats.totalTransactions?.let { decimalFormat.format(it) } ?: "0",
-                            color = Color(0xFF2196F3)
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.fillMaxWidth(0.8f),
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                        )
-                        NetworkStatItem(
-                            label = "Mints",
-                            value = stats.totalMints?.let { decimalFormat.format(it) } ?: "0",
-                            color = Color(0xFFFF9800)
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.fillMaxWidth(0.8f),
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                        )
-                        NetworkStatItem(
-                            label = "Transfers",
-                            value = stats.totalTransfers?.let { decimalFormat.format(it) } ?: "0",
-                            color = Color(0xFF9C27B0)
-                        )
-                        HorizontalDivider(
-                            modifier = Modifier.fillMaxWidth(0.8f),
-                            color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
-                        )
-                        NetworkStatItem(
-                            label = "Minted",
-                            value = stats.totalMinted?.let { decimalFormat.format(it) } ?: "0",
-                            color = Color(0xFFFFEB3B)
-                        )
-                    }
-                }
-            }
-        }
+                        networkStatus.deviceStats?.ios?.let { iosStats ->
+                            NetworkStatItem(
+                                label = "Apple WatchOS",
+                                value = iosStats.count?.toString() ?: "0",
+                                color = Color(0xFF64B5F6)
+                            )
 
-        item {
-            Spacer(modifier = Modifier.height(4.dp))
-        }
+                            networkStatus.deviceStats?.android?.let {
+                                HorizontalDivider(
+                                    modifier = Modifier.fillMaxWidth(0.8f),
+                                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                                )
+                            }
+                        }
 
-        // Device Statistics Section
-        item {
-            Column(
-                modifier = Modifier.fillMaxWidth(0.95f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "━━━━━━━━━━━",
-                    color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f),
-                    style = MaterialTheme.typography.bodySmall
-                )
-                Text(
-                    text = "DEVICE STATS",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.secondary,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = 6.dp)
-                )
-            }
-        }
-
-        // Device Stats Card
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(0.95f)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.White.copy(alpha = 0.1f))
-                    .padding(vertical = 10.dp, horizontal = 12.dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    networkStatus.deviceStats?.ios?.let { iosStats ->
-                        NetworkStatItem(
-                            label = "Apple WatchOS",
-                            value = iosStats.count?.toString() ?: "0",
-                            color = Color(0xFF64B5F6)
-                        )
-
-                        networkStatus.deviceStats?.android?.let {
-                            HorizontalDivider(
-                                modifier = Modifier.fillMaxWidth(0.8f),
-                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                        networkStatus.deviceStats?.android?.let { androidStats ->
+                            NetworkStatItem(
+                                label = "Google WearOS",
+                                value = androidStats.count?.toString() ?: "0",
+                                color = Color(0xFF81C784)
                             )
                         }
                     }
-
-                    networkStatus.deviceStats?.android?.let { androidStats ->
-                        NetworkStatItem(
-                            label = "Google WearOS",
-                            value = androidStats.count?.toString() ?: "0",
-                            color = Color(0xFF81C784)
-                        )
-                    }
                 }
             }
-        }
 
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
         }
     }
 }
