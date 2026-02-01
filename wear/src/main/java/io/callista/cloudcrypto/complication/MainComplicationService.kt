@@ -1,6 +1,7 @@
 package io.callista.cloudcrypto.complication
 
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -8,6 +9,7 @@ import androidx.wear.watchface.complications.data.ComplicationData
 import androidx.wear.watchface.complications.data.ComplicationType
 import androidx.wear.watchface.complications.data.PlainComplicationText
 import androidx.wear.watchface.complications.data.ShortTextComplicationData
+import androidx.wear.watchface.complications.datasource.ComplicationDataSourceUpdateRequester
 import androidx.wear.watchface.complications.datasource.ComplicationRequest
 import androidx.wear.watchface.complications.datasource.SuspendingComplicationDataSourceService
 import io.callista.cloudcrypto.data.RegistrationRepository
@@ -25,9 +27,16 @@ class MainComplicationService : SuspendingComplicationDataSourceService() {
         private const val TAG = "ComplicationService"
 
         fun requestUpdate(context: Context) {
-            // This can be called from FCM receiver to update the complication
-            // val componentName = ComponentName(context, MainComplicationService::class.java)
-            // ProviderUpdateRequester(context, componentName).requestUpdateAll()
+            try {
+                val requester = ComplicationDataSourceUpdateRequester.create(
+                    context,
+                    ComponentName(context, MainComplicationService::class.java)
+                )
+                requester.requestUpdateAll()
+                Log.d(TAG, "Complication update requested")
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to request complication update", e)
+            }
         }
     }
 
