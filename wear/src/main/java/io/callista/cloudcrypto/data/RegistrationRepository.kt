@@ -253,13 +253,14 @@ class RegistrationRepository(private val context: Context) {
     /**
      * Saves the registration status to SharedPreferences.
      */
-    suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean) {
+    suspend fun saveRegistrationStatus(serialNumber: String, isRegistered: Boolean, accountId: String? = null) {
         withContext(Dispatchers.IO) {
             val prefs = context.getSharedPreferences("registration_prefs", Context.MODE_PRIVATE)
             prefs.edit().apply {
                 putBoolean("is_registered", isRegistered)
                 putString("serial_number", serialNumber)
                 putLong("registration_timestamp", System.currentTimeMillis())
+                putString("account_id", accountId)
                 apply()
             }
         }
@@ -273,11 +274,13 @@ class RegistrationRepository(private val context: Context) {
         val isRegistered = prefs.getBoolean("is_registered", false)
         val serialNumber = prefs.getString("serial_number", null)
         val timestamp = prefs.getLong("registration_timestamp", 0L)
+        val accountId = prefs.getString("account_id", null)
 
         return RegistrationStatus(
             isRegistered = isRegistered,
             serialNumber = serialNumber,
-            timestamp = timestamp
+            timestamp = timestamp,
+            accountId = accountId
         )
     }
     
@@ -346,7 +349,8 @@ class RegistrationRepository(private val context: Context) {
 data class RegistrationStatus(
     val isRegistered: Boolean,
     val serialNumber: String?,
-    val timestamp: Long
+    val timestamp: Long,
+    val accountId: String? = null
 )
 
 /**

@@ -119,6 +119,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
             MainScreen(
                 serialNumber = state.serialNumber,
                 timestamp = state.timestamp,
+                accountId = state.accountId,
                 onRegisterClicked = {
                     viewModel.onSerialNumberChanged(UUID.randomUUID().toString())
                     viewModel.showRegistrationForm()
@@ -181,6 +182,7 @@ fun RegistrationScreen(viewModel: RegistrationViewModel) {
 fun MainScreen(
     serialNumber: String?,
     timestamp: Long,
+    accountId: String? = null,
     onRegisterClicked: () -> Unit,
     onDeregisterClicked: () -> Unit,
     onAccountClicked: () -> Unit,
@@ -237,6 +239,30 @@ fun MainScreen(
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(top = 4.dp)
                     )
+                }
+            }
+            
+            // Account ID Display
+            if (isRegistered) {
+                item {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = "Account ID",
+                            style = MaterialTheme.typography.labelSmall,
+                            textAlign = TextAlign.Center
+                        )
+                        Text(
+                            text = accountId ?: "---",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = androidx.compose.ui.graphics.Color.White
+                            ),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
                 }
             }
 

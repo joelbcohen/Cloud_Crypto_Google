@@ -60,7 +60,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
         _serialNumber.value = status.serialNumber ?: ""
         _uiState.value = RegistrationUiState.MainScreen(
             serialNumber = status.serialNumber,
-            timestamp = status.timestamp
+            timestamp = status.timestamp,
+            accountId = status.accountId
         )
     }
 
@@ -106,7 +107,21 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
                 result.fold(
                     onSuccess = { response ->
-                        repository.saveRegistrationStatus(currentSerialNumber, true)
+                        var accountId = response.accountId
+                        
+                        // Save initial status so we can fetch summary if needed
+                        repository.saveRegistrationStatus(currentSerialNumber, true, accountId)
+
+                        // If accountId is missing, try to fetch it from account summary
+                        if (accountId == null) {
+                             val summaryResult = repository.getAccountSummary()
+                             summaryResult.onSuccess { summary ->
+                                 accountId = summary.data?.id
+                                 // Update status with fetched accountId
+                                 repository.saveRegistrationStatus(currentSerialNumber, true, accountId)
+                             }
+                        }
+
                         MainComplicationService.requestUpdate(getApplication())
                         // Return to main screen after successful registration
                         loadMainScreen()
@@ -354,7 +369,7 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
  * Sealed interface representing different UI states.
  */
 sealed interface RegistrationUiState {
-    data class MainScreen(val serialNumber: String?, val timestamp: Long) : RegistrationUiState
+    data class MainScreen(val serialNumber: String?, val timestamp: Long, val accountId: String? = null) : RegistrationUiState
     data object RegistrationForm : RegistrationUiState
     data class AccountSummary(val data: AccountSummaryData, val transactions: List<Transaction>) : RegistrationUiState
     data object TransferScreen : RegistrationUiState
