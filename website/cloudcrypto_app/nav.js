@@ -17,6 +17,7 @@ const navbarHTML = `
                     <li class="nav-item"><a class="nav-link" href="index.html#features">Features</a></li>
                     <li class="nav-item"><a class="nav-link" href="index.html#stats">Stats</a></li>
                     <li class="nav-item"><a class="nav-link" href="index.html#devices">Devices</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#start">Available Now</a></li>
                     <li class="nav-item"><a class="nav-link" href="support.html">Support</a></li>
                     <li class="nav-item"><a class="nav-link" href="privacy_policy.html">Privacy</a></li>
                 </ul>
